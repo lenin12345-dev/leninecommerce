@@ -12,11 +12,13 @@ import {
   LOGOUT
 } from './ActionTypes';
 import api, { API_BASE_URL } from '../../config/api';
+import { useNavigate } from "react-router-dom";
 
 // Register action creators
 const registerRequest = () => ({ type: REGISTER_REQUEST });
 const registerSuccess = (user) => ({ type: REGISTER_SUCCESS, payload:user });
 const registerFailure = error => ({ type: REGISTER_FAILURE, payload: error });
+const navigate = useNavigate();
 
 export const register = userData => async dispatch => {
   dispatch(registerRequest());
@@ -79,6 +81,6 @@ export const logout = (token) => {
     return async (dispatch) => {
       dispatch({ type: LOGOUT });
       localStorage.clear();
-      window.location.reload();
+      navigate('/login');
     };
   };
