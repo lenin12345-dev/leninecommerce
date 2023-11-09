@@ -17,7 +17,6 @@ import api, { API_BASE_URL } from '../../config/api';
 const registerRequest = () => ({ type: REGISTER_REQUEST });
 const registerSuccess = (user) => ({ type: REGISTER_SUCCESS, payload:user });
 const registerFailure = error => ({ type: REGISTER_FAILURE, payload: error });
-const navigate = useNavigate();
 
 export const register = userData => async dispatch => {
   dispatch(registerRequest());
