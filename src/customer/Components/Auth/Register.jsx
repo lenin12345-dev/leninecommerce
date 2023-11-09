@@ -1,45 +1,71 @@
-
 import { Grid, TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, register } from "../../../Redux/Auth/Action";
 import { Fragment, useEffect, useState } from "react";
+import {validEmail} from "../../../util/helper";
 
 export default function RegisterUserForm({ handleNext }) {
   const navigate = useNavigate();
-  const dispatch=useDispatch();
-  const [openSnackBar,setOpenSnackBar]=useState(false);
+  const dispatch = useDispatch();
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const { auth } = useSelector((store) => store);
-  const handleClose=()=>setOpenSnackBar(false);
-
-  const jwt=localStorage.getItem("jwt");
-
-useEffect(()=>{
-  if(jwt){
-    dispatch(getUser(jwt))
-  }
-
-},[jwt])
-
+  const handleClose = () => setOpenSnackBar(false);
+  const [errorObj, setErrorObj] = useState({});
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
-    if (auth.user || auth.error) setOpenSnackBar(true)
+    if (jwt) {
+      dispatch(getUser(jwt));
+    }
+  }, [jwt]);
+
+  useEffect(() => {
+    if (auth.user || auth.error) setOpenSnackBar(true);
   }, [auth.user]);
-  
+  const validateForm = (userData) => {
+    let errorList = {};
+
+    if (!userData.firstName) {
+      errorList.firstName = "Please enter first name";
+    }
+    if (!userData.lastName) {
+      errorList.lastName = "Please enter last name";
+    }
+
+    if (!userData.email) {
+      errorList.email = "Please enter an email";
+    }
+
+    if (userData.email && !validEmail(userData.email)) {
+      errorList.email = `${userData.email} is not a valid email!`;
+    }
+    if (Object.keys(errorList).length == 0) {
+      setErrorObj({});
+      return true;
+    } else {
+      setErrorObj(errorList);
+      errorList = {};
+      return false;
+    }
+};
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
     // eslint-disable-next-line no-console
-    const userData={
+    const userData = {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
       email: data.get("email"),
       password: data.get("password"),
-      
-    }
-    console.log("user data",userData);
-    dispatch(register(userData))
-  
+    };
+    console.log("user data", userData);
+    if (!validateForm(userData)) return;
+
+    dispatch(register(userData));
   };
 
   return (
@@ -54,6 +80,8 @@ useEffect(()=>{
               label="First Name"
               fullWidth
               autoComplete="given-name"
+              error={!!errorObj.firstName}
+              helperText={errorObj.firstName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -64,6 +92,8 @@ useEffect(()=>{
               label="Last Name"
               fullWidth
               autoComplete="given-name"
+              error={!!errorObj.lastName}
+              helperText={errorObj.lastName}
             />
           </Grid>
           <Grid item xs={12}>
@@ -74,6 +104,8 @@ useEffect(()=>{
               label="Email"
               fullWidth
               autoComplete="given-name"
+              error={!!errorObj.email}
+              helperText={errorObj.email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -94,7 +126,7 @@ useEffect(()=>{
               type="submit"
               variant="contained"
               size="large"
-              sx={{padding:".8rem 0"}}
+              sx={{ padding: ".8rem 0" }}
             >
               Register
             </Button>
@@ -102,21 +134,28 @@ useEffect(()=>{
         </Grid>
       </form>
 
-<div className="flex justify-center flex-col items-center">
-     <div className="py-3 flex items-center ">
-        <p className="m-0 p-0">if you have already account ?</p>
-        <Button onClick={()=> navigate("/login")} className="ml-5" size="small">
-          Login
-        </Button>
+      <div className="flex justify-center flex-col items-center">
+        <div className="py-3 flex items-center ">
+          <p className="m-0 p-0">if you have already account ?</p>
+          <Button
+            onClick={() => navigate("/login")}
+            className="ml-5"
+            size="small"
+          >
+            Login
+          </Button>
+        </div>
       </div>
-</div>
 
-<Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          {auth.error?auth.error:auth.user?"Register Success":""}
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          {auth.error ? auth.error : auth.user ? "Register Success" : ""}
         </Alert>
       </Snackbar>
-     
     </div>
   );
 }
