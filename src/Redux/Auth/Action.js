@@ -12,7 +12,6 @@ import {
   LOGOUT
 } from './ActionTypes';
 import api, { API_BASE_URL } from '../../config/api';
-import { useNavigate } from "react-router-dom";
 
 // Register action creators
 const registerRequest = () => ({ type: REGISTER_REQUEST });
@@ -81,6 +80,6 @@ export const logout = (token) => {
     return async (dispatch) => {
       dispatch({ type: LOGOUT });
       localStorage.clear();
-      navigate('/login');
+      window.location.href = '/login'
     };
   };
