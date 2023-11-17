@@ -8,7 +8,7 @@ const HomeProductCard = ({ product }) => {
   return (
     <div
       onClick={() => navigate(product.topLavelCategory=="Men"?`/men/clothing/mens_kurta`:'/women/clothing/women_dress')}
-      className="cursor-pointer flex flex-col items-center bg-white rounded-lg shadow-lg overflow-hidden w-[15rem] mx-3"
+      className="cursor-pointer flex flex-col items-center bg-white rounded-lg shadow-lg overflow-hidden w-[15rem] h-72 mx-5"
     >
       <div className="h-[13rem] w-[10rem]">
         <img
@@ -18,7 +18,7 @@ const HomeProductCard = ({ product }) => {
         />
       </div>
 
-      <div className="p-4 ">
+      <div className="p-4 flex-grow">
         <h3 className="text-lg font-medium text-gray-900">
           {product?.brand || product?.title}
         </h3>

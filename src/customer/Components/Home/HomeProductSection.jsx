@@ -27,7 +27,7 @@ const HomeProductSection = ({ section, data }) => {
     },
   };
   const items = data?.slice(0, 10).map((item) => (
-    <div key={item.key} className="">
+    <div key={item.key} >
       {" "}
       <HomeProductCard  key={item.key}  product={item} />
     </div>
@@ -44,7 +44,7 @@ const HomeProductSection = ({ section, data }) => {
       <div className="relative border p-5">
         <AliceCarousel
           // disableButtonsControls ={true}
-          // disableDotsControls
+          disableDotsControls
           mouseTracking
           items={items}
           activeIndex={activeIndex}

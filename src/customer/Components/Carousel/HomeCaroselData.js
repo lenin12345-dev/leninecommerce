@@ -1,6 +1,6 @@
 export const homeCarouselData=[
     {
-        image:"https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-6/359763566_256089487169587_1482542299533950023_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=XLOIhd8OrIsAX_kc45u&_nc_ht=scontent-lga3-1.xx&oh=00_AfB9bB9MpeDMBWBHoJzi7ApXao8hoN-0anUJunUh25iSaA&oe=654E053C",
+        image:"https://img.freepik.com/free-vector/flat-super-sale-banner-with-photo_23-2149026967.jpg?w=1380&t=st=1700208493~exp=1700209093~hmac=7ee706e48c791019a13a1b2c6afadae69ff9e51b2dae06c31933d16ed36a8d81",
         path:"/men/clothing/mens_kurta"
     },
  
