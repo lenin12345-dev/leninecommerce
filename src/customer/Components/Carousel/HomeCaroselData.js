@@ -1,7 +1,7 @@
 export const homeCarouselData=[
     {
         image:"https://img.freepik.com/free-vector/flat-super-sale-banner-with-photo_23-2149026967.jpg?w=1380&t=st=1700208493~exp=1700209093~hmac=7ee706e48c791019a13a1b2c6afadae69ff9e51b2dae06c31933d16ed36a8d81",
-        path:"/men/clothing/mens_kurta"
+        path:"/women/clothing/women_dress "
     },
  
     {

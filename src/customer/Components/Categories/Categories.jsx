@@ -74,7 +74,7 @@ const Categories = () => {
       <div className={classes.col}>
         {renderCard(
           "https://images.pexels.com/photos/818992/pexels-photo-818992.jpeg?auto=compress&cs=tinysrgb&w=1600",
-          "/men/clothing/mens_kurta",
+          "/women/clothing/women_dress",
           "Sale"
         )}
         {renderCard(
@@ -86,7 +86,7 @@ const Categories = () => {
       <div className={classes.col}>
         {renderCard(
           "https://images.pexels.com/photos/1813947/pexels-photo-1813947.jpeg?auto=compress&cs=tinysrgb&w=1600",
-          "/men/clothing/mens_kurta",
+          "/women/clothing/women_dress",
           "New Season"
         )}
       </div>
@@ -94,21 +94,21 @@ const Categories = () => {
         <div className={classes.row}>
           {renderCard(
             "https://images.pexels.com/photos/1192609/pexels-photo-1192609.jpeg?auto=compress&cs=tinysrgb&w=1600",
-            "/men/clothing/mens_kurta",
+            "/women/clothing/women_dress",
             "Men"
           )}
         </div>
         <div className={classes.row}>
           {renderCard(
             "https://images.pexels.com/photos/2703202/pexels-photo-2703202.jpeg?auto=compress&cs=tinysrgb&w=1600",
-            "/men/clothing/mens_kurta",
+            "/women/clothing/women_dress",
             "Brands"
           )}
         </div>
         <div className={classes.row}>
           {renderCard(
             "https://images.pexels.com/photos/1159670/pexels-photo-1159670.jpeg?auto=compress&cs=tinysrgb&w=1600",
-            "/men/clothing/mens_kurta",
+            "/women/clothing/women_dress",
             "Shoes"
           )}
         </div>
