@@ -12,17 +12,17 @@ const ProductReviewCard = ({item}) => {
             <Avatar
               className="text-white"
               sx={{ width: 56, height: 56, bgcolor: "#9155FD" }}
-              alt={item?.user?.firstName}
+              alt={item?.user?.firstname}
               src=""
             >
-              {item?.user?.firstName[0].toUpperCase()}
+              {item?.user?.firstname[0].toUpperCase()}
             </Avatar>
           </Box>
         </Grid>
         <Grid item xs={9}>
           <div className="space-y-2">
             <div className="">
-              <p className="font-semibold text-lg">{item.user?.firstName}</p>
+              <p className="font-semibold text-lg">{item.user?.firstname}</p>
               <p className="opacity-70">April 5, 2023</p>
             </div>
             <div>

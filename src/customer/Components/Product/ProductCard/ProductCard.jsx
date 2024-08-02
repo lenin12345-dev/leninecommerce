@@ -12,26 +12,27 @@ const ProductCard = ({ product }) => {
   }
 
   return (
-   <div onClick={handleNavigate} className='productCard w-[15rem] border m-3 transition-all cursor-pointer '>
-    <div className='h-[20rem]'>
-        <img className='h-full w-full object-cover object-left-top' src={imageUrl} alt="" />
-    </div>
-    <div className='textPart bg-white p-3 '>
+    <div onClick={handleNavigate} className="productCard w-[16rem] border m-4 rounded-lg overflow-hidden shadow-lg transition-all cursor-pointer hover:shadow-xl">
+      <div className="imageWrapper h-[18rem] bg-gray-100">
+        <img className="productImage h-full w-full object-contain" src={imageUrl} alt={title} />
+      </div>
+      <div className="textPart bg-white p-4">
         <div>
-        <p  className='font-bold opacity-60'>{brand}</p>
-            <p className=''>{title}</p>
-        
-        <p className='font-semibold opacity-50'>{color}</p>
+          <p className="font-bold text-gray-700">{brand}</p>
+          <p className="text-gray-900">{title}</p>
+          <p className="text-gray-600">{color}</p>
         </div>
-        
-        <div className='flex space-x-2 items-center'>
-            <p className='font-semibold'>₹{discountedPrice}</p>
-            <p className='opacity-50 line-through'>₹{price}</p>
-            <p className='text-green-600 font-semibold'>{discountPersent}% off</p>
+        <div className="flex space-x-2 items-center mt-2">
+          <p className="font-semibold text-lg text-gray-800">₹{discountedPrice}</p>
+          {discountedPrice !== price && (
+            <>
+              <p className="text-gray-500 line-through">₹{price}</p>
+              <p className="text-green-600 font-semibold">{discountPersent}% off</p>
+            </>
+          )}
         </div>
-        
+      </div>
     </div>
-   </div>
   );
 };
 

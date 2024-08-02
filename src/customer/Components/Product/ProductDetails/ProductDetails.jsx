@@ -94,7 +94,7 @@ export default function ProductDetails() {
     setActiveImage(image);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (auth.user==null) {
       setOpenSnackBar(true)
       setShowCart(true);
@@ -102,7 +102,7 @@ export default function ProductDetails() {
     return;
     }
     const data = { productId, size: selectedSize?selectedSize.name :'' };
-    dispatch(addItemToCart({ data, jwt }));
+    await dispatch(addItemToCart({ data, jwt }));
     navigate("/cart");
   };
 

@@ -60,7 +60,7 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   color="primary"
                   onClick={()=>handleCreateOrder(item)}
                 >
-                  Deliverd Here
+                  Deliver Here
                 </Button>
               )}
             </div>
@@ -150,7 +150,7 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   variant="contained"
                   color="primary"
                 >
-                  Deliverd Here
+                  Deliver Here
                 </Button>
               </Grid>
             </Grid>

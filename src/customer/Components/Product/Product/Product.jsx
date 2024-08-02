@@ -17,7 +17,6 @@ import FormLabel from "@mui/material/FormLabel";
 import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
 
-
 import { filters, singleFilter, sortOptions } from "./FilterData";
 import ProductCard from "../ProductCard/ProductCard";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -32,6 +31,7 @@ import { deepPurple } from "@mui/material/colors";
 import { Backdrop, CircularProgress } from "@mui/material";
 import BackdropComponent from "../../BackDrop/Backdrop";
 import NoDataCard from "../../NoDataCard";
+import Button from "@mui/material/Button";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -39,57 +39,86 @@ function classNames(...classes) {
 
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Navigating to a Different Route and Updating the Query String and Redirecting After an Action
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
   const param = useParams();
-  const { customersProduct } = useSelector((store) => store);
   const location = useLocation();
+
+  const { customersProduct } = useSelector((store) => store);
+
   const [isLoaderOpen, setIsLoaderOpen] = useState(false);
-  const [name,setName] = useState('')
+  const [name, setName] = useState("");
+  const [filter, setFilters] = useState({
+    color: [],
+    size: [],
+    price: "",
+    discount: "",
+    stock: "",
+  });
 
-  const handleLoderClose = () => {
-    setIsLoaderOpen(false);
-  };
-
-  // const filter = decodeURIComponent(location.search);
+  // location.search provides the query string part of the URL, including the leading ?
+  // decodeURIComponent is a JavaScript function that decodes a URI component.
+  // It's used here to decode the query string, ensuring that any encoded characters (like %20 for spaces) are properly decoded to their original form.
   const decodedQueryString = decodeURIComponent(location.search);
-  const searchParams = new URLSearchParams(decodedQueryString);
-  const colorValue = searchParams.get("color");
-  const sizeValue = searchParams.get("size");
-  const price = searchParams.get("price");
-  const disccount = searchParams.get("disccout");
-  const sortValue = searchParams.get("sort");
-  const searchValue = searchParams.get("search");
-  const pageNumber = searchParams.get("page") || 1;
-  const stock = searchParams.get("stock");
+  useEffect(() => {
+    // URLSearchParams is an interface or api which  takes the decoded query string as a parameter and parses it into an iterable object,
+    // allowing easy access to individual query parameters.
+    const searchParams = new URLSearchParams(decodedQueryString);
 
-  // console.log("location - ", colorValue, sizeValue,price,disccount);
+    const colorValue = searchParams.get("color");
+
+    const sizeValue = searchParams.get("size");
+    const price = searchParams.get("price");
+    const discount = searchParams.get("discount");
+    const sortValue = searchParams.get("sort");
+    const searchValue = searchParams.get("search");
+    const pageNumber = searchParams.get("page") || 1;
+    const stock = searchParams.get("stock");
+    setName(searchValue || "");
+    setFilters({
+      color: colorValue ? colorValue.split(",") : [],
+      size: sizeValue ? sizeValue.split(",") : [],
+      price: price || "",
+      discount: discount || "",
+      stock: stock || "",
+    });
+
+    const [minPrice, maxPrice] =
+      price === null ? [0, 0] : price.split("-").map(Number);
+    const data = {
+      category: param.lavelThree || null,
+      colors: colorValue || [],
+      sizes: sizeValue || [],
+      minPrice: minPrice || 0,
+      maxPrice: maxPrice || null,
+      minDiscount: discount || 0,
+      sort: sortValue || "price_low",
+      pageNumber: pageNumber,
+      search: searchValue || "",
+      pageSize: 10,
+      stock: stock,
+    };
+    dispatch(findProducts(data));
+  }, [location.search, param.lavelThree, dispatch]);
 
   const handleSortChange = (value) => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("sort", value);
-    const query = searchParams.toString();
-    navigate({ search: `?${query}` });
+    navigate({ search: `?${searchParams.toString()}` });
   };
-  
+
   const handleSearchChange = (value) => {
     const searchParams = new URLSearchParams(location.search);
     setName(value);
-    if (!value){
-
+    if (!value) {
       searchParams.delete("search");
-
-   
-
-    }else{
-      searchParams.set('search',value);
-   
+    } else {
+      searchParams.set("search", value);
     }
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
-  
-  
   };
   const handlePaginationChange = (event, value) => {
     const searchParams = new URLSearchParams(location.search);
@@ -98,71 +127,57 @@ export default function Product() {
     navigate({ search: `?${query}` });
   };
 
-  useEffect(() => {
-    const [minPrice, maxPrice] =
-      price === null ? [0, 0] : price.split("-").map(Number);
-    const data = {
-      category: param.lavelThree,
-      colors: colorValue || [],
-      sizes: sizeValue || [],
-      minPrice: minPrice || 0,
-      maxPrice: maxPrice || 10000,
-      minDiscount: disccount || 0,
-      sort: sortValue || "price_low",
-      pageNumber: pageNumber ,
-      search:searchValue || '',
-      pageSize: 10,
-      stock: stock,
-      
-    };
-    dispatch(findProducts(data));
-  }, [
-    param.lavelThree,
-    colorValue,
-    sizeValue,
-    price,
-    disccount,
-    sortValue,
-    pageNumber,
-    stock,
-    name
-  ]);
-
+  // handles the changes in checkbox filters.
   const handleFilter = (value, sectionId) => {
-    const searchParams = new URLSearchParams(location.search);
+    const { search } = location;
+    const searchParams = new URLSearchParams(search);
 
-    let filterValues = searchParams.getAll(sectionId);
+    // Get the current filter values for the section
+    const filterValuesString = searchParams.get(sectionId);
+    let filterValues = filterValuesString ? filterValuesString.split(",") : [];
 
-    if (filterValues.length > 0 && filterValues[0].split(",").includes(value)) {
-      filterValues = filterValues[0]
-        .split(",")
-        .filter((item) => item !== value);
-      if (filterValues.length === 0) {
-        searchParams.delete(sectionId);
-      }
-      console.log("includes");
+    const valueIndex = filterValues.indexOf(value);
+    if (valueIndex > -1) {
+      filterValues.splice(valueIndex, 1);
     } else {
-      // Remove all values for the current section
-      // searchParams.delete(sectionId);
       filterValues.push(value);
     }
-
-    if (filterValues.length > 0)
+    // Update the searchParams based on the modified filterValues
+    if (filterValues.length > 0) {
       searchParams.set(sectionId, filterValues.join(","));
+    } else {
+      searchParams.delete(sectionId);
+    }
 
-    // history.push({ search: searchParams.toString() });
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
-
+  // handles changes in radio button filters.
   const handleRadioFilterChange = (e, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set(sectionId, e.target.value);
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
+  const handleClearFilters = () => {
+    setFilters({
+      color: [],
+      size: [],
+      price: "",
+      discount: "",
+      stock: "",
+    });
+    setName("");
 
-  console.log('customersProduct',customersProduct)
+    // Clear all query parameters related to filters
+    const searchParams = new URLSearchParams(location.search);
+    ["color", "size", "price", "discount", "stock", "search", "sort"].forEach(
+      (param) => searchParams.delete(param)
+    );
+
+    // Navigate to the updated URL
+    navigate({ search: `?${searchParams.toString()}` });
+  };
 
   useEffect(() => {
     if (customersProduct.loading) {
@@ -171,7 +186,7 @@ export default function Product() {
       setIsLoaderOpen(false);
     }
   }, [customersProduct.loading]);
- 
+
   return (
     <div className="bg-white -z-20 ">
       <div>
@@ -298,33 +313,55 @@ export default function Product() {
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
-                <div style={{ display:'flex', justifyContent:'center', alignItems:'center'}}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <div>
-
-                  
-                <TextField
-        id="outlined-controlled"
-        label="search here"
-        size="small"
-        name="text"
-        sx={{
-          width: 200,
-          height: 10,
-          marginBottom: 5,
-          marginRight:3
-        }}
-        value={name}
-        margin="dense"
-        onChange={(e)=>handleSearchChange(e.target.value)}
-      />
-      </div>
+                    <TextField
+                      id="outlined-controlled"
+                      label="search here"
+                      size="small"
+                      name="text"
+                      sx={{
+                        width: 200,
+                        height: 10,
+                        marginBottom: 5,
+                        marginRight: 3,
+                      }}
+                      value={name}
+                      margin="dense"
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                    />
+                  </div>
                   <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                     Sort
                     <ChevronDownIcon
-                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      className=" mr-5 h-5 w-7 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"
                     />
                   </Menu.Button>
+                  <Button
+                    variant="contained"
+                    color="error" 
+                    fullWidth
+                     size="small"
+                    sx={{
+                      // mb: 2, 
+                      // py: 1,
+                      // px: 2,
+                      textTransform: "none", 
+                      "&:hover": {
+                        backgroundColor: "error.main", 
+                      },
+                    }}
+                    onClick={handleClearFilters}
+                  >
+                    Clear Filters
+                  </Button>
                 </div>
 
                 <Transition
@@ -431,6 +468,11 @@ export default function Product() {
                                     defaultValue={option.value}
                                     type="checkbox"
                                     defaultChecked={option.checked}
+                                    checked={
+                                      filter[section.id]?.includes(
+                                        option.value
+                                      ) || false
+                                    }
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                     onChange={() =>
                                       handleFilter(option.value, section.id)
@@ -491,6 +533,9 @@ export default function Product() {
                                     value={option.value}
                                     control={<Radio />}
                                     label={option.label}
+                                    checked={
+                                      filter[section.id] === option.value
+                                    }
                                     onChange={(e) =>
                                       handleRadioFilterChange(e, section.id)
                                     }
@@ -511,12 +556,12 @@ export default function Product() {
                     {customersProduct?.products?.content?.map((item) => (
                       <ProductCard product={item} />
                     ))}
-                      {!customersProduct?.products?.content?.length && (
-  <NoDataCard
-    noDataFoundText="No Product Found"
-    styleCardProps={{ style: { height: 600 } }}
-  />
-)}
+                    {!customersProduct?.products?.content?.length && (
+                      <NoDataCard
+                        noDataFoundText="No Product Found"
+                        styleCardProps={{ style: { height: 600 } }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -538,7 +583,7 @@ export default function Product() {
 
         {/* {backdrop} */}
         <section>
-         <BackdropComponent open={isLoaderOpen}/>
+          <BackdropComponent open={isLoaderOpen} />
         </section>
       </div>
     </div>

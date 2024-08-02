@@ -42,7 +42,7 @@ const CustomerRoutes = () => {
         <Route path="/privaciy-policy" element={<PrivacyPolicy />}></Route>
         <Route path="/terms-condition" element={<TearmsCondition />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
-        <Route path="/:lavelOne/:lavelTwo/:lavelThree" element={<Product />}></Route>
+        <Route path="/products" element={<Product />}></Route>
         <Route path="/product/:productId" element={<ProductDetails />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/account/order" element={<Order />}></Route>

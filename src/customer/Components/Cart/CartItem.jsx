@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { removeCartItem, updateCartItem } from "../../../Redux/Customers/Cart/Action";
+import { removeCartItem, updateCartItem,getCart } from "../../../Redux/Customers/Cart/Action";
 import { IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -9,15 +9,16 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 const CartItem = ({ item,showButton }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-
-  const handleRemoveItemFromCart = () => {
+  console.log(item)
+  const handleRemoveItemFromCart = async() => {
     const data = { cartItemId: item?._id, jwt };
-    dispatch(removeCartItem(data));
+    await dispatch(removeCartItem(data));
+    dispatch(getCart(jwt))
   };
-  const handleUpdateCartItem=(num)=>{
+  const handleUpdateCartItem=async(num)=>{
     const data={data:{quantity:item.quantity+num}, cartItemId:item?._id, jwt}
-    console.log("update data ",data)
-    dispatch(updateCartItem(data))
+    await dispatch(updateCartItem(data))
+    dispatch(getCart(jwt));
   }
   return (
     <div className="p-5 shadow-lg border rounded-md">

@@ -7,7 +7,7 @@ const HomeProductCard = ({ product }) => {
 
   return (
     <div
-      onClick={() => navigate(product.topLavelCategory=="Men"?`/women/clothing/women_dress`:'/women/clothing/women_dress')}
+      onClick={() => navigate('/products')}
       className="cursor-pointer flex flex-col items-center bg-white rounded-lg shadow-lg overflow-hidden w-[15rem] h-72 mx-5"
     >
       <div className="h-[13rem] w-[10rem]">
