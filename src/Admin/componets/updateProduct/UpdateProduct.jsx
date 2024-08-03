@@ -191,6 +191,7 @@ const UpdateProductForm = () => {
                 <MenuItem value="Men">Men</MenuItem>
                 <MenuItem value="Women">Women</MenuItem>
                 <MenuItem value="Kids">Kids</MenuItem>
+                <MenuItem value="Electronics">Electronics</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -205,7 +206,11 @@ const UpdateProductForm = () => {
               >
                 <MenuItem value="Clothing">Clothing</MenuItem>
                 <MenuItem value="Accessories">Accessories</MenuItem>
-                <MenuItem value="Brands">Brands</MenuItem>
+                <MenuItem value="Footwear">Footwear</MenuItem>
+                <MenuItem value="Mobile">Mobile Phones</MenuItem>
+                <MenuItem value="Computers">Computers & Tablets
+                </MenuItem>
+
               </Select>
             </FormControl>
           </Grid>
@@ -218,12 +223,27 @@ const UpdateProductForm = () => {
                 onChange={handleChange}
                 label="Third Level Category"
               >
+             
+                <MenuItem value="T-Shirts">T-Shirts</MenuItem>
+                <MenuItem value="Pants">Pants</MenuItem>
+                <MenuItem value="Jackets">Jackets</MenuItem>
+
+                <MenuItem value="Sneakers">Sneakers</MenuItem>
+
+                <MenuItem value="Heels">Heels</MenuItem>
+                <MenuItem value="Boots">Boots</MenuItem>
+                <MenuItem value="Formal Shoes">Formal Shoes</MenuItem>
+                <MenuItem value="Watches">Watches</MenuItem>
+
+
                 <MenuItem value="Tops">Tops</MenuItem>
                 <MenuItem value="Dresses">Dresses</MenuItem>
-                <MenuItem value="T-Shirts">T-Shirts</MenuItem>
+                <MenuItem value="Handbags">Handbags</MenuItem>
                 <MenuItem value="Saree">Saree</MenuItem>
-                <MenuItem value="Saree">Saree</MenuItem>
-                <MenuItem value="Lengha Choli">Lengha Choli</MenuItem>
+                <MenuItem value="Smartphones">Smartphones</MenuItem>
+                <MenuItem value="Laptops">Laptops</MenuItem>
+                <MenuItem value="Tablets">Tablets</MenuItem>
+
               </Select>
             </FormControl>
           </Grid>

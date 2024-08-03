@@ -106,7 +106,7 @@ export default function AdminPannel() {
                           cursor: "pointer",
                         }}
                       >
-                        {auth.user?.firstName[0].toUpperCase()}
+                        {auth.user?.firstname[0].toUpperCase()}
                       </Avatar>
               <ListItemText className="ml-5" primary={"Logout"} />
             </ListItemButton>

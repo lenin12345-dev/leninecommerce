@@ -2,6 +2,9 @@ import {
   FIND_PRODUCTS_BY_CATEGORY_REQUEST,
   FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
   FIND_PRODUCTS_BY_CATEGORY_FAILURE,
+  GET_ALL_PRODUCT,
+  GET_ALL_PRODUCT_FAILURE,
+  GET_ALL_PRODUCT_SUCCESS,
   FIND_PRODUCT_BY_ID_REQUEST,
   FIND_PRODUCT_BY_ID_SUCCESS,
   FIND_PRODUCT_BY_ID_FAILURE,
@@ -32,6 +35,12 @@ const customerProductReducer = (state = initialState, action) => {
       return { ...state, products: action.payload, loading: false };
     case FIND_PRODUCTS_BY_CATEGORY_FAILURE:
       return { ...state, loading: false, products:[], error: action.payload };
+      case GET_ALL_PRODUCT:
+        return { ...state, loading: true, error: null,allProducts:[] };
+      case GET_ALL_PRODUCT_SUCCESS:
+        return { ...state, allProducts: action.payload, loading: false };
+      case GET_ALL_PRODUCT_FAILURE:
+        return { ...state, loading: false, allProducts:[], error: action.payload };
     case FIND_PRODUCT_BY_ID_REQUEST:
       return { ...state, loading: true, error: null };
     case FIND_PRODUCT_BY_ID_SUCCESS:

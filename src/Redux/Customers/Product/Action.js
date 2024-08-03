@@ -4,6 +4,9 @@ import {
   FIND_PRODUCTS_BY_CATEGORY_REQUEST,
   FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
   FIND_PRODUCTS_BY_CATEGORY_FAILURE,
+  GET_ALL_PRODUCT,
+  GET_ALL_PRODUCT_SUCCESS,
+  GET_ALL_PRODUCT_FAILURE,
   FIND_PRODUCT_BY_ID_REQUEST,
   FIND_PRODUCT_BY_ID_SUCCESS,
   FIND_PRODUCT_BY_ID_FAILURE,
@@ -82,6 +85,26 @@ export const findProductById = (reqData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: FIND_PRODUCT_BY_ID_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+export const getAllProducts = () => async (dispatch) => {
+  try {
+    dispatch({ type: GET_ALL_PRODUCT });
+
+    const { data } = await api.get(`/api/products}`);
+
+    dispatch({
+      type: GET_ALL_PRODUCT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_ALL_PRODUCT_FAILURE,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

@@ -14,14 +14,22 @@ export const filters = [
     id: "color",
     name: "Color",
     options: [
-      { value: "white", label: "White" },
-      { value: "beige", label: "Beige" },
-      { value: "blue", label: "Blue" },
-      { value: "brown", label: "Brown" },
-      { value: "green", label: "Green" },
-      { value: "purple", label: "Purple" },
-      {value:"yellow",label:"Yellow"}
-    ],
+    { "value": "white", "label": "White" },
+    { "value": "black", "label": "Black" },
+    { "value": "gray", "label": "Gray" },
+    { "value": "red", "label": "Red" },
+    { "value": "pink", "label": "Pink" },
+    { "value": "orange", "label": "Orange" },
+    { "value": "yellow", "label": "Yellow" },
+    { "value": "green", "label": "Green" },
+    { "value": "blue", "label": "Blue" },
+    { "value": "purple", "label": "Purple" },
+    { "value": "brown", "label": "Brown" },
+    { "value": "gold", "label": "Gold" },
+    { "value": "silver", "label": "Silver" },
+    { "value": "maroon", "label": "Maroon" },
+
+  ]
   },
 
   {
@@ -41,17 +49,24 @@ export const singleFilter=[
     id: "price",
     name: "Price",
     options: [
-      { value: "159-399", label: "₹159 To ₹399" },
-      { value: "399-999", label: "₹399 To ₹999" },
-      { value: "999-1999", label: "₹999 To ₹1999" },
-      { value: "1999-2999", label: "₹1999 To ₹2999" },
-      { value: "3999-4999", label: "₹3999 To ₹4999" },
-    ],
+      { value: "0-500", label: "Up to ₹500" },
+      { value: "500-1000", label: "₹500 To ₹1000" },
+      { value: "1000-2500", label: "₹1000 To ₹2500" },
+      { value: "2500-5000", label: "₹2500 To ₹5000" },
+      { value: "5000-10000", label: "₹5000 To ₹10000" },
+      { value: "10000-20000", label: "₹10000 To ₹20000" },
+      { value: "20000-50000", label: "₹20000 To ₹50000" },
+      { value: "50000+", label: "Above ₹50000" }
+    ]
   },
   {
     id: "discount",
     name: "Discount Range",
     options: [
+      {
+        value: "5",
+        label: "5% And Above",
+      },
       {
         value: "10",
         label: "10% And Above",
