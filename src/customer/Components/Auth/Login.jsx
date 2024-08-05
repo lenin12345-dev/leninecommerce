@@ -12,6 +12,7 @@ export default function LoginUserForm({ handleNext }) {
   const jwt=localStorage.getItem("jwt");
   const [openSnackBar,setOpenSnackBar]=useState(false);
   const { auth } = useSelector((store) => store);
+  const [loading, setLoading] = useState(false); 
 
   const handleCloseSnakbar=()=>setOpenSnackBar(false);
   useEffect(()=>{
@@ -27,6 +28,7 @@ export default function LoginUserForm({ handleNext }) {
     }, [auth.user,auth.error]);
   const handleSubmit = (event) => {
     event.preventDefault();
+    setLoading(true)
     const data = new FormData(event.currentTarget);
     
     const userData={
@@ -72,6 +74,7 @@ export default function LoginUserForm({ handleNext }) {
               variant="contained"
               size="large"
               sx={{padding:".8rem 0"}}
+              disabled={loading}
             >
               Login
             </Button>

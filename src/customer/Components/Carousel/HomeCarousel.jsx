@@ -12,7 +12,7 @@ const HomeCarousel = () => {
     <div style={{ maxHeight:700}} className="home_carousel__card" key={item.id}>
     <img
       className="cursor-pointer"
-      onClick={() => navigate(item.path)}
+      onClick={() => navigate('/products')}
       src={item.image}
       style={{height:'100%',width:'100%'}}
       alt=""

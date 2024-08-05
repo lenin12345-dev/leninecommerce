@@ -23,7 +23,8 @@ export const register = userData => async dispatch => {
   try {
     const response=await axios.post(`${API_BASE_URL}/auth/signup`, userData);
     const user = response.data;
-    if(user.jwt) localStorage.setItem("jwt",user.jwt)
+    console.log('response.data',response.data)
+    if(user.accessToken) localStorage.setItem("jwt",user.accessToken)
     dispatch(registerSuccess(user));
   } catch (error) {
     dispatch(registerFailure(error.message));

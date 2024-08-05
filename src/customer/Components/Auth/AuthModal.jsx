@@ -19,7 +19,7 @@ const style = {
   p: 4,
 };
 
-export default function AuthModal({ handleClose, open }) {
+export default function AuthModal({ handleClose, open,setOpenAuthModal }) {
   const location = useLocation();
   const { auth } = useSelector((store) => store);
   const navigate=useNavigate()
@@ -44,7 +44,7 @@ export default function AuthModal({ handleClose, open }) {
         {location.pathname === "/login" ? (
           <LoginUserForm />
         ) : (
-          <RegisterUserForm />
+          <RegisterUserForm setOpenAuthModal={setOpenAuthModal} />
         )}
       </Box>
     </Modal>
