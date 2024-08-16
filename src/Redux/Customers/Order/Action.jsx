@@ -51,7 +51,6 @@ export const createOrder = (reqData) => async (dispatch) => {
 };
 
 export const getOrderById = (orderId) => async (dispatch) => {
-  console.log("get order req ", orderId);
   try {
     dispatch({ type: GET_ORDER_BY_ID_REQUEST });
 

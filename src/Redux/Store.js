@@ -7,6 +7,7 @@ import cartReducer from "./Customers/Cart/Reducer";
 import { orderReducer } from "./Customers/Order/Reducer";
 import adminOrderReducer from "./Admin/Orders/Reducer";
 import ReviewReducer from "./Customers/Review/Reducer";
+import { paymentReducer } from "./Customers/Payment/Reducer";
 
 
 
@@ -19,6 +20,7 @@ const rootReducers=combineReducers({
     cart:cartReducer,
     order:orderReducer,
     review:ReviewReducer,
+    payment:paymentReducer,
 
     // admin
     adminsProduct:productReducer,

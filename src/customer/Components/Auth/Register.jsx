@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, TextField, Button, Snackbar, Alert } from '@mui/material';
+import { Grid, TextField, Button, Snackbar, Alert,CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, register } from '../../../Redux/Auth/Action';
@@ -13,17 +13,16 @@ export default function RegisterUserForm({ handleNext,setOpenAuthModal }) {
   const [snackBarMessage, setSnackBarMessage] = useState('');
 const [snackBarSeverity, setSnackBarSeverity] = useState('success');
   const { auth } = useSelector((store) => store);
+  const {isLoading} = auth
   const handleClose = () => setOpenSnackBar(false);
   const [errorObj, setErrorObj] = useState({});
   const jwt = localStorage.getItem('jwt');
-  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     if (jwt) {
       dispatch(getUser(jwt));
     }
   }, [jwt]);
-   console.log('auth',auth)
    useEffect(() => {
 
       if (auth.user) {
@@ -62,7 +61,6 @@ const [snackBarSeverity, setSnackBarSeverity] = useState('success');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true)
     const data = new FormData(event.currentTarget);
 
     const userData = {
@@ -81,7 +79,6 @@ const [snackBarSeverity, setSnackBarSeverity] = useState('success');
     if (auth.user){
       setSnackBarMessage('Registration Successful and Logging in');
       setSnackBarSeverity('success');
-      setLoading(false)
     setOpenAuthModal(false);
 
     }
@@ -144,9 +141,9 @@ const [snackBarSeverity, setSnackBarSeverity] = useState('success');
               variant="contained"
               size="large"
               sx={{ padding: '.8rem 0' }}
-              disabled={loading}
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? <CircularProgress size={24} /> : "Register"}
             </Button>
           </Grid>
         </Grid>

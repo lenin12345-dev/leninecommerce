@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, TextField, Button, Box } from "@mui/material";
+import { Grid, TextField, Button, Box,CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../../../Redux/Customers/Order/Action";
@@ -11,7 +11,8 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth } = useSelector((store) => store);
+  const { auth,order } = useSelector((store) => store);
+  const {loading} = order
   const [selectedAddress, setSelectedAdress] = useState(null);
 
   // console.log("auth", auth);
@@ -30,13 +31,14 @@ export default function AddDeliveryAddressForm({ handleNext }) {
       zipCode: data.get("zip"),
       mobile: data.get("phoneNumber"),
     };
-
     dispatch(createOrder({ address, jwt, navigate }));
     // after perfoming all the opration
     handleNext();
   };
+  console.log('loading',loading)
 
   const handleCreateOrder = (item) => {
+
     dispatch(createOrder({ address:item, jwt, navigate }));
     handleNext();
   };
@@ -45,10 +47,11 @@ export default function AddDeliveryAddressForm({ handleNext }) {
     <Grid container spacing={4}>
       <Grid item xs={12} lg={5}>
         <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll ">
-          {auth.user?.addresses.map((item) => (
+          {auth.user?.addresses.map((item,) => (
             <div
               onClick={() => setSelectedAdress(item)}
               className="p-5 py-7 border-b cursor-pointer"
+              key = {item.id}
             >
               {" "}
               <AddressCard address={item} />
@@ -59,8 +62,9 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   variant="contained"
                   color="primary"
                   onClick={()=>handleCreateOrder(item)}
+                  disabled={loading} 
                 >
-                  Deliver Here
+                 {loading ? <CircularProgress size={24} /> : "Deliver Here"}
                 </Button>
               )}
             </div>
@@ -149,8 +153,9 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  disabled={loading} 
                 >
-                  Deliver Here
+                 {loading ? <CircularProgress size={24} /> : "Deliver Here"}
                 </Button>
               </Grid>
             </Grid>

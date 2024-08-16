@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Button } from "@mui/material";
+import { Badge, Button, CircularProgress, Skeleton } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CartItem from "../Cart/CartItem";
 import { useEffect } from "react";
@@ -15,9 +15,11 @@ const OrderSummary = () => {
 const orderId = searchParams.get("order_id");
 const dispatch=useDispatch();
   const jwt=localStorage.getItem("jwt");
-  const {order}=useSelector(state=>state)
+  const {order,payment}=useSelector(state=>state)
+  const{loading} = order;
+  const{loading:paymentLoading} = payment;
 
-console.log("orderId ", order)
+
 
 useEffect(()=>{
   
@@ -33,16 +35,22 @@ const handleCreatePayment=()=>{
   return (
     <div className="space-y-5">
         <div className="p-5 shadow-lg rounded-md border ">
-            <AddressCard address={order.order?.shippingAddress}/>
+        {loading ? (
+          <Skeleton variant="rectangular" width="100%" height={150} />
+        ) : (
+          <AddressCard address={order.order?.shippingAddress} />
+        )}
         </div>
       <div className="lg:grid grid-cols-3 relative justify-between">
         <div className="lg:col-span-2 ">
           <div className=" space-y-3">
-            {order.order?.orderItems.map((item) => (
-              <>
-                <CartItem item={item} showButton={false}/>
-              </>
-            ))}
+          {loading
+              ? Array.from(new Array(3)).map((_, index) => (
+                  <Skeleton key={index} variant="rectangular" width="100%" height={118} />
+                ))
+              : order.order?.orderItems.map((item) => (
+                  <CartItem key={item._id} item={item} showButton={false} />
+                ))}
           </div>
         </div>
         <div className="sticky top-0 h-[100vh] mt-5 lg:mt-0 ml-5">
@@ -75,8 +83,9 @@ const handleCreatePayment=()=>{
               variant="contained"
               type="submit"
               sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" }}
+              disabled={paymentLoading}
             >
-              Payment
+              {paymentLoading ? <CircularProgress size={24} /> : "Payment"}
             </Button>
           </div>
         </div>

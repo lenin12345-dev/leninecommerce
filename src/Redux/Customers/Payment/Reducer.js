@@ -1,6 +1,13 @@
 import { CREATE_PAYMENT_FAILURE, CREATE_PAYMENT_REQUEST, CREATE_PAYMENT_SUCCESS, UPDATE_PAYMENT_FAILURE, UPDATE_PAYMENT_REQUEST, UPDATE_PAYMENT_SUCCESS } from "./ActionType";
 
- const initialState = {};
+ const initialState = {
+  loading: false,
+  paymentResult: null,
+  payment:null, 
+   success: false, 
+   error: null
+
+ };
   
  // Payment reducer to handle creating a payment
  export const paymentReducer = (state = initialState, action) => {
