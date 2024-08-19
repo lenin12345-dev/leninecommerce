@@ -4,6 +4,9 @@ import { Rating, Box, Typography, Grid } from "@mui/material";
 
 const ProductReviewCard = ({item}) => {
   const [value, setValue] = React.useState(4.5);
+  const date = new Date(item.createdAt);
+  const formattedDate = `${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`; // e.g., "August 19, 2024"
+
   return (
     <div className="">
       <Grid container spacing={2} gap={3}>
@@ -22,22 +25,11 @@ const ProductReviewCard = ({item}) => {
         <Grid item xs={9}>
           <div className="space-y-2">
             <div className="">
-              <p className="font-semibold text-lg">{item.user?.firstname}</p>
-              <p className="opacity-70">April 5, 2023</p>
+              <p className="font-semibold text-lg">{item?.user?.firstname}</p>
+              <p className="opacity-70">{formattedDate}</p>
             </div>
             <div>
             
-
-              <Rating
-                value={value}
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }}
-                name="half-rating"
-                defaultValue={2.5}
-                precision={0.5}
-              />
-             
             </div>
             <p>
               {item?.review}

@@ -2,15 +2,25 @@ import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductReviewCard from "./ProductReviewCard";
-import { Box, Button, Grid, LinearProgress, Rating,Snackbar,Alert } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  LinearProgress,
+  Rating,
+  Snackbar,
+  Alert,
+  TextField
+} from "@mui/material";
 import HomeProductCard from "../../Home/HomeProductCard";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { findProductById } from "../../../../Redux/Customers/Product/Action";
 import { addItemToCart } from "../../../../Redux/Customers/Cart/Action";
-import { getAllReviews } from "../../../../Redux/Customers/Review/Action";
+import { getAllReviews,createReview } from "../../../../Redux/Customers/Review/Action";
 import { lengha_page1 } from "../../../../Data/Women/LenghaCholi";
 import { gounsPage1 } from "../../../../Data/Gouns/gouns";
+import RateProductDialog from "./RateProductDialog";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -74,18 +84,27 @@ export default function ProductDetails() {
   const [activeImage, setActiveImage] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { customersProduct,review,auth } = useSelector((store) => store);
+  const { customersProduct, review, auth } = useSelector((store) => store);
   const { productId } = useParams();
-  const [openSnackBar,setOpenSnackBar]=useState(false);
-  const [showCart,setShowCart]=useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [snackbarMeassage,setSnakcbarMessage] = useState('')
+  const [severity,setSeverity] = useState('')
+  const [reviews,setReviews] = useState('')
 
-  const handleCloseSnakbar=(event, reason)=>{
-    if (reason === 'clickaway') {
+  const handleOpenDialog = () => {};
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleCloseSnakbar = (event, reason) => {
+    if (reason === "clickaway") {
       return;
     }
     setOpenSnackBar(false);
-
-  }
+  };
 
   const jwt = localStorage.getItem("jwt");
   // console.log("param",productId,customersProduct.product)
@@ -94,25 +113,35 @@ export default function ProductDetails() {
     setActiveImage(image);
   };
 
-  const handleSubmit = async() => {
-    if (auth.user==null) {
-      setOpenSnackBar(true)
+  const handleSubmit = async () => {
+    if (auth.user == null) {
+      setOpenSnackBar(true);
       setShowCart(true);
-    //  return navigate('/login');
-    return;
+      setSeverity('warning')
+      setSnakcbarMessage('You must be logged in to add product to cart')
+      //  return navigate('/login');
+      return;
     }
-    const data = { productId, size: selectedSize?selectedSize.name :'' };
+    const data = { productId, size: selectedSize ? selectedSize.name : "" };
     await dispatch(addItemToCart({ data, jwt }));
     navigate("/cart");
   };
+  const handleReviewSubmit = async () => {
+
+     dispatch(createReview({productId,review:reviews}))
+     setOpenSnackBar(true);
+     setReviews('')
+     setSeverity('success')
+     setSnakcbarMessage('Thank you for your review')
+  };
+
+  console.log(review)
 
   useEffect(() => {
     const data = { productId: productId, jwt };
     dispatch(findProductById(data));
     dispatch(getAllReviews(productId));
-  }, [productId]);
-
-  // console.log("reviews ",review)
+  }, [productId, isDialogOpen]);
 
   return (
     <div className="bg-white lg:px-20">
@@ -214,14 +243,20 @@ export default function ProductDetails() {
                 <h3 className="sr-only">Reviews</h3>
 
                 <div className="flex items-center space-x-3">
-                  <Rating
-                    name="read-only"
-                    value={4.6}
-                    precision={0.5}
-                    readOnly
-                  />
+                  {customersProduct.product && (
+                    <Rating
+                      name="read-only"
+                      value={customersProduct.product?.averageRating}
+                      precision={0.5}
+                      readOnly
+                    />
+                  )}
 
-                  <p className="opacity-60 text-sm">42807 Ratings</p>
+                  <p className="opacity-60 text-sm">
+                    {customersProduct.product?.numRatings == 1
+                      ? "1 Rating"
+                      : `${customersProduct.product?.numRatings} Ratings`}{" "}
+                  </p>
                   <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
                     {reviews.totalCount} reviews
                   </p>
@@ -229,91 +264,90 @@ export default function ProductDetails() {
               </div>
 
               {/* <form className="mt-10" onSubmit={handleSubmit}> */}
-                {/* Sizes */}
-                <div className="mt-10">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                  </div>
-
-                  <RadioGroup
-                    value={selectedSize}
-                    onChange={setSelectedSize}
-                    className="mt-4"
-                  >
-                    <RadioGroup.Label className="sr-only">
-                      Choose a size
-                    </RadioGroup.Label>
-                    <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-10">
-                      {product.sizes.map((size) => (
-                        <RadioGroup.Option
-                          key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
-                          className={({ active }) =>
-                            classNames(
-                              size.inStock
-                                ? "cursor-pointer bg-white text-gray-900 shadow-sm"
-                                : "cursor-not-allowed bg-gray-50 text-gray-200",
-                              active ? "ring-1 ring-indigo-500" : "",
-                              "group relative flex items-center justify-center rounded-md border py-1 px-1 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
-                            )
-                          }
-                        >
-                          {({ active, checked }) => (
-                            <>
-                              <RadioGroup.Label as="span">
-                                {size.name}
-                              </RadioGroup.Label>
-                              {size.inStock ? (
-                                <span
-                                  className={classNames(
-                                    active ? "border" : "border-2",
-                                    checked
-                                      ? "border-indigo-500"
-                                      : "border-transparent",
-                                    "pointer-events-none absolute -inset-px rounded-md"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              ) : (
-                                <span
-                                  aria-hidden="true"
-                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                                >
-                                  <svg
-                                    className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                                    viewBox="0 0 100 100"
-                                    preserveAspectRatio="none"
-                                    stroke="currentColor"
-                                  >
-                                    <line
-                                      x1={0}
-                                      y1={100}
-                                      x2={100}
-                                      y2={0}
-                                      vectorEffect="non-scaling-stroke"
-                                    />
-                                  </svg>
-                                </span>
-                              )}
-                            </>
-                          )}
-                        </RadioGroup.Option>
-                      ))}
-                    </div>
-                  </RadioGroup>
+              {/* Sizes */}
+              <div className="mt-10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-medium text-gray-900">Size</h3>
                 </div>
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ padding: ".8rem 2rem", marginTop: "2rem" }}
-                  onClick={handleSubmit}
-                  disabled={showCart}
+                <RadioGroup
+                  value={selectedSize}
+                  onChange={setSelectedSize}
+                  className="mt-4"
                 >
-                  Add To Cart
-                </Button>
-            
+                  <RadioGroup.Label className="sr-only">
+                    Choose a size
+                  </RadioGroup.Label>
+                  <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-10">
+                    {product.sizes.map((size) => (
+                      <RadioGroup.Option
+                        key={size.name}
+                        value={size}
+                        disabled={!size.inStock}
+                        className={({ active }) =>
+                          classNames(
+                            size.inStock
+                              ? "cursor-pointer bg-white text-gray-900 shadow-sm"
+                              : "cursor-not-allowed bg-gray-50 text-gray-200",
+                            active ? "ring-1 ring-indigo-500" : "",
+                            "group relative flex items-center justify-center rounded-md border py-1 px-1 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
+                          )
+                        }
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <RadioGroup.Label as="span">
+                              {size.name}
+                            </RadioGroup.Label>
+                            {size.inStock ? (
+                              <span
+                                className={classNames(
+                                  active ? "border" : "border-2",
+                                  checked
+                                    ? "border-indigo-500"
+                                    : "border-transparent",
+                                  "pointer-events-none absolute -inset-px rounded-md"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                              >
+                                <svg
+                                  className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                  viewBox="0 0 100 100"
+                                  preserveAspectRatio="none"
+                                  stroke="currentColor"
+                                >
+                                  <line
+                                    x1={0}
+                                    y1={100}
+                                    x2={100}
+                                    y2={0}
+                                    vectorEffect="non-scaling-stroke"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{ padding: ".8rem 2rem", marginTop: "2rem" }}
+                onClick={handleSubmit}
+                disabled={showCart}
+              >
+                Add To Cart
+              </Button>
             </div>
 
             <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
@@ -365,175 +399,80 @@ export default function ProductDetails() {
             <Grid container spacing={7}>
               <Grid item xs={7}>
                 <div className="space-y-5">
-                  { review.reviews?.map((item, i) => (
+                  {review.reviews?.map((item, i) => (
                     <ProductReviewCard item={item} />
                   ))}
                 </div>
               </Grid>
-
-              <Grid item xs={5}>
-                <h1 className="text-xl font-semibold pb-1">Product Ratings</h1>
-                <div className="flex items-center space-x-3 pb-10">
-                  <Rating
-                    name="read-only"
-                    value={4.6}
-                    precision={0.5}
-                    readOnly
-                  />
-
-                  <p className="opacity-60">42807 Ratings</p>
-                </div>
-                <Box>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
-                  >
-                    <Grid xs={2}>
-                      <p className="p-0">Excellent</p>
-                    </Grid>
-                    <Grid xs={7}>
-                      <LinearProgress
-                        className=""
-                        sx={{ bgcolor: "#d0d0d0", borderRadius: 4, height: 7 }}
-                        variant="determinate"
-                        value={40}
-                        color="success"
-                      />
-                    </Grid>
-                    <Grid xs={2}>
-                      <p className="opacity-50 p-2">19259</p>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
-                  >
-                    <Grid xs={2}>
-                      <p className="p-0">Very Good</p>
-                    </Grid>
-                    <Grid xs={7}>
-                      <LinearProgress
-                        className=""
-                        sx={{ bgcolor: "#d0d0d0", borderRadius: 4, height: 7 }}
-                        variant="determinate"
-                        value={30}
-                        color="success"
-                      />
-                    </Grid>
-                    <Grid xs={2}>
-                      <p className="opacity-50 p-2">19259</p>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
-                  >
-                    <Grid xs={2}>
-                      <p className="p-0">Good</p>
-                    </Grid>
-                    <Grid xs={7}>
-                      <LinearProgress
-                        className="bg-[#885c0a]"
-                        sx={{ bgcolor: "#d0d0d0", borderRadius: 4, height: 7 }}
-                        variant="determinate"
-                        value={25}
-                        color="orange"
-                      />
-                    </Grid>
-                    <Grid xs={2}>
-                      <p className="opacity-50 p-2">19259</p>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
-                  >
-                    <Grid xs={2}>
-                      <p className="p-0">Avarage</p>
-                    </Grid>
-                    <Grid xs={7}>
-                      <LinearProgress
-                        className=""
-                        sx={{
-                          bgcolor: "#d0d0d0",
-                          borderRadius: 4,
-                          height: 7,
-                          "& .MuiLinearProgress-bar": {
-                            bgcolor: "#885c0a", // stroke color
-                          },
+          
+                <Grid item xs={5}>
+                  <h2 className="text-xl font-bold pb-1">Rate this product</h2>
+                  <div className="flex items-center space-x-3 pb-10">
+                    {customersProduct.product && (
+                      <Rating
+                        name="product-rating"
+                        value={customersProduct?.product?.averageRating}
+                        onChange={(event, newValue) => {
+                          setDialogOpen(true);
                         }}
-                        variant="determinate"
-                        value={21}
-                        color="success"
                       />
-                    </Grid>
-                    <Grid xs={2}>
-                      <p className="opacity-50 p-2">19259</p>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
+                    )}
+                    <RateProductDialog
+                      open={isDialogOpen}
+                      onClose={handleCloseDialog}
+                      productId={productId}
+                    />
+                  </div>
+                  <Box>
+                  <h2 className="text-xl font-bold pb-1">Write a review</h2>
+                  <TextField
+                    label="Your Review"
+                    multiline
+                    rows={4}
+                    className="mb-3"
+                    variant="outlined"
+                    fullWidth
+                    value={reviews}
+                    onChange={(e) => setReviews(e.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleReviewSubmit}
+                    style={{ margin:3,marginTop:7}}
+                    disabled={!auth.user}
                   >
-                    <Grid xs={2}>
-                      <p className="p-0">Poor</p>
-                    </Grid>
-                    <Grid xs={7}>
-                      <LinearProgress
-                        className=""
-                        sx={{ bgcolor: "#d0d0d0", borderRadius: 4, height: 7 }}
-                        variant="determinate"
-                        value={10}
-                        color="error"
-                      />
-                    </Grid>
-                    <Grid xs={2}>
-                      <p className="opacity-50 p-2">19259</p>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Grid>
+                    Submit Review
+                  </Button>
+                  </Box>
+                </Grid>
             </Grid>
           </div>
         </section>
 
         {/* similer product */}
-        <section className=" pt-10">
+        {/* <section className=" pt-10">
           <h1 className="py-5 text-xl font-bold">Similer Products</h1>
           <div className="flex flex-wrap space-y-5">
             {gounsPage1.map((item) => (
               <HomeProductCard product={item} />
             ))}
           </div>
-        </section>
-        <Snackbar 
-        open={openSnackBar} 
-        autoHideDuration={6000} 
-        onClose={handleCloseSnakbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        </section> */}
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={3000}
+          onClose={handleCloseSnakbar}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
-        <Alert onClose={handleCloseSnakbar} severity="warning" sx={{ width: '100%' }}>
-          Please login to add products to the cart
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleCloseSnakbar}
+            severity={severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMeassage}
+          </Alert>
+        </Snackbar>
       </div>
     </div>
   );
