@@ -35,9 +35,9 @@ const CartItem = ({ item,showButton }) => {
           <p className="opacity-70">Size: {item?.size},White</p>
           <p className="opacity-70 mt-2">Seller: {item?.product?.brand}</p>
           <div className="flex space-x-2 items-center pt-3">
-            <p className="opacity-50 line-through">₹{item?.product?.price}</p>
+            <p className="opacity-50 line-through">${item?.product?.price}</p>
             <p className="font-semibold text-lg">
-              ₹{item?.product?.discountedPrice}
+              ${item?.product?.discountedPrice}
             </p>
             <p className="text-green-600 font-semibold">
               {item?.product?.discountPersent}% off

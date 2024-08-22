@@ -23,10 +23,10 @@ const ProductCard = ({ product }) => {
           <p className="text-gray-600">{color}</p>
         </div>
         <div className="flex space-x-2 items-center mt-2">
-          <p className="font-semibold text-lg text-gray-800">₹{discountedPrice}</p>
+          <p className="font-semibold text-lg text-gray-800">${discountedPrice}</p>
           {discountedPrice !== price && (
             <>
-              <p className="text-gray-500 line-through">₹{price}</p>
+              <p className="text-gray-500 line-through">${price}</p>
               <p className="text-green-600 font-semibold">{discountPersent}% off</p>
             </>
           )}

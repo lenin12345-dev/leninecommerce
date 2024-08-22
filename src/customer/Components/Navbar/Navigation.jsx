@@ -424,7 +424,8 @@ export default function Navigation() {
                 ) : (
                   <Button
                     onClick={handleOpen}
-                    className="text-sm font-medium text-gray-300 hover:text-gray-200"
+                     className="text-sm font-bold text-white hover:text-black-200"
+                    style={{ color: "white", fontWeight: "bold" }}
                   >
                     Sign in
                   </Button>
@@ -437,7 +438,7 @@ export default function Navigation() {
                   onClick={() => navigate("/cart")}
                   className="group -m-2 flex items-center p-2 text-gray-300 hover:text-gray-200"
                 >
-                  <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
+                  <ShoppingCartIcon color="white" className="h-6 w-6" aria-hidden="true" />
                   <span className="ml-2 text-sm font-medium">
                     {cart.cart?.totalItem}
                   </span>

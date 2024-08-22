@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Grid, TextField, Button, Box,CircularProgress } from "@mui/material";
+import { Grid, TextField, Button, Box,CircularProgress,Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../../../Redux/Customers/Order/Action";
-import userEvent from "@testing-library/user-event";
 import AddressCard from "../adreess/AdreessCard";
 import { useState } from "react";
 
@@ -35,7 +34,7 @@ export default function AddDeliveryAddressForm({ handleNext }) {
     // after perfoming all the opration
     handleNext();
   };
-  console.log('loading',loading)
+  const addresses = auth.user?.addresses || [];
 
   const handleCreateOrder = (item) => {
 
@@ -46,30 +45,39 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} lg={5}>
-        <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll ">
-          {auth.user?.addresses.map((item,) => (
-            <div
-              onClick={() => setSelectedAdress(item)}
-              className="p-5 py-7 border-b cursor-pointer"
-              key = {item.id}
-            >
-              {" "}
-              <AddressCard address={item} />
-              {selectedAddress?.id === item.id && (
-                <Button
-                  sx={{ mt: 2 }}
-                  size="large"
-                  variant="contained"
-                  color="primary"
-                  onClick={()=>handleCreateOrder(item)}
-                  disabled={loading} 
-                >
-                 {loading ? <CircularProgress size={24} /> : "Deliver Here"}
-                </Button>
-              )}
-            </div>
-          ))}
-        </Box>
+      <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll">
+      {addresses.length > 0 ? (
+        addresses.map((item) => (
+          <div
+            onClick={() => setSelectedAddress(item)}
+            className="p-5 py-7 border-b cursor-pointer"
+            key={item.id}
+          >
+            <AddressCard address={item} />
+            {selectedAddress?.id === item.id && (
+              <Button
+                sx={{ mt: 2 }}
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick={() => handleCreateOrder(item)}
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={24} /> : "Deliver Here"}
+              </Button>
+            )}
+          </div>
+        ))
+      ) : (
+        <Box
+        className="flex items-center justify-center h-full"
+      >
+             <Typography style={{ fontSize:25 }} fontWeight="bold">
+            No saved address.
+          </Typography>
+      </Box>
+      )}
+    </Box>
       </Grid>
       <Grid item xs={12} lg={7}>
         <Box className="border rounded-md shadow-md p-5">

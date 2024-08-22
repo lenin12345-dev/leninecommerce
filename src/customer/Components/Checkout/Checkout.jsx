@@ -24,7 +24,6 @@ export default function Checkout() {
   const step = queryParams.get('step');
   const navigate=useNavigate();
  
-console.log("step",step)
 
 
   const handleNext = () => {

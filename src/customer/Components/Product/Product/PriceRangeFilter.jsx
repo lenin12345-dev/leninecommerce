@@ -30,9 +30,9 @@ const PriceRangeFilter = ({ section, filter,maxPrice }) => {
           max={50000}
           step={1000}
           marks={[
-            { value: 0, label: '₹0' },
-            { value: 25000, label: '₹25000' },
-            { value: 50000, label: '₹50000' },
+            { value: 0, label: '0' },
+            { value: 25000, label: '$25000' },
+            { value: 50000, label: '$50000' },
           ]}
         />
       </div>
