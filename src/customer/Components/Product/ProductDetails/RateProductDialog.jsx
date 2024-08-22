@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import api from "../../../.././config/api";
 
-const RateProductDialog = ({ open, onClose, productId }) => {
+const RateProductDialog = ({ open, onClose, productId ,token}) => {
   const [rating, setRating] = useState(0);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
@@ -24,9 +24,17 @@ const RateProductDialog = ({ open, onClose, productId }) => {
     };
 
     try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+  
       const response = await api.post(
         "/api/ratings/create",
-        payload
+        payload,
+        config
       );
       // Handle success (e.g., close dialog, reset rating, etc.)
       onClose(); // Close the dialog after submission

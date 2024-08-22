@@ -430,6 +430,7 @@ export default function ProductDetails() {
                       open={isDialogOpen}
                       onClose={handleCloseDialog}
                       productId={productId}
+                      token={jwt}
                     />
                   </div>
                   <Box>
