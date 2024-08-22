@@ -88,6 +88,8 @@ export default function ProductDetails() {
   const { productId } = useParams();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [snackbarMeassage,setSnakcbarMessage] = useState('')
   const [severity,setSeverity] = useState('')
@@ -127,15 +129,22 @@ export default function ProductDetails() {
     navigate("/cart");
   };
   const handleReviewSubmit = async () => {
-
-     dispatch(createReview({productId,review:reviews}))
+    if (auth.user == null) {
+      setOpenSnackBar(true);
+      setShowReview(true)
+      setSeverity('warning')
+      setSnakcbarMessage('You must be logged in to review the product')
+      //  return navigate('/login');
+      return;
+    }
+    const data = { productId,review:reviews };
+     dispatch(createReview({data,jwt}))
      setOpenSnackBar(true);
      setReviews('')
      setSeverity('success')
      setSnakcbarMessage('Thank you for your review')
   };
 
-  console.log(review)
 
   useEffect(() => {
     const data = { productId: productId, jwt };
@@ -426,6 +435,7 @@ export default function ProductDetails() {
                   <Box>
                   <h2 className="text-xl font-bold pb-1">Write a review</h2>
                   <TextField
+                  required
                     label="Your Review"
                     multiline
                     rows={4}
@@ -440,7 +450,7 @@ export default function ProductDetails() {
                     color="primary"
                     onClick={handleReviewSubmit}
                     style={{ margin:3,marginTop:7}}
-                    disabled={!auth.user}
+                    disabled={showReview}
                   >
                     Submit Review
                   </Button>

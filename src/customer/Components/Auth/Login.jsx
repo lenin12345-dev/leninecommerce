@@ -10,12 +10,11 @@ export default function LoginUserForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch=useDispatch();
   // const jwt=localStorage.getItem("jwt");
-  // const [openSnackBar,setOpenSnackBar]=useState(false);
+
   const { auth } = useSelector((store) => store);
   const {isLoading} = auth
 
 
-  // const handleCloseSnakbar=()=>setOpenSnackBar(false);
 
   // useEffect(()=>{
   //   if(jwt){
@@ -40,6 +39,7 @@ export default function LoginUserForm({ handleNext }) {
     }
   
     dispatch(login(userData));
+
 
   };
 
@@ -93,11 +93,7 @@ export default function LoginUserForm({ handleNext }) {
         </Button>
         </div>
       </div>
-      {/* <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleCloseSnakbar}>
-        <Alert onClose={handleCloseSnakbar} severity="success" sx={{ width: '100%' }}>
-          {auth.error?auth.error:auth.user?"Register Success":""}
-        </Alert>
-      </Snackbar> */}
+  
     </React.Fragment>
   );
 }

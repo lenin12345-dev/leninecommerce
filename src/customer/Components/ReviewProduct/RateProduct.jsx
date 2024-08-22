@@ -25,7 +25,6 @@ const RateProduct = () => {
   const navigate=useNavigate();
 
   const handleRateProduct = (e, value) => {
-    console.log("rating ----- ", value);
     setRating(value);
   };
 
@@ -39,8 +38,8 @@ const RateProduct = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(formData);
     // You can customize this handler to handle the form data as needed
+    console.log(formData)
 
     dispatch(createReview({review:formData.title,productId}))
     setFormData({title:"",description:""})

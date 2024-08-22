@@ -50,12 +50,19 @@ export const createOrder = (reqData) => async (dispatch) => {
   }
 };
 
-export const getOrderById = (orderId) => async (dispatch) => {
+export const getOrderById = (orderId,jwt) => async (dispatch) => {
   try {
     dispatch({ type: GET_ORDER_BY_ID_REQUEST });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+    };
 
     const { data } = await api.get(
       `/api/orders/${orderId}`,
+      config
       
     );
     console.log("order by id ", data);

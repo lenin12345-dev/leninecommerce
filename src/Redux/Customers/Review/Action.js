@@ -15,9 +15,16 @@ import api from '../../../config/api';
 
 export const createReview = (resData) => {
   return async (dispatch) => {
+
     try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${resData.jwt}`,
+          "Content-Type": "application/json",
+        },
+      };
       const response = await api.post('/api/reviews/create', 
-        resData);
+        resData.data,config);
 
       dispatch({
         type: CREATE_REVIEW_SUCCESS,

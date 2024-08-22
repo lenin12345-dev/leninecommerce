@@ -23,7 +23,7 @@ const dispatch=useDispatch();
 
 useEffect(()=>{
   
-  dispatch(getOrderById(orderId))
+  dispatch(getOrderById(orderId,jwt))
 },[orderId])
 
 const handleCreatePayment=()=>{

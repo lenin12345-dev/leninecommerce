@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import { Avatar, Button, Menu, MenuItem,Snackbar,Alert } from "@mui/material";
 import { navigation } from "../../../config/navigationMenu";
 import AuthModal from "../Auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,10 +27,12 @@ export default function Navigation() {
   const dispatch = useDispatch();
   const { auth,cart } = useSelector((store) => store);
   const [openAuthModal, setOpenAuthModal] = useState(false);
+  const [openSnackBar,setOpenSnackBar]=useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const jwt = localStorage.getItem("jwt");
   const location=useLocation();
+  const handleCloseSnakbar=()=>setOpenSnackBar(false);
   useEffect(() => {
     if (jwt) {
       dispatch(getUser(jwt));
@@ -60,6 +62,7 @@ export default function Navigation() {
 
   useEffect(() => {
     if (auth.user){ 
+      setOpenSnackBar(true)
       handleClose();
     }
     if( auth.user?.role!=="ADMIN" && (location.pathname==="/login" || location.pathname==="/register")){
@@ -451,6 +454,11 @@ export default function Navigation() {
       </nav>
     </header>
     <AuthModal handleClose={handleClose} open={openAuthModal} setOpenAuthModal={setOpenAuthModal} />
+    <Snackbar open={openSnackBar} autoHideDuration={3000} onClose={handleCloseSnakbar}>
+        <Alert onClose={handleCloseSnakbar} severity="success" sx={{ width: '100%' }}>
+         {"Login Successful"}
+        </Alert>
+      </Snackbar>
   </div>
   );
 }
