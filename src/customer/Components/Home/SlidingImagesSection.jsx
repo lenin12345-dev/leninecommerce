@@ -1,31 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
-import image1 from "../../../static/image1.jpg"
-import image2 from "../../../static/image2.jpg"
+import image1 from "../../../static/image1.jpg";
+import image2 from "../../../static/image2.jpg";
 import { useNavigate } from "react-router-dom";
 
 const SlidingImage = styled("img")(({ theme, direction, isVisible }) => ({
   width: "45%",
+  height: "60vh",
+  cursor: "pointer",
   transition: "transform 0.5s ease-in-out",
-  height:"60vh",
-  cursor:"pointer",
   transform: isVisible
     ? "translateX(0)"
     : direction === "left"
     ? "translateX(-100%)"
     : "translateX(100%)",
+  
+  [theme.breakpoints.down("md")]: {
+    width: "70%",
+    height: "50vh",
+    marginBottom: theme.spacing(2),
+    transform: isVisible
+      ? "translateX(0)"
+      : direction === "left"
+      ? "translateX(-100%)"
+      : "translateX(100%)",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    height: "40vh",
+  },
 }));
 
 const SlidingImagesSection = () => {
-    // A reference to the container element, used for observing its visibility in the viewport.
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // An IntersectionObserver is used to observe when the section containing the images becomes visible in the viewport
-    const observer = new IntersectionObserver(    
+    const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
       },
@@ -42,6 +55,7 @@ const SlidingImagesSection = () => {
       }
     };
   }, []);
+
   const handleImageClick = (path) => {
     navigate(path);
   };
@@ -55,19 +69,17 @@ const SlidingImagesSection = () => {
         padding: "50px",
         overflow: "hidden",
         position: "relative",
-    
+        flexDirection: { xs: "column", md: "row" },
+        alignItems: { xs: "center", md: "flex-start" },
       }}
     >
-  
-         <SlidingImage
+      <SlidingImage
         src={image1}
         alt="Image 1"
         direction="left"
         isVisible={isVisible}
         onClick={() => handleImageClick("/products")}
       />
- 
-    
       <SlidingImage
         src={image2}
         alt="Image 2"
@@ -75,7 +87,6 @@ const SlidingImagesSection = () => {
         isVisible={isVisible}
         onClick={() => handleImageClick("/products")}
       />
-       
     </Box>
   );
 };
