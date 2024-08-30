@@ -12,18 +12,18 @@ const ProductCard = ({ product }) => {
   }
 
   return (
-    <div onClick={handleNavigate} className="productCard w-[16rem] border m-4 rounded-lg overflow-hidden shadow-lg transition-all cursor-pointer hover:shadow-xl">
-      <div className="imageWrapper h-[18rem] bg-gray-100">
+    <div onClick={handleNavigate} className="productCard w-[14rem] border m-4 rounded-lg overflow-hidden shadow-lg transition-all cursor-pointer hover:shadow-xl">
+      <div className="imageWrapper h-[12rem] bg-gray-100">
         <img className="productImage h-full w-full object-contain" src={imageUrl} alt={title} />
       </div>
       <div className="textPart bg-white p-4">
         <div>
-          <p className="font-bold text-gray-700">{brand}</p>
-          <p className="text-gray-900">{title}</p>
-          <p className="text-gray-600">{color}</p>
+          <p className=" text-md font-bold text-gray-700">{brand}</p>
+          <p className=  " text-sm text-gray-900">{title}</p>
+          <p className=" text-sm text-gray-600">{color}</p>
         </div>
         <div className="flex space-x-2 items-center mt-2">
-          <p className="font-semibold text-lg text-gray-800">${discountedPrice}</p>
+          <p className="font-semibold text-sm text-gray-800">${discountedPrice}</p>
           {discountedPrice !== price && (
             <>
               <p className="text-gray-500 line-through">${price}</p>
