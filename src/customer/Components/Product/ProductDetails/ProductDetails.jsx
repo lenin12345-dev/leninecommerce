@@ -24,6 +24,8 @@ import {
 import { lengha_page1 } from "../../../../Data/Women/LenghaCholi";
 import { gounsPage1 } from "../../../../Data/Gouns/gouns";
 import RateProductDialog from "./RateProductDialog";
+import BackdropComponent from "../../BackDrop/Backdrop";
+
 
 const product = {
   sizes: [
@@ -31,9 +33,7 @@ const product = {
     { name: "M", inStock: true },
     { name: "L", inStock: true },
   ],
- 
 };
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -49,6 +49,7 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { customersProduct, review, auth } = useSelector((store) => store);
+  const {loading } = customersProduct;
   const { productId } = useParams();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [showCart, setShowCart] = useState(false);
@@ -100,6 +101,11 @@ export default function ProductDetails() {
         return "Product details will be available soon.";
     }
   };
+  const Loader = () => (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-16 h-16 border-4 border-t-4 border-gray-900 border-solid rounded-full animate-spin"></div>
+    </div>
+  );
 
   const handleOpenDialog = () => {};
 
@@ -157,6 +163,8 @@ export default function ProductDetails() {
     dispatch(getAllReviews(productId));
   }, [productId, isDialogOpen]);
 
+
+
   return (
     <div className="bg-white lg:px-20">
       <div className="pt-6">
@@ -197,10 +205,10 @@ export default function ProductDetails() {
         <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 px-4 pt-10">
           {/* Image gallery */}
           <div className="flex flex-col items-center ">
-            <div className=" overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
+            <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem] sm:max-w-[20rem] sm:max-h-[25rem]">
               <img
                 src={activeImage?.src || customersProduct.product?.imageUrl}
-                alt={""}
+                alt=""
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -414,6 +422,8 @@ export default function ProductDetails() {
                     onClose={handleCloseDialog}
                     productId={productId}
                     token={jwt}
+                    auth={auth}
+
                   />
                 </div>
                 <Box>
@@ -475,6 +485,9 @@ export default function ProductDetails() {
             {snackbarMeassage}
           </Alert>
         </Snackbar>
+        <section>
+          <BackdropComponent open={loading} />
+        </section>
       </div>
     </div>
   );

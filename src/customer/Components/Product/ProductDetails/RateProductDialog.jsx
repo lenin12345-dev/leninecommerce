@@ -13,11 +13,20 @@ import {
 } from "@mui/material";
 import api from "../../../.././config/api";
 
-const RateProductDialog = ({ open, onClose, productId ,token}) => {
+const RateProductDialog = ({ open, onClose, productId ,token,auth}) => {
   const [rating, setRating] = useState(0);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackbarMeassage, setSnakcbarMessage] = useState("");
+  const [severity, setSeverity] = useState("");
 
   const handleSubmit = async () => {
+    if (auth.user == null) {
+      setOpenSnackBar(true);
+      setSeverity("warning");
+      setSnakcbarMessage("You must be logged in to rate the product");
+      //  return navigate('/login');
+      return;
+    }
     const payload = {
       productId,
       rating,
@@ -39,6 +48,8 @@ const RateProductDialog = ({ open, onClose, productId ,token}) => {
       // Handle success (e.g., close dialog, reset rating, etc.)
       onClose(); // Close the dialog after submission
       setOpenSnackBar(true);
+      setSeverity("success");
+      setSnakcbarMessage("Thank you for your rating");
     } catch (error) {
       // Handle error (e.g., display an error message)
     }
@@ -85,12 +96,12 @@ const RateProductDialog = ({ open, onClose, productId ,token}) => {
           onClose={handleCloseSnakbar}
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <Alert
+             <Alert
             onClose={handleCloseSnakbar}
-            severity="success"
+            severity={severity}
             sx={{ width: "100%" }}
           >
-           Thank you for your feedback! Your rating has been successfully submitted
+            {snackbarMeassage}
           </Alert>
         </Snackbar>
     </div>

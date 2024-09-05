@@ -13,10 +13,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 500,
+  width: { xs: '90%', sm: 400, md: 500 },  // Responsive width for different screen sizes
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  borderRadius: '8px',
 };
 
 export default function AuthModal({ handleClose, open,setOpenAuthModal }) {

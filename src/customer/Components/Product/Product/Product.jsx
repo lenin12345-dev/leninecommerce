@@ -238,7 +238,7 @@ export default function Product() {
                   </div>
 
                   {/* Filters */}
-                  <form className="m-4 border-t border-gray-200">
+                  <form className="p-4 border-t bg-gray-900 border-gray-200">
                     {filters.map((section) => (
                       <Disclosure
                         as="div"
@@ -247,18 +247,18 @@ export default function Product() {
                       >
                         {({ open }) => (
                           <>
-                            <h3 className="flex justify-between items-center text-lg font-medium text-gray-900 py-4">
-                              <Disclosure.Button className="flex items-center text-gray-700 hover:text-gray-900">
+                            <h3 className="flex justify-between items-center text-lg font-medium text-white py-4">
+                              <Disclosure.Button className="flex items-centertext-white hover:text-white">
                                 <span>{section.name}</span>
                                 <span className="ml-3">
                                   {open ? (
                                     <MinusIcon
-                                      className="h-5 w-5 text-gray-500"
+                                      className="h-5 w-5 text-white"
                                       aria-hidden="true"
                                     />
                                   ) : (
                                     <PlusIcon
-                                      className="h-5 w-5 text-gray-500"
+                                      className="h-5 w-5 text-white"
                                       aria-hidden="true"
                                     />
                                   )}
@@ -266,11 +266,11 @@ export default function Product() {
                               </Disclosure.Button>
                             </h3>
 
-                            <Disclosure.Panel className="grid grid-cols-3 gap-4">
+                            <Disclosure.Panel className="grid grid-cols-3 gap-2 mt-2">
                               {section.options.map((option, optionIdx) => (
                                 <div
                                   key={option.value}
-                                  className="flex flex-col items-center"
+                                  className="flex flex-col items-center space-y-1"
                                 >
                                   <input
                                     id={`filter-${section.id}-${optionIdx}`}
@@ -290,29 +290,32 @@ export default function Product() {
                                   />
 
                                   {section.id === "color" ? (
-                                    // Style for color options (styled radio buttons)
-                                    <div
-                                      className={`relative rounded-full p-1 ${
-                                        filter[section.id]?.includes(
-                                          option.value
-                                        )
-                                          ? "border-2 border-black"
-                                          : "border-1 border-white"
-                                      }`}
-                                    >
-                                      <label
-                                        htmlFor={`filter-${section.id}-${optionIdx}`}
-                                        className={`block h-6 w-6 rounded-full cursor-pointer`}
-                                        style={{
-                                          backgroundColor: option.value,
-                                        }}
-                                      />
+                                    <div className="flex flex-col items-center space-y-1">
+                                      <div
+                                        className={`relative rounded-full p-1 ${
+                                          filter[section.id]?.includes(
+                                            option.value
+                                          )
+                                            ? "border-2 border-black bg-white"
+                                            : "border-1 border-white"
+                                        }`}
+                                      >
+                                        <label
+                                          htmlFor={`filter-${section.id}-${optionIdx}`}
+                                          className="block h-6 w-6 rounded-full cursor-pointer"
+                                          style={{
+                                            backgroundColor: option.value,
+                                          }}
+                                        />
+                                      </div>
+                                      <span className="text-white text-xs">
+                                        {option.label}
+                                      </span>
                                     </div>
                                   ) : (
-                                    // Style for size options (checkboxes)
                                     <label
                                       htmlFor={`filter-${section.id}-${optionIdx}`}
-                                      className="inline-flex items-center cursor-pointer"
+                                      className="inline-flex items-center cursor-pointer text-xs"
                                     >
                                       <input
                                         type="checkbox"
@@ -329,7 +332,7 @@ export default function Product() {
                                         }
                                         className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                       />
-                                      <span className="ml-2 text-sm text-gray-600">
+                                      <span className="ml-2 text-white">
                                         {option.label}
                                       </span>
                                     </label>
@@ -341,34 +344,35 @@ export default function Product() {
                         )}
                       </Disclosure>
                     ))}
+
                     {singleFilter.map((section) => (
                       <Disclosure
-                        // defaultOpen={true}
                         as="div"
                         key={section.id}
                         className="border-b border-gray-200 pb-4 mb-4"
                       >
                         {({ open }) => (
                           <>
-                            <h3 className="flex justify-between items-center text-lg font-medium text-gray-900 py-4">
-                              <Disclosure.Button className="flex items-center text-gray-700 hover:text-gray-900">
+                            <h3 className="flex justify-between items-center text-lg font-medium text-white py-4">
+                              <Disclosure.Button className="flex items-center text-white hover:text-white">
                                 <span>{section.name}</span>
                                 <span className="ml-3">
                                   {open ? (
                                     <MinusIcon
-                                      className="h-5 w-5 text-gray-500"
+                                      className="h-5 w-5 text-white"
                                       aria-hidden="true"
                                     />
                                   ) : (
                                     <PlusIcon
-                                      className="h-5 w-5 text-gray-500"
+                                      className="h-5 w-5 text-white"
                                       aria-hidden="true"
                                     />
                                   )}
                                 </span>
                               </Disclosure.Button>
                             </h3>
-                            {section.id == "price" ? (
+
+                            {section.id === "price" ? (
                               <Disclosure.Panel className="pt-2">
                                 <PriceRangeFilter section={section} />
                               </Disclosure.Panel>
@@ -377,27 +381,33 @@ export default function Product() {
                                 <FormControl>
                                   <RadioGroup
                                     aria-labelledby="demo-radio-buttons-group-label"
-                                    defaultValue="female"
                                     name="radio-buttons-group"
                                   >
                                     {section.options.map(
                                       (option, optionIdx) => (
                                         <FormControlLabel
-                                          key={option.value}
-                                          value={option.value}
-                                          control={<Radio />}
-                                          label={option.label}
-                                          className="text-sm text-gray-700"
-                                          checked={
-                                            filter[section.id] === option.value
-                                          }
-                                          onChange={(e) =>
-                                            handleRadioFilterChange(
-                                              e,
-                                              section.id
-                                            )
-                                          }
-                                        />
+                                        key={option.value}
+                                        value={option.value}
+                                        control={
+                                          <Radio
+                                            size="small"
+                                            style={{ color: "white" }}
+                                          />
+                                        }
+                                        label={option.label}
+                                        className="text-xs[20] text-white"
+                                        sx={{
+                                          "& .MuiTypography-root": {
+                                            fontSize: "0.95rem",
+                                          },
+                                        }}
+                                        checked={
+                                          filter[section.id] === option.value
+                                        }
+                                        onChange={(e) =>
+                                          handleRadioFilterChange(e, section.id)
+                                        }
+                                      />
                                       )
                                     )}
                                   </RadioGroup>
@@ -525,7 +535,7 @@ export default function Product() {
             </h4>
 
             <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="flex flex-col items-start space-y-2 mb-3 ">
+              <div className="flex flex-col items-start space-y-2 mb-3 ">
                 {/* Title visible only on larger screens */}
                 <h2 className="text-xl font-semibold text-gray-800 mb-2 hidden lg:block">
                   Filters
@@ -544,23 +554,23 @@ export default function Product() {
                     aria-hidden="true"
                   />
                 </button>
-           
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                sx={{
-                  mb: 1,
-                  px: 2,
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: "error.main",
-                  },
-                }}
-                onClick={handleClearFilters}
-              >
-                Clear Filters
-              </Button>
+
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  sx={{
+                    mb: 1,
+                    px: 2,
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "error.main",
+                    },
+                  }}
+                  onClick={handleClearFilters}
+                >
+                  Clear Filters
+                </Button>
               </div>
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
