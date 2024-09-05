@@ -60,7 +60,12 @@ const Cart = () => {
             onClick={() => navigate("/checkout?step=2")}
             variant="contained"
             type="submit"
-            sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" }}
+            sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%",
+              backgroundColor: "#111827",
+              ":hover": {
+                backgroundColor: "#14B8A6",
+              },
+             }}
           >
             Check Out
           </Button>

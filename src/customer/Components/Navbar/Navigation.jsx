@@ -402,7 +402,7 @@ export default function Navigation() {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                       sx={{
-                        bgcolor: deepPurple[700],
+                        bgcolor: "#14B8A6",
                         color: "white",
                         cursor: "pointer",
                       }}

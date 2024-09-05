@@ -48,7 +48,6 @@ export const getAllReviews = (productId) => {
         type: GET_ALL_REVIEWS_SUCCESS,
         payload: response.data
       });
-      console.log("all review ",response.data)
     } catch (error) {
       dispatch({
         type: GET_ALL_REVIEWS_FAILURE,

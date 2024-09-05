@@ -82,7 +82,11 @@ const handleCreatePayment=()=>{
               onClick={handleCreatePayment}
               variant="contained"
               type="submit"
-              sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" }}
+              sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" ,      
+                backgroundColor: "#111827",
+                ":hover": {
+                  backgroundColor: "#14B8A6",
+                },}}
               disabled={paymentLoading}
             >
               {paymentLoading ? <CircularProgress size={24} /> : "Make Payment"}
