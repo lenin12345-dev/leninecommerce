@@ -10,9 +10,9 @@ const HomeProductCard = ({ product }) => {
       onClick={() => navigate('/products')}
       className="cursor-pointer flex flex-col items-center bg-white rounded-lg shadow-lg overflow-hidden w-[15rem] h-72 mx-5"
     >
-      <div className="h-[13rem] w-[10rem]">
+      <div className=" relative h-[13rem] w-full">
         <img
-          className="object-cover object-top w-full h-full"
+          className="object-contain w-full h-full"
           src={product?.image || product?.imageUrl}
           alt={product?.title}
         />

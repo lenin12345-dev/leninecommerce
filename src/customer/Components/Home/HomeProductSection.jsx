@@ -27,9 +27,9 @@ const HomeProductSection = ({ section, data }) => {
     },
   };
   const items = data?.slice(0, 10).map((item) => (
-    <div key={item.key} >
+    <div key={item._id} >
       {" "}
-      <HomeProductCard  key={item.key}  product={item} />
+      <HomeProductCard  key={item._id}  product={item} />
     </div>
   ));
    
