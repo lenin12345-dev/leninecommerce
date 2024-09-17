@@ -22,14 +22,14 @@ const HomeProductSection = ({ section, data }) => {
       itemsFit: "contain",
     },
     1024: {
-      items: 5.5,
+      items: 5,
       itemsFit: "contain",
     },
   };
   const items = data?.slice(0, 10).map((item) => (
     <div key={item._id} >
       {" "}
-      <HomeProductCard  key={item._id}  product={item} />
+      <HomeProductCard  product={item} />
     </div>
   ));
    
@@ -40,7 +40,9 @@ const HomeProductSection = ({ section, data }) => {
 
   return (
     <div className="relative px-4 sm:px-6 lg:px-8 ">
-      <h2 className="text-2xl font-extrabold text-gray-900 py-5">{section}</h2>
+     <h2 className="text-xl sm:text-2xl md:text-2xl lg:text-2xl font-extrabold text-gray-900 py-3 sm:py-5">
+  {section}
+</h2>
       <div className="relative border p-5">
         <AliceCarousel
           // disableButtonsControls ={true}

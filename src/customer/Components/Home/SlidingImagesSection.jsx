@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
-import image1 from "../../../static/image1.jpg";
-import image2 from "../../../static/image2.jpg";
 import { useNavigate } from "react-router-dom";
 
+// Use high-quality images
+import image1 from "../../../static/image1.jpg";
+import image2 from "../../../static/image2.jpg";
+
 const SlidingImage = styled("img")(({ theme, direction, isVisible }) => ({
-  width: "45%",
-  height: "60vh",
+  height: "auto",
+  width:"auto",
   cursor: "pointer",
   transition: "transform 0.5s ease-in-out",
   transform: isVisible
@@ -15,10 +17,11 @@ const SlidingImage = styled("img")(({ theme, direction, isVisible }) => ({
     : direction === "left"
     ? "translateX(-100%)"
     : "translateX(100%)",
-  
+  objectFit: "cover", // Ensure proper scaling without distortion
+  objectPosition: "center",
+
+  // Ensure responsive scaling and prevent blurriness on mobile screens
   [theme.breakpoints.down("md")]: {
-    width: "70%",
-    height: "50vh",
     marginBottom: theme.spacing(2),
     transform: isVisible
       ? "translateX(0)"
@@ -27,8 +30,8 @@ const SlidingImage = styled("img")(({ theme, direction, isVisible }) => ({
       : "translateX(100%)",
   },
   [theme.breakpoints.down("sm")]: {
-    width: "90%",
-    height: "40vh",
+    width: "80%",
+    height: "auto",
   },
 }));
 
@@ -66,11 +69,11 @@ const SlidingImagesSection = () => {
       sx={{
         display: "flex",
         justifyContent: "space-between",
-        padding: "50px",
         overflow: "hidden",
         position: "relative",
         flexDirection: { xs: "column", md: "row" },
-        alignItems: { xs: "center", md: "flex-start" },
+        alignItems: { xs: "center", md: "flex-center" },
+        justifyContent:"space-around"
       }}
     >
       <SlidingImage
@@ -79,6 +82,16 @@ const SlidingImagesSection = () => {
         direction="left"
         isVisible={isVisible}
         onClick={() => handleImageClick("/products")}
+        srcSet={`
+          ${image1}?w=480 480w, 
+          ${image1}?w=768 768w, 
+          ${image1}?w=1200 1200w, 
+          ${image1} 1600w
+        `}
+        sizes="
+          (max-width: 600px) 100vw, 
+          (max-width: 960px) 70vw, 
+          41vw"
       />
       <SlidingImage
         src={image2}
@@ -86,6 +99,16 @@ const SlidingImagesSection = () => {
         direction="right"
         isVisible={isVisible}
         onClick={() => handleImageClick("/products")}
+        srcSet={`
+          ${image2}?w=480 480w, 
+          ${image2}?w=768 768w, 
+          ${image2}?w=1200 1200w, 
+          ${image2} 1600w
+        `}
+        sizes="
+          (max-width: 600px) 100vw, 
+          (max-width: 960px) 70vw, 
+          41vw"
       />
     </Box>
   );

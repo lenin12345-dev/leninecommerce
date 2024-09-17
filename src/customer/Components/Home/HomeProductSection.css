@@ -1,4 +1,26 @@
-.alice-carousel__stage-item {
-    
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  padding: 0 3px; /* Adjust spacing between cards */
+}
+
+.AliceCarousel__wrapper {
+  overflow: hidden; /* Ensure content does not overflow */
+}
+
+.AliceCarousel__slide {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 568px) {
+  .carousel-item {
+    padding: 0 5px; /* Adjust padding for smaller screens */
   }
-  
+}
+
+@media (max-width: 480px) {
+  .carousel-item {
+    padding: 0 3px; /* Further adjustment for very small screens */
+  }
+}

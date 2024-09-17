@@ -136,11 +136,11 @@ const [snackBarSeverity, setSnackBarSeverity] = useState('success');
         </Grid>
         <Grid item xs={12}>
           <Button
-            className="bg-[#9155FD] w-full"
+            className=" w-full"
             type="submit"
             variant="contained"
             size="large"
-            sx={{ padding: '.8rem 0' }}
+            style={{ padding: '.8rem 0', backgroundColor:"black" }}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} /> : "Register"}
@@ -156,6 +156,7 @@ const [snackBarSeverity, setSnackBarSeverity] = useState('success');
           onClick={() => navigate('/login')}
           className="ml-5"
           size="small"
+          style={{color:"#f5a623",fontWeight:'bold'}}
         >
           Login
         </Button>
