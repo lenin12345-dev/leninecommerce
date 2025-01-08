@@ -25,6 +25,8 @@ import { lengha_page1 } from "../../../../Data/Women/LenghaCholi";
 import { gounsPage1 } from "../../../../Data/Gouns/gouns";
 import RateProductDialog from "./RateProductDialog";
 import BackdropComponent from "../../BackDrop/Backdrop";
+import ProductPageSkeleton from "../../skeleton/ProductPageSkeleton";
+
 
 
 const product = {
@@ -202,8 +204,14 @@ export default function ProductDetails() {
         </nav>
 
         {/* product details */}
+        {loading ? (
+        // Show skeleton loader while loading
+        <ProductPageSkeleton loading={loading} />
+      ) : (
         <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 px-4 pt-10">
           {/* Image gallery */}
+
+     
           <div className="flex flex-col items-center ">
             <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem] sm:max-w-[20rem] sm:max-h-[25rem]">
               <img
@@ -385,7 +393,10 @@ export default function ProductDetails() {
               </div>
             </div>
           </div>
+         
+
         </section>
+              )}
 
         {/* rating and review section */}
         <section className="px-4 md:px-8 lg:px-12">
@@ -486,7 +497,7 @@ export default function ProductDetails() {
           </Alert>
         </Snackbar>
         <section>
-          <BackdropComponent open={loading} />
+          {/* <BackdropComponent open={loading} /> */}
         </section>
       </div>
     </div>
