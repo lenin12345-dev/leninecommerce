@@ -81,11 +81,7 @@ function Navbar() {
             {/* Search bar */}
             <form className="hidden md:block flex-grow max-w-sm">
               <div className="relative w-full">
-                {/* <input
-                  type="search"
-                  className="block w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 leading-5 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 focus:text-gray-900 sm:text-sm"
-                  placeholder="Search"
-                /> */}
+      
                 <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-3">
                   <svg
                     className="h-5 w-5 text-gray-400"

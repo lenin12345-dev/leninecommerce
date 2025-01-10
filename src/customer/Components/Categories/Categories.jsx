@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import {Card} from "@mui/material";
-// import CardContent from "@mui/material/core/CardContent";
 import {Button} from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,12 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     position: "absolute",
-    // minWidth: "100px",
-    // width: "fit-content",
-    // height: "50px",
+
     padding: '10px',
     top: 10,
-    // bottom: 0,
     left:-150,
     // right: 0,
     margin: "auto",
