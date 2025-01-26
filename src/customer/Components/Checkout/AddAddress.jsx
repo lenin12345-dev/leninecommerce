@@ -1,17 +1,26 @@
 import * as React from "react";
-import { Grid, TextField, Button, Box,CircularProgress,Typography } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Button,
+  Box,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../../../Redux/Customers/Order/Action";
 import AddressCard from "../adreess/AdreessCard";
 import { useState } from "react";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import FormLabel from '@mui/material/FormLabel';
 
 export default function AddDeliveryAddressForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth,order } = useSelector((store) => store);
-  const {loading} = order
+  const { auth, order } = useSelector((store) => store);
+  const { loading } = order;
   const [selectedAddress, setSelectedAdress] = useState(null);
 
   // console.log("auth", auth);
@@ -37,136 +46,176 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   const addresses = auth.user?.addresses || [];
 
   const handleCreateOrder = (item) => {
-
-    dispatch(createOrder({ address:item, jwt, navigate }));
+    dispatch(createOrder({ address: item, jwt, navigate }));
     handleNext();
   };
 
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} lg={5}>
-      <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll">
-      {addresses.length > 0 ? (
-        addresses.map((item) => (
-          <div
-            onClick={() => setSelectedAddress(item)}
-            className="p-5 py-7 border-b cursor-pointer"
-            key={item.id}
-          >
-            <AddressCard address={item} />
-            {selectedAddress?.id === item.id && (
-              <Button
-                sx={{ mt: 2 }}
-                size="large"
-                variant="contained"
-                color="primary"
-                onClick={() => handleCreateOrder(item)}
-                disabled={loading}
+        <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll">
+          {addresses.length > 0 ? (
+            addresses.map((item) => (
+              <div
+                onClick={() => setSelectedAddress(item)}
+                className="p-5 py-7 border-b cursor-pointer"
+                key={item.id}
               >
-                {loading ? <CircularProgress size={24} /> : "Deliver Here"}
-              </Button>
-            )}
-          </div>
-        ))
-      ) : (
-        <Box
-        className="flex items-center justify-center h-full"
-      >
-             <Typography style={{ fontSize:25 }} fontWeight="bold">
-            No saved address.
-          </Typography>
-      </Box>
-      )}
-    </Box>
+                <AddressCard address={item} />
+                {selectedAddress?.id === item.id && (
+                  <Button
+                    sx={{ mt: 2 }}
+                    size="large"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleCreateOrder(item)}
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : "Deliver Here"}
+                  </Button>
+                )}
+              </div>
+            ))
+          ) : (
+            <Box className="flex items-center justify-center h-full">
+              <Typography style={{ fontSize: 25 }} fontWeight="bold">
+                No saved address.
+              </Typography>
+            </Box>
+          )}
+        </Box>
       </Grid>
       <Grid item xs={12} lg={7}>
         <Box className="border rounded-md shadow-md p-5">
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="first-name" required>
+          First name
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="firstName"
                   name="firstName"
-                  label="First Name"
+                  type="name"
                   fullWidth
                   autoComplete="given-name"
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="first-name" required>
+          Last Name
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="lastName"
                   name="lastName"
-                  label="Last Name"
                   fullWidth
                   autoComplete="given-name"
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+              <FormLabel htmlFor="address" required>
+              Address line 1
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="address"
                   name="address"
-                  label="Address"
                   fullWidth
                   autoComplete="shipping address"
-                  multiline
-                  rows={4}
+                  size="small"
+
+                />
+              </Grid>
+              <Grid item xs={12}>
+              <FormLabel htmlFor="adress">
+              Address line 2
+        </FormLabel>
+                <OutlinedInput
+                  
+                  id="addressl"
+                  name="address"
+                  fullWidth
+                  autoComplete="shipping address"
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="adress" required>
+              City
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="city"
                   name="city"
-                  label="City"
                   fullWidth
                   autoComplete="shipping address-level2"
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="adress" required>
+              State
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="state"
                   name="state"
-                  label="State/Province/Region"
                   fullWidth
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="adress" required>
+              State
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="zip"
                   name="zip"
-                  label="Zip / Postal code"
                   fullWidth
                   autoComplete="shipping postal-code"
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+              <FormLabel htmlFor="adress" required>
+              Phone Number
+        </FormLabel>
+                <OutlinedInput
                   required
                   id="phoneNumber"
                   name="phoneNumber"
-                  label="Phone Number"
                   fullWidth
                   autoComplete="tel"
+                  size="small"
+
                 />
               </Grid>
               <Grid item xs={12}>
                 <Button
-                  sx={{ padding: ".9rem 1.5rem",      backgroundColor: "#111827",
+                  sx={{
+                    padding: ".9rem 1.5rem",
+                    backgroundColor: "#111827",
                     ":hover": {
                       backgroundColor: "#14B8A6",
-                    }, }}
+                    },
+                  }}
                   size="large"
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={loading} 
+                  disabled={loading}
                 >
-                 {loading ? <CircularProgress size={24} /> : "Deliver Here"}
+                  {loading ? <CircularProgress size={24} /> : "Deliver Here"}
                 </Button>
               </Grid>
             </Grid>

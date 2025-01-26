@@ -425,7 +425,7 @@ export default function Product() {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto px-4 lg:px-14 ">
+        <main className="mx-auto px-4 lg:px-14 py-6 ">
           <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-2">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-4 sm:mb-0">
               Product
