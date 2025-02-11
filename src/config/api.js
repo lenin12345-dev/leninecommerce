@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 const DEPLOYED='https://pear-poised-hen.cyclic.app/'
-const LOCALHOST='https://69eb-3-137-165-219.ngrok-free.app'
+const LOCALHOST=' https://leninupdatedbackend.onrender.com'
 
 export const API_BASE_URL = LOCALHOST;
 
