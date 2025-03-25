@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop:26,
     transform: "translateY(-50%)",
     padding: "10px 20px",
-    backgroundColor: "#fff",
-    color: "#000",
+    backgroundColor: "#f5a623",
+    color: "#fff",
     border: "none",
     cursor: "pointer",
     fontSize: "16px",
@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
     display: "flex",
     alignItems: "center",
+    "&:hover": {
+      backgroundColor: "black",
+      transform: "scale(1.01)",
+    },
     
     [theme.breakpoints.down("lg")]: {
       fontSize: "14px",

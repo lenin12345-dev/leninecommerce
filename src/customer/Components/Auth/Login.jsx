@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, TextField, Button, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Grid, TextField, Button, CircularProgress, Snackbar, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, login } from "../../../Redux/Auth/Action";
@@ -45,7 +45,19 @@ export default function LoginUserForm({ handleNext }) {
 
   return (
     <React.Fragment className=" shadow-lg ">
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "primary.main",
+                marginBottom: 3,
+              }}
+            >
+             Sign In
+            </Typography>
       <form className="w-full" onSubmit={handleSubmit}>
+
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
@@ -75,7 +87,20 @@ export default function LoginUserForm({ handleNext }) {
               type="submit"
               variant="contained"
               size="large"
-              style={{ padding: '.8rem 0', backgroundColor:"black" }}
+              sx={{
+                padding: ".8rem 0",
+                backgroundColor: "#f5a623",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "16px",
+                borderRadius: "8px",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                transition: "background-color 0.3s ease, transform 0.3s ease",
+                "&:hover": {
+                  backgroundColor: "black",
+                  transform: "scale(1.01)",
+                },
+              }}
               disabled={isLoading}
             >
               
@@ -88,7 +113,7 @@ export default function LoginUserForm({ handleNext }) {
       <div className="flex justify-center flex-col items-center">
          <div className="py-3 flex items-center">
         <p className="m-0 p-0">Don't have account ?</p>
-        <Button onClick={()=> navigate("/register")}           style={{color:"#f5a623",fontWeight:'bold'}} className="ml-5" size="small">
+        <Button onClick={()=> navigate("/register")}           style={{color:"#f5a623",fontWeight:'bold',marginTop:"5px"}} className="ml-5" size="small">
           Register
         </Button>
         </div>
