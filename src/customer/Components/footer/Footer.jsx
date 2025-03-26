@@ -7,45 +7,25 @@ const Footer = () => {
       className="bg-black text-white mt-10 text-center"
       sx={{ bgcolor: "black", color: "white", py: 3 }}
     >
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid item xs={12} sm={6} md={4}>
         <Typography className="pb-5" variant="h6" gutterBottom>
-          Company
+          Lenin Store
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>
-          About
-        </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Jobs
-        </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Press
+          Edison,New Jersey
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid item xs={12} sm={6} md={4}>
         <Typography className="pb-5" variant="h6" gutterBottom>
-          Solutions
+          Policies
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>
-          Marketing
-        </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Commerce
+          Privacy Policy
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid item xs={12} sm={6} md={4}>
         <Typography className="pb-5" variant="h6" gutterBottom>
-          Documentation
-        </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Guides
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <Typography className="pb-5" variant="h6" gutterBottom>
-          Legal
-        </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Privacy
+          Terms Of Service
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>
           Terms

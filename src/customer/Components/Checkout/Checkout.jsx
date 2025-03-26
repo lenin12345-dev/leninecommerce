@@ -49,7 +49,7 @@ export default function Checkout() {
   }
 
   return (
-    <Box className="px-5 lg:px-32 " sx={{ width: "100%" }}>
+    <Box className="px-5 py-4 lg:px-32 " sx={{ width: "100%" }}>
       <Stepper activeStep={step}>
         {steps.map((label, index) => {
           const stepProps = {};

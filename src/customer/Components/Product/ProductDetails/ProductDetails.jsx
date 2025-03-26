@@ -278,7 +278,7 @@ export default function ProductDetails() {
                     : `${customersProduct.product?.numRatings} Ratings`}
                 </p>
                 <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
-                  {reviews.totalCount} reviews
+                  {review?.reviews?.length>1?review?.reviews?.length + " reviews":review?.reviews?.length + " review"} 
                 </p>
               </div>
 
