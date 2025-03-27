@@ -33,6 +33,8 @@ import BackdropComponent from "../../BackDrop/Backdrop";
 import NoDataCard from "../../NoDataCard";
 import Button from "@mui/material/Button";
 import PriceRangeFilter from "./PriceRangeFilter";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -40,13 +42,14 @@ function classNames(...classes) {
 
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const theme = useTheme();
 
   // Navigating to a Different Route and Updating the Query String and Redirecting After an Action
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const param = useParams();
   const location = useLocation();
-
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); 
   const { customersProduct } = useSelector((store) => store);
 
   const [isLoaderOpen, setIsLoaderOpen] = useState(false);
@@ -425,7 +428,7 @@ export default function Product() {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto px-4 lg:px-14 py-6 ">
+        <main className="mx-auto px-4 lg:px-14 pb-2 pt-3 ">
           <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-2">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-4 sm:mb-0">
               Product
@@ -441,8 +444,7 @@ export default function Product() {
                   size="small"
                   name="text"
                   sx={{
-                    width: "100%",
-                    maxWidth: 500,
+                    width: isSmallScreen ? "250px" : "400px", 
                     borderRadius: "8px",
                     backgroundColor: "white",
                     boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
@@ -529,18 +531,15 @@ export default function Product() {
             </div>
           </div>
 
-          <section aria-labelledby="products-heading" className="pb-24 pt-2">
+          <section aria-labelledby="products-heading" className="pb-1 pt-2">
             <h4 id="products-heading" className="sr-only">
               Products
             </h4>
 
-            <div className="p-6 bg-gray-50 min-h-screen">
-              <div className="flex flex-col items-start space-y-2 mb-3 ">
+            <div className="p-2 bg-gray-50 min-h-screen">
+              <div className="flex flex-col items-start space-y-2 mb-1 ">
                 {/* Title visible only on larger screens */}
-                <h2 className="text-xl font-semibold text-gray-800 mb-2 hidden lg:block">
-                  Filters
-                </h2>
-
+              
                 {/* Filters Button */}
                 <button
                   type="button"
@@ -772,7 +771,7 @@ export default function Product() {
         </main>
 
         {/* pagination section */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-1 flex justify-center pb-2">
           <Pagination
             count={customersProduct.products?.totalPages}
             color="primary"
