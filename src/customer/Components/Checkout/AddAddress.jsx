@@ -204,15 +204,14 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                 <Button
                   sx={{
                     padding: ".9rem 1.5rem",
-                    backgroundColor: "#111827",
+                    backgroundColor: "#f5a623",
                     ":hover": {
-                      backgroundColor: "#14B8A6",
+                      backgroundColor: "black",
                     },
                   }}
                   size="large"
                   type="submit"
                   variant="contained"
-                  color="primary"
                   disabled={loading}
                 >
                   {loading ? <CircularProgress size={24} /> : "Deliver Here"}

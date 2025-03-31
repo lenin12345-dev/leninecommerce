@@ -366,9 +366,9 @@ export default function ProductDetails() {
                 disabled={showCart}
                 sx={{
                   mt: 2,
-                  backgroundColor: "#111827",
+                  backgroundColor: "#f5a623",
                   ":hover": {
-                    backgroundColor: "#14B8A6",
+                    backgroundColor: "black",
                   },
                 }}
               >
