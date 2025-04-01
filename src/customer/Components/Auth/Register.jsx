@@ -179,13 +179,16 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
       </form>
 
       <div className="flex justify-center flex-col items-center mt-3">
-        <div className="py-3 flex items-center">
+        <div className="py-3 flex items-center justify-center">
           <p className="m-0 p-0">Already have an account?</p>
           <Button
             onClick={() => navigate("/login")}
-            className="ml-5"
-            size="small"
-            style={{ color: "#f5a623", fontWeight: "bold", marginTop: "5px" }}
+            size="medium"
+            style={{
+              color: "#f5a623",
+              fontWeight: "bold",
+              textTransform: "none",
+            }}
           >
             Login
           </Button>
