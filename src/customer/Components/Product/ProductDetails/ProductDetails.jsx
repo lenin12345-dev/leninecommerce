@@ -27,8 +27,6 @@ import RateProductDialog from "./RateProductDialog";
 import BackdropComponent from "../../BackDrop/Backdrop";
 import ProductPageSkeleton from "../../skeleton/ProductPageSkeleton";
 
-
-
 const product = {
   sizes: [
     { name: "S", inStock: true },
@@ -51,7 +49,7 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { customersProduct, review, auth } = useSelector((store) => store);
-  const {loading } = customersProduct;
+  const { loading } = customersProduct;
   const { productId } = useParams();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [showCart, setShowCart] = useState(false);
@@ -165,8 +163,6 @@ export default function ProductDetails() {
     dispatch(getAllReviews(productId));
   }, [productId, isDialogOpen]);
 
-
-
   return (
     <div className="bg-white lg:px-20">
       <div className="pt-6">
@@ -205,22 +201,21 @@ export default function ProductDetails() {
 
         {/* product details */}
         {loading ? (
-        // Show skeleton loader while loading
-        <ProductPageSkeleton loading={loading} />
-      ) : (
-        <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 px-4 pt-10">
-          {/* Image gallery */}
+          // Show skeleton loader while loading
+          <ProductPageSkeleton loading={loading} />
+        ) : (
+          <section className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2 px-4 pt-10">
+            {/* Image gallery */}
 
-     
-          <div className="flex flex-col items-center ">
-            <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem] sm:max-w-[20rem] sm:max-h-[25rem]">
-              <img
-                src={activeImage?.src || customersProduct.product?.imageUrl}
-                alt=""
-                className="h-full w-full object-cover object-center"
-              />
-            </div>
-            {/* <div className="flex flex-wrap space-x-5 justify-center">
+            <div className="flex flex-col items-center ">
+              <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem] sm:max-w-[20rem] sm:max-h-[25rem]">
+                <img
+                  src={activeImage?.src || customersProduct.product?.imageUrl}
+                  alt=""
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
+              {/* <div className="flex flex-wrap space-x-5 justify-center">
               {product.images.map((image) => (
                 <div
                   onClick={() => handleSetActiveImage(image)}
@@ -234,169 +229,173 @@ export default function ProductDetails() {
                 </div>
               ))}
             </div> */}
-          </div>
-
-          {/* Product info */}
-          <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
-            {/* Product Brand and Title */}
-            <div className="lg:col-span-2">
-              <h1 className="text-lg lg:text-xl font-bold tracking-tight text-gray-900">
-                {customersProduct.product?.brand}
-              </h1>
-              <h1 className="text-md lg:text-lg tracking-tight text-gray-600 pt-1">
-                {customersProduct.product?.title}
-              </h1>
             </div>
 
-            {/* Pricing Section */}
-            <div className="mt-4 lg:row-span-3 lg:mt-0">
-              <div className="flex space-x-5 items-center text-lg lg:text-xl tracking-tight text-gray-900 mt-6">
-                <p className="font-semibold text-black">
-                  ${customersProduct.product?.discountedPrice}
-                </p>
-                <p className="text-gray-400 line-through">
-                  ${customersProduct.product?.price}
-                </p>
-                <p className="text-green-600 font-semibold">
-                  {customersProduct.product?.discountPersent}% Off
-                </p>
+            {/* Product info */}
+            <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
+              {/* Product Brand and Title */}
+              <div className="lg:col-span-2">
+                <h1 className="text-lg lg:text-xl font-bold tracking-tight text-gray-900">
+                  {customersProduct.product?.brand}
+                </h1>
+                <h1 className="text-md lg:text-lg tracking-tight text-gray-600 pt-1">
+                  {customersProduct.product?.title}
+                </h1>
               </div>
 
-              {/* Reviews Section */}
-              <div className="mt-6 flex items-center space-x-3">
-                {customersProduct.product && (
-                  <Rating
-                    name="read-only"
-                    value={customersProduct.product?.averageRating}
-                    precision={0.5}
-                    readOnly
-                  />
-                )}
-                <p className="text-sm text-gray-500">
-                  {customersProduct.product?.numRatings == 1
-                    ? "1 Rating"
-                    : `${customersProduct.product?.numRatings} Ratings`}
-                </p>
-                <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
-                  {review?.reviews?.length>1?review?.reviews?.length + " reviews":review?.reviews?.length + " review"} 
-                </p>
-              </div>
-
-              {/* Sizes Section */}
-              <div className="mt-10">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                </div>
-
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                  className="mt-4"
-                >
-                  <RadioGroup.Label className="sr-only">
-                    Choose a size
-                  </RadioGroup.Label>
-                  <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-10">
-                    {product.sizes.map((size) => (
-                      <RadioGroup.Option
-                        key={size.name}
-                        value={size}
-                        disabled={!size.inStock}
-                        className={({ active }) =>
-                          classNames(
-                            size.inStock
-                              ? "cursor-pointer bg-white text-gray-900 shadow-sm hover:bg-gray-50"
-                              : "cursor-not-allowed bg-gray-50 text-gray-200",
-                            active ? "ring-2 ring-indigo-500" : "",
-                            "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase focus:outline-none"
-                          )
-                        }
-                      >
-                        {({ active, checked }) => (
-                          <>
-                            <RadioGroup.Label as="span">
-                              {size.name}
-                            </RadioGroup.Label>
-                            {size.inStock ? (
-                              <span
-                                className={classNames(
-                                  active ? "border" : "border-2",
-                                  checked
-                                    ? "border-indigo-500"
-                                    : "border-transparent",
-                                  "pointer-events-none absolute -inset-px rounded-md"
-                                )}
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <span
-                                aria-hidden="true"
-                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                              >
-                                <svg
-                                  className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                                  viewBox="0 0 100 100"
-                                  preserveAspectRatio="none"
-                                  stroke="currentColor"
-                                >
-                                  <line
-                                    x1={0}
-                                    y1={100}
-                                    x2={100}
-                                    y2={0}
-                                    vectorEffect="non-scaling-stroke"
-                                  />
-                                </svg>
-                              </span>
-                            )}
-                          </>
-                        )}
-                      </RadioGroup.Option>
-                    ))}
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {/* Add to Cart Button */}
-              <Button
-                variant="contained"
-                type="submit"
-                className="mt-6 bg-gray-900 text-white font-medium rounded-lg py-3 px-6"
-                onClick={handleSubmit}
-                disabled={showCart}
-                sx={{
-                  mt: 2,
-                  backgroundColor: "#f5a623",
-                  ":hover": {
-                    backgroundColor: "black",
-                  },
-                }}
-              >
-                Add To Cart
-              </Button>
-            </div>
-
-            {/* Description and Details */}
-            <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
-              <div>
-                <h3 className="sr-only">Description</h3>
-                <div className="space-y-6">
-                  <p className="text-base text-gray-900">
-                    {customersProduct.product?.description}
+              {/* Pricing Section */}
+              <div className="mt-4 lg:row-span-3 lg:mt-0">
+                <div className="flex space-x-5 items-center text-lg lg:text-xl tracking-tight text-gray-900 mt-6">
+                  <p className="font-semibold text-black">
+                    ${customersProduct.product?.discountedPrice}
+                  </p>
+                  <p className="text-gray-400 line-through">
+                    ${customersProduct.product?.price}
+                  </p>
+                  <p className="text-green-600 font-semibold">
+                    {customersProduct.product?.discountPersent}% Off
                   </p>
                 </div>
+
+                {/* Reviews Section */}
+                <div className="mt-6 flex items-center space-x-3">
+                  {customersProduct.product && (
+                    <Rating
+                      name="read-only"
+                      value={customersProduct.product?.averageRating}
+                      precision={0.5}
+                      readOnly
+                    />
+                  )}
+                  <p className="text-sm text-gray-500">
+                    {customersProduct.product?.numRatings == 1
+                      ? "1 Rating"
+                      : `${customersProduct.product?.numRatings} Ratings`}
+                  </p>
+                  <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                    {review?.reviews?.length > 1
+                      ? review?.reviews?.length + " reviews"
+                      : review?.reviews?.length + " review"}
+                  </p>
+                </div>
+
+                {/* Sizes Section */}
+                <div className="mt-5">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-gray-900">Size</h3>
+                  </div>
+
+                  <RadioGroup
+                    value={selectedSize}
+                    onChange={setSelectedSize}
+                    className="mt-4"
+                  >
+                    <RadioGroup.Label className="sr-only">
+                      Choose a size
+                    </RadioGroup.Label>
+                    <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-10">
+                      {product.sizes.map((size) => (
+                        <RadioGroup.Option
+                          key={size.name}
+                          value={size}
+                          disabled={!size.inStock}
+                          className={({ active }) =>
+                            classNames(
+                              size.inStock
+                                ? "cursor-pointer bg-white text-gray-900 shadow-sm hover:bg-gray-50"
+                                : "cursor-not-allowed bg-gray-50 text-gray-200",
+                              active ? "ring-2 ring-indigo-500" : "",
+                              "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase focus:outline-none"
+                            )
+                          }
+                        >
+                          {({ active, checked }) => (
+                            <>
+                              <RadioGroup.Label as="span">
+                                {size.name}
+                              </RadioGroup.Label>
+                              {size.inStock ? (
+                                <span
+                                  className={classNames(
+                                    active ? "border" : "border-2",
+                                    checked
+                                      ? "border-indigo-500"
+                                      : "border-transparent",
+                                    "pointer-events-none absolute -inset-px rounded-md"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <span
+                                  aria-hidden="true"
+                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                                >
+                                  <svg
+                                    className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                    viewBox="0 0 100 100"
+                                    preserveAspectRatio="none"
+                                    stroke="currentColor"
+                                  >
+                                    <line
+                                      x1={0}
+                                      y1={100}
+                                      x2={100}
+                                      y2={0}
+                                      vectorEffect="non-scaling-stroke"
+                                    />
+                                  </svg>
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </RadioGroup.Option>
+                      ))}
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* Add to Cart Button */}
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className="mt-6 bg-gray-900 text-white font-medium rounded-lg py-3 px-6"
+                  onClick={handleSubmit}
+                  disabled={showCart}
+                  sx={{
+                    mt: 2,
+                    backgroundColor: "#f5a623",
+                    ":hover": {
+                      backgroundColor: "black",
+                    },
+                  }}
+                >
+                  Add To Cart
+                </Button>
               </div>
 
-              <div className="mt-10">
-                <h2 className="text-sm font-medium text-gray-900">Details</h2>
-                <div className="mt-4 space-y-4">{details(secondLevelName)}</div>
+              {/* Description and Details */}
+              <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
+                <div>
+                  <h3 className="sr-only">Description</h3>
+                  <div className="space-y-6">
+                    <p className="text-base text-gray-900">
+                      {customersProduct.product?.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-2">
+                  <h2 className="text-md font-medium text-black-900">
+                    Details
+                  </h2>
+                  <div className="mt-2 space-y-4">
+                    {details(secondLevelName)}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-         
-
-        </section>
-              )}
+          </section>
+        )}
 
         {/* rating and review section */}
         <section className="px-4 md:px-8 lg:px-12">
@@ -408,9 +407,34 @@ export default function ProductDetails() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={7}>
                 <div className="space-y-5">
-                  {review.reviews?.map((item, i) => (
-                    <ProductReviewCard key={i} item={item} />
-                  ))}
+                  {review.reviews.length > 0 ? (
+                    review.reviews.map((item, i) => (
+                      <ProductReviewCard key={i} item={item} />
+                    ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-xl text-gray-500 shadow-sm mt-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-10 w-10 mb-2 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.75 9.75h.008v.008H9.75V9.75zM12 9.75h.008v.008H12V9.75zM14.25 9.75h.008v.008H14.25V9.75zM12 20.25c4.694 0 8.5-3.806 8.5-8.5s-3.806-8.5-8.5-8.5-8.5 3.806-8.5 8.5 3.806 8.5 8.5 8.5z"
+                        />
+                      </svg>
+                      <p className="text-lg font-medium">
+                        No reviews available yet
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Be the first to share your thoughts!
+                      </p>
+                    </div>
+                  )}
                 </div>
               </Grid>
 
@@ -434,7 +458,6 @@ export default function ProductDetails() {
                     productId={productId}
                     token={jwt}
                     auth={auth}
-
                   />
                 </div>
                 <Box>
@@ -496,9 +519,7 @@ export default function ProductDetails() {
             {snackbarMeassage}
           </Alert>
         </Snackbar>
-        <section>
-          {/* <BackdropComponent open={loading} /> */}
-        </section>
+        <section>{/* <BackdropComponent open={loading} /> */}</section>
       </div>
     </div>
   );
