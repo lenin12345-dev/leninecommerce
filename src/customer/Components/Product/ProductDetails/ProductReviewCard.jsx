@@ -1,13 +1,28 @@
-import React from "react";
-import { Avatar } from "@mui/material";
-import { Rating, Box, Typography, Grid } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import { useDispatch,useSelector } from "react-redux";
+import { deleteReview } from "../../../../Redux/Customers/Review/Action";
+import {
+  Box,
+  Button,
+  Grid,
+  LinearProgress,
+  Rating,
+  Snackbar,
+  Alert,
+  TextField,
+  Avatar
+} from "@mui/material";
 
 const ProductReviewCard = ({ item }) => {
-  const [value, setValue] = React.useState(4.5);
-  const date = new Date(item.createdAt);
-  const formattedDate = `${date.toLocaleString("default", {
-    month: "long",
-  })} ${date.getDate()}, ${date.getFullYear()}`; // e.g., "August 19, 2024"
+  const { auth } = useSelector((store) => store);
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    dispatch(deleteReview(item._id, auth.jwt));
+  };
+
+  const isOwnReview = auth.user?._id === item?.user?._id;
 
   return (
     <div className="px-4 md:px-8 lg:px-12">
@@ -15,10 +30,8 @@ const ProductReviewCard = ({ item }) => {
         <Grid item xs={3} sm={2} md={1}>
           <Box>
             <Avatar
-              className="text-white"
-              sx={{ width: 56, height: 56, bgcolor: "#111827" }}
+              sx={{ width: 56, height: 56, bgcolor: "grey" }}
               alt={item?.user?.firstname}
-              src=""
             >
               {item?.user?.firstname[0].toUpperCase()}
             </Avatar>
@@ -26,18 +39,23 @@ const ProductReviewCard = ({ item }) => {
         </Grid>
         <Grid item xs={9} sm={10} md={11}>
           <div className="space-y-2">
-            <div className="">
-              <p className="font-semibold text-base md:text-lg">
-                {item?.user?.firstname}
-              </p>
-              <p className="opacity-70 text-sm md:text-base">{formattedDate}</p>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-semibold text-base md:text-lg">
+                  {item?.user?.firstname}
+                </p>
+             
+              </div>
+              {isOwnReview && (
+                <IconButton onClick={handleDelete}>
+                  <DeleteIcon sx={{ color: "red" }} />
+                </IconButton>
+              )}
             </div>
-            <div>{/* Optional content */}</div>
             <p className="text-sm md:text-base">{item?.review}</p>
           </div>
         </Grid>
       </Grid>
-      <div className="col-span-1 flex"></div>
     </div>
   );
 };

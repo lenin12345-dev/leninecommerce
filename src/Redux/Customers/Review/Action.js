@@ -9,7 +9,9 @@ import {
     CREATE_RATING_SUCCESS,
     CREATE_RATING_FAILURE,
     GET_ALL_RATINGS_SUCCESS,
-    GET_ALL_RATINGS_FAILURE
+    GET_ALL_RATINGS_FAILURE,
+    DELETE_REVIEW_SUCCESS,
+    DELETE_REVIEW_FAILURE,
   } from './ActionTyp';
 import api from '../../../config/api';
 
@@ -34,6 +36,29 @@ export const createReview = (resData) => {
       dispatch({
         type: CREATE_REVIEW_FAILURE,
         payload: error.message
+      });
+    }
+  };
+};
+export const deleteReview = (reviewId, jwt) => {
+  return async (dispatch) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      };
+
+      const response = await api.delete(`/api/reviews/${reviewId}`, config);
+
+      dispatch({
+        type: DELETE_REVIEW_SUCCESS,
+        payload: reviewId, // or response.data depending on your backend
+      });
+    } catch (error) {
+      dispatch({
+        type: DELETE_REVIEW_FAILURE,
+        payload: error.message,
       });
     }
   };
