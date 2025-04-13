@@ -72,7 +72,7 @@ const Dashboard = () => {
                     icon={<CurrencyUsd />}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <CardStatsVertical
                     stats="862"
                     trend="negative"
@@ -92,7 +92,7 @@ const Dashboard = () => {
                     title="Sales Queries"
                     icon={<HelpCircleOutline />}
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
