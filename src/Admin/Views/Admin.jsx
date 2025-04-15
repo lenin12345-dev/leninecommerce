@@ -72,27 +72,7 @@ const Dashboard = () => {
                     icon={<CurrencyUsd />}
                   />
                 </Grid>
-                {/* <Grid item xs={6}>
-                  <CardStatsVertical
-                    stats="862"
-                    trend="negative"
-                    trendNumber="-18%"
-                    title="New Orders"
-                    subtitle="Weekly Orders"
-                    icon={<BriefcaseVariantOutline />}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <CardStatsVertical
-                    stats="15"
-                    color="warning"
-                    trend="negative"
-                    trendNumber="-18%"
-                    subtitle="Last Week"
-                    title="Sales Queries"
-                    icon={<HelpCircleOutline />}
-                  />
-                </Grid> */}
+          
               </Grid>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
