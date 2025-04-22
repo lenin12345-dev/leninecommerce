@@ -43,6 +43,7 @@ const OrdersTable = () => {
   const jwt = localStorage.getItem("jwt");
   const { adminsOrder } = useSelector((store) => store);
   const [anchorElArray, setAnchorElArray] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     dispatch(getOrders({ jwt }));
@@ -71,7 +72,8 @@ const OrdersTable = () => {
     setFormData({ ...formData, [name]: value });
   };
   function handlePaginationChange(event, value) {
-    console.log("Current page:", value);
+    setCurrentPage(value);
+    dispatch(getOrders({ jwt, page: value }));
   }
 
   const handleConfirmedOrder = (orderId, index) => {
@@ -334,7 +336,8 @@ const OrdersTable = () => {
           <Pagination
             className="py-5 w-auto"
             size="large"
-            count={10}
+            count={adminsOrder?.totalPages} // dynamically from backend response
+            page={currentPage} // to keep it controlled
             color="primary"
             onChange={handlePaginationChange}
           />

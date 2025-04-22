@@ -26,6 +26,8 @@ const initialState = {
   loading: false,
   orders: [],
   error: "",
+  currentPage: 1,
+  totalPages: 1,
 };
 
 const adminOrderReducer = (state = initialState, action) => {
@@ -38,7 +40,9 @@ const adminOrderReducer = (state = initialState, action) => {
     case GET_ORDERS_SUCCESS:
       return {
         loading: false,
-        orders: action.payload,
+        orders: action.payload.orders,
+        currentPage: action.payload.currentPage,
+        totalPages: action.payload.totalPages,
         error: "",
       };
     case GET_ORDERS_FAILURE:
@@ -93,11 +97,15 @@ const adminOrderReducer = (state = initialState, action) => {
     case DELETE_ORDER_REQUEST:
       return { ...state, loading: true };
     case DELETE_ORDER_SUCCESS:
-      return { ...state, loading: false, orders:state.orders.filter((order)=>order._id!==action.payload) };
+      return {
+        ...state,
+        loading: false,
+        orders: state.orders.filter((order) => order._id !== action.payload),
+      };
     case DELETE_ORDER_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
-      case SHIP_ORDER_REQUEST:
+    case SHIP_ORDER_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -107,7 +115,7 @@ const adminOrderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        shipped:action.payload
+        shipped: action.payload,
       };
     case SHIP_ORDER_FAILURE:
       return {

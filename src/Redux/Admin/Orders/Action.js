@@ -25,13 +25,17 @@ import {
 } from "./ActionCreator";
 
 export const getOrders = (reqData) => {
-  console.log("get all orders ", reqData);
   return async (dispatch) => {
     dispatch(getOrdersRequest());
     try {
-     
-      const response = await api.get(`/api/admin/orders/`);
-      console.log("get all orders ", response.data);
+      const { jwt, page = 1, limit = 10, ...filters } = reqData;
+
+      const queryParams = new URLSearchParams({ page, limit, ...filters }).toString();
+      const response = await api.get(`/api/admin/orders?${queryParams}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
       dispatch(getOrdersSuccess(response.data));
     } catch (error) {
       console.log("catch error ", error);
