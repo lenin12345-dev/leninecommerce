@@ -1,7 +1,6 @@
 import { Avatar, Box, Card, CardHeader, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 
 import React from 'react'
-import { dressPage1 } from '../../Data/dress/page1'
 import { useNavigate } from 'react-router-dom'
 
 
@@ -31,7 +30,7 @@ const RecentOrders = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dressPage1.slice(0,5).map((item,index) => (
+          {[].slice(0,5).map((item,index) => (
             <TableRow hover key={item.name} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
              <TableCell> <Avatar alt={item.title} src={item.imageUrl} /> </TableCell>
              
