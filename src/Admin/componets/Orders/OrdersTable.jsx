@@ -49,9 +49,7 @@ const OrdersTable = () => {
     dispatch(getOrders({ jwt }));
   }, [jwt, adminsOrder.delivered, adminsOrder.shipped, adminsOrder.confirmed]);
 
-  // useEffect(()=>{
-  //   dispatch(getOrders({jwt}))
-  // },[])
+
 
   const handleUpdateStatusMenuClick = (event, index) => {
     const newAnchorElArray = [...anchorElArray];
