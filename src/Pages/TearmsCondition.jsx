@@ -2,7 +2,7 @@ import React from 'react'
 
 const TearmsCondition = () => {
   return (
-    <div>TearmsCondition</div>
+    <div>Tearms and Condition</div>
   )
 }
 
