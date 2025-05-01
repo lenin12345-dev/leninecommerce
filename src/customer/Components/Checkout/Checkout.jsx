@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -8,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import AddDeliveryAddressForm from "./AddAddress";
 import { useLocation, useNavigate } from "react-router-dom";
 import OrderSummary from "./OrderSummary";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const steps = [
   "Login",
@@ -23,6 +26,8 @@ export default function Checkout() {
   const queryParams = new URLSearchParams(location.search);
   const step = queryParams.get('step');
   const navigate=useNavigate();
+    const {auth}=useSelector(store=>store);
+  
  
 
 
@@ -43,10 +48,17 @@ export default function Checkout() {
   const handleReset = () => {
     setActiveStep(0);
   };
+  
 
   const handlePayment=()=>{
     console.log("handle payment")
   }
+  useEffect(()=>{
+    if (!auth.user){
+      navigate("/login")
+    }
+  
+  },[auth.user])
 
   return (
     <Box className="px-5 py-4 lg:px-32 " sx={{ width: "100%" }}>

@@ -12,12 +12,19 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
-  const {cart}=useSelector(store=>store);
+  const {cart,auth}=useSelector(store=>store);
 
+useEffect(()=>{
+  if (!auth.user){
+    navigate("/login")
+  }
 
+},[auth.user])
   useEffect(() => {
+    if (!auth.user){
     dispatch(getCart(jwt));
-  }, [dispatch,jwt]);
+    }
+  }, [dispatch,jwt,auth.user]);
   return (
     <div className="">
       {cart.cartItems.length>0 && <div className="lg:grid grid-cols-3 lg:px-16 relative">
