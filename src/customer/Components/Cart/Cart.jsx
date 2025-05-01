@@ -26,8 +26,7 @@ const Cart = () => {
 
   return (
     <Box
-      className="min-h-[calc(100vh-64px)] flex flex-col"
-      sx={{ backgroundColor: "#f9f9f9" }}
+      className="min-h-[calc(100vh-64px)] flex flex-col pt-5"
     >
       {cart.cartItems.length > 0 ? (
         <div className="lg:grid grid-cols-3 lg:px-16 relative flex-grow">
