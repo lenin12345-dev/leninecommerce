@@ -12,17 +12,20 @@ const Cart = () => {
   const jwt = localStorage.getItem("jwt");
   const { cart, auth } = useSelector((store) => store);
 
-  useEffect(() => {
-    if (!auth.user) {
-      navigate("/login");
-    }
-  }, [auth.user, navigate]);
+  
+// Instant Access: localStorage is a synchronous API. 
+// When you access localStorage.getItem("jwt"), it retrieves the data immediately without any delays.
+//auth.user from Redux: Usually requires rehydrating the Redux store, possibly involving an API call to get user information from the server, which adds asynchronous delay.
 
   useEffect(() => {
-    if (auth.user) {
+    if (!jwt) {
+      navigate("/login");
+    } else if (auth.user) {
       dispatch(getCart(jwt));
     }
-  }, [dispatch, jwt, auth.user]);
+  }, [auth.user,jwt]);
+
+
 
   return (
     <Box

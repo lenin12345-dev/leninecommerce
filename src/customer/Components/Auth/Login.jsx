@@ -5,32 +5,31 @@ import {
   Button,
   CircularProgress,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, login } from "../../../Redux/Auth/Action";
-import { useEffect } from "react";
-import { useState } from "react";
+import { login } from "../../../Redux/Auth/Action";
+import { useEffect, useState } from "react";
 
 export default function LoginUserForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const jwt=localStorage.getItem("jwt");
-
   const { auth } = useSelector((store) => store);
   const { isLoading } = auth;
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const jwt = localStorage.getItem("jwt");
 
-  // useEffect(()=>{
-  //   if(jwt){
-  //     console.log('mmm')
-  //     dispatch(getUser(jwt))
-  //   }
+  const handleCloseSnakbar = () => setOpenSnackBar(false);
 
-  // },[jwt])
+  useEffect(() => {
+    if (jwt) {
+      setOpenSnackBar(true);
+    }
+  }, [jwt]);
 
-  // useEffect(() => {
-  //   if (auth.user || auth.error) setOpenSnackBar(true)
-  // }, [auth.user,auth.error]);
+  console.log(openSnackBar);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -44,7 +43,7 @@ export default function LoginUserForm({ handleNext }) {
   };
 
   return (
-    <React.Fragment className=" shadow-lg ">
+    <React.Fragment>
       <Typography
         variant="h4"
         sx={{
@@ -109,7 +108,7 @@ export default function LoginUserForm({ handleNext }) {
       </form>
       <div className="flex justify-center flex-col items-center">
         <div className="py-3 flex items-center justify-center">
-          <p className="m-0 p-0">Don't have account ?</p>
+          <p className="m-0 p-0">Don't have an account?</p>
           <Button
             onClick={() => navigate("/register")}
             style={{
@@ -123,6 +122,20 @@ export default function LoginUserForm({ handleNext }) {
           </Button>
         </div>
       </div>
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnakbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }} 
+      >
+        <Alert
+          onClose={handleCloseSnakbar}
+          severity={auth.error ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {auth.error ? "Login Failed" : "Login Successful"}
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }

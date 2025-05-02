@@ -31,12 +31,7 @@ export default function Navigation() {
   const jwt = localStorage.getItem("jwt");
   const location = useLocation();
   const handleCloseSnakbar = () => setOpenSnackBar(false);
-  useEffect(() => {
-    if (jwt) {
-      dispatch(getUser(jwt));
-      dispatch(getCart(jwt));
-    }
-  }, [jwt]);
+
 
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -56,10 +51,18 @@ export default function Navigation() {
     navigate(`/products`);
     close();
   };
+  const handleLogout = () => {
+    handleCloseUserMenu();
+    dispatch(logout());
+  };
+  const handleMyOrderClick = () => {
+    handleCloseUserMenu();
+    navigate("/account/order");
+  };
 
   useEffect(() => {
     if (auth.user) {
-      setOpenSnackBar(true);
+      // setOpenSnackBar(true);
       handleClose();
     }
     if (
@@ -69,15 +72,14 @@ export default function Navigation() {
       navigate(-1);
     }
   }, [auth.user]);
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt));
+      dispatch(getCart(jwt));
+    }
+  }, [jwt]);
 
-  const handleLogout = () => {
-    handleCloseUserMenu();
-    dispatch(logout());
-  };
-  const handleMyOrderClick = () => {
-    handleCloseUserMenu();
-    navigate("/account/order");
-  };
+
 
   return (
     <div className="bg-gray-50">
