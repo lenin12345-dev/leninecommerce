@@ -44,9 +44,7 @@ export const login = userData => async dispatch => {
     if(user.accessToken) localStorage.setItem("jwt",user.accessToken)
     dispatch(loginSuccess(user));
   } catch (error) {
-    console.log("error ",error)
     const { response:{data}} = error
-    console.log("data ",data)
 
     dispatch(loginFailure(data.message || data.error));
   }
