@@ -3,10 +3,6 @@ import { useLocation } from "react-router-dom";
 export default function NotFound() {
   const location = useLocation();
   
-  // Only show Navigation component when not on the NotFound page
-  // const showNavigation = location.pathname !== "*";
-
-  console.log("not found ---- path",location.pathname)
 
     return (
       <>

@@ -97,9 +97,7 @@ const OrdersTable = () => {
     dispatch(deleteOrder(orderId));
   };
 
-  //   useEffect(()=>{
-  // setUpdateOrderStatus(item.orderStatus==="PENDING"?"PENDING": item.orderStatus==="PLACED"?"CONFIRMED":item.orderStatus==="CONFIRMED"?"SHIPPED":"DELEVERED")
-  //   },[adminsOrder.orders])
+
 
   return (
     <Box>
