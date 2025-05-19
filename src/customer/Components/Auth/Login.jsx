@@ -24,7 +24,7 @@ export default function LoginUserForm({ handleNext }) {
   const handleCloseSnakbar = () => setOpenSnackBar(false);
 
   useEffect(() => {
-    if (jwt) {
+    if (jwt && auth.user) {
       setOpenSnackBar(true);
     }
   }, [jwt]);
@@ -41,7 +41,6 @@ export default function LoginUserForm({ handleNext }) {
 
     dispatch(login(userData));
   };
-
   return (
     <React.Fragment>
       <Typography
