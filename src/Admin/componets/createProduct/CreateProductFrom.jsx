@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import {
   Grid,
@@ -14,7 +14,7 @@ import { Fragment } from "react";
 import "./CreateProductForm.css";
 import { useDispatch } from "react-redux";
 import { createProduct } from "../../../Redux/Customers/Product/Action";
-
+import api, { API_BASE_URL } from "../../../config/api";
 
 const initialSizes = [
   { name: "S", quantity: 0 },
@@ -23,7 +23,6 @@ const initialSizes = [
 ];
 
 const CreateProductForm = () => {
-  
   const [productData, setProductData] = useState({
     imageUrl: "",
     brand: "",
@@ -32,15 +31,13 @@ const CreateProductForm = () => {
     discountedPrice: "",
     price: "",
     discountPersent: "",
-    size: initialSizes,
+    sizes: initialSizes,
     quantity: "",
-    topLavelCategory: "",
-    secondLavelCategory: "",
-    thirdLavelCategory: "",
     description: "",
   });
-const dispatch=useDispatch();
-const jwt=localStorage.getItem("jwt")
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const [categories, setCategories] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,55 +46,52 @@ const jwt=localStorage.getItem("jwt")
       [name]: value,
     }));
   };
+  useEffect(() => {
+    // Fetch categories from your backend API
+    api.get(`/api/categories`).then(({ data }) => {
+      setCategories(data);
+    });
+  }, []);
+  function getFullCategoryName(cat, categoriesMap) {
+    if (!cat.parentCategory) return cat.name;
+    return (
+      getFullCategoryName(categoriesMap[cat.parentCategory], categoriesMap) +
+      " > " +
+      cat.name
+    );
+  }
+
+  const categoriesMap = {};
+  categories.forEach((cat) => {
+    categoriesMap[cat._id] = cat;
+  });
+
+  const categoriesWithFullName = categories.map((cat) => ({
+    ...cat,
+    fullName: getFullCategoryName(cat, categoriesMap),
+  }));
 
   const handleSizeChange = (e, index) => {
     let { name, value } = e.target;
-    name==="size_quantity"?name="quantity":name=e.target.name;
+    name === "size_quantity" ? (name = "quantity") : (name = e.target.name);
 
-    const sizes = [...productData.size];
+    const sizes = [...productData.sizes];
     sizes[index][name] = value;
     setProductData((prevState) => ({
       ...prevState,
-      size: sizes,
+      sizes: sizes,
     }));
   };
 
-  const handleAddSize = () => {
-    const sizes = [...productData.size];
-    sizes.push({ name: "", quantity: "" });
-    setProductData((prevState) => ({
-      ...prevState,
-      size: sizes,
-    }));
-  };
-
-  // const handleRemoveSize = (index) => {
-  //   const sizes = [...productData.size];
-  //   sizes.splice(index, 1);
-  //   setProductData((prevState) => ({
-  //     ...prevState,
-  //     size: sizes,
-  //   }));
-  // };
+  console.log(productData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProduct({data:productData,jwt}))
-    console.log(productData);
+    dispatch(createProduct({ data: productData, jwt }));
   };
 
-  // const handleAddProducts=(data)=>{
-  //   for(let item of data){
-  //     const productsData={
-  //       data:item,
-  //       jwt,
-  //     }
-  //     dispatch(createProduct(productsData))
-  //   }
-  // }
-
   return (
-    <Fragment className="createProductContainer ">
+    <Fragment>
       <Typography
         variant="h3"
         sx={{ textAlign: "center" }}
@@ -128,7 +122,7 @@ const jwt=localStorage.getItem("jwt")
               onChange={handleChange}
             />
           </Grid>
-        
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -177,7 +171,7 @@ const jwt=localStorage.getItem("jwt")
               type="number"
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -187,53 +181,6 @@ const jwt=localStorage.getItem("jwt")
               onChange={handleChange}
               type="number"
             />
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Top Level Category</InputLabel>
-              <Select
-                name="topLavelCategory"
-                value={productData.topLavelCategory}
-                onChange={handleChange}
-                label="Top Level Category"
-              >
-                <MenuItem value="men">Men</MenuItem>
-                <MenuItem value="women">Women</MenuItem>
-                <MenuItem value="kids">Kids</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Second Level Category</InputLabel>
-              <Select
-                name="secondLavelCategory"
-                value={productData.secondLavelCategory}
-                onChange={handleChange}
-                label="Second Level Category"
-              >
-                <MenuItem value="clothing">Clothing</MenuItem>
-                <MenuItem value="accessories">Accessories</MenuItem>
-                <MenuItem value="brands">Brands</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Third Level Category</InputLabel>
-              <Select
-                name="thirdLavelCategory"
-                value={productData.thirdLavelCategory}
-                onChange={handleChange}
-                label="Third Level Category"
-              >
-                <MenuItem value="top">Tops</MenuItem>
-                <MenuItem value="women_dress">Dresses</MenuItem>
-                <MenuItem value="t-shirts">T-Shirts</MenuItem>
-                <MenuItem value="saree">Saree</MenuItem>
-                <MenuItem value="lengha_choli">Lengha Choli</MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -247,8 +194,8 @@ const jwt=localStorage.getItem("jwt")
               value={productData.description}
             />
           </Grid>
-          {productData.size.map((size, index) => (
-            <Grid container item spacing={3} >
+          {productData.sizes.map((size, index) => (
+            <Grid key={index} container item spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Size Name"
@@ -268,10 +215,31 @@ const jwt=localStorage.getItem("jwt")
                   required
                   fullWidth
                 />
-              </Grid> </Grid>
-            
+              </Grid>{" "}
+            </Grid>
           ))}
-          <Grid item xs={12} >
+          <Grid container item spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Select
+                labelId="category-label"
+                name="category"
+                value={productData.category}
+                label="Category"
+                onChange={handleChange}
+                style={{
+                  width:"100%"
+                }}
+              >
+                {categories.map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {"— ".repeat(cat.level - 1) + cat.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
             <Button
               variant="contained"
               sx={{ p: 1.8 }}
