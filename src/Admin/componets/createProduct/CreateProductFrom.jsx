@@ -226,10 +226,15 @@ const CreateProductForm = () => {
                 value={productData.category}
                 label="Category"
                 onChange={handleChange}
-                style={{
-                  width:"100%"
-                }}
+                style={{ width: "100%" }}
+                displayEmpty // 
               >
+      
+                <MenuItem value="">
+                  <em>Select Category</em>
+                </MenuItem>
+
+              
                 {categories.map((cat) => (
                   <MenuItem key={cat._id} value={cat._id}>
                     {"— ".repeat(cat.level - 1) + cat.name}
