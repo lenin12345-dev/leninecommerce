@@ -17,10 +17,10 @@ const SlidingImage = styled("img")(({ theme, direction, isVisible }) => ({
     : direction === "left"
     ? "translateX(-100%)"
     : "translateX(100%)",
-  objectFit: "cover", // Ensure proper scaling without distortion
+  objectFit: "cover", 
   objectPosition: "center",
 
-  // Ensure responsive scaling and prevent blurriness on mobile screens
+
   [theme.breakpoints.down("md")]: {
     marginBottom: theme.spacing(2),
     transform: isVisible

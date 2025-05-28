@@ -254,15 +254,7 @@ const CreateProductForm = () => {
             >
               Add New Product
             </Button>
-            {/* <Button
-              variant="contained"
-              sx={{ p: 1.8 }}
-              className="py-20 ml-10"
-              size="large"
-              onClick={()=>handleAddProducts(dressPage1)}
-            >
-              Add Products By Loop
-            </Button> */}
+         
           </Grid>
         </Grid>
       </form>

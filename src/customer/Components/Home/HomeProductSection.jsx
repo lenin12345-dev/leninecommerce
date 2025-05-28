@@ -33,9 +33,7 @@ const HomeProductSection = ({ section, data }) => {
     </div>
   ));
 
-  // const slideInFromRight = (t) => {s
-  //   return `translateX(${100 - t * 100}%)`;
-  // };
+
 
   return (
     <div className="relative px-4 sm:px-6 lg:px-8">
