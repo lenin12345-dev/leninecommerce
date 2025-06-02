@@ -80,7 +80,6 @@ export default function Navigation() {
   }, [jwt]);
 
 
-
   return (
     <div className="bg-gray-50">
       {/* Mobile menu */}
