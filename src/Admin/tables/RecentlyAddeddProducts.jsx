@@ -1,12 +1,30 @@
 import { Avatar, Box, Card, CardHeader, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 
-import React from 'react'
-import { dressPage1 } from '../../Data/dress/page1'
+import React,{useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from "../../config/api";
+
 
 
 const RecentlyAddeddProducts = () => {
     const navigate=useNavigate();
+    const [newProducts, setNewProducts] = useState([]);
+
+    const fetchCurrentProducts = async () => {
+      try {
+        const { data } = await api.get("/api/admin/recent/products");
+  
+        if (data && data.length > 0) {
+          setNewProducts(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchCurrentProducts();
+    }, []);
   return (
     <Card>
        <CardHeader
@@ -30,7 +48,7 @@ const RecentlyAddeddProducts = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dressPage1.slice(0,5).map(item => (
+          {newProducts.slice(0,5).map(item => (
             <TableRow hover key={item.name} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
              <TableCell> <Avatar alt={item.title} src={item.imageUrl} /> </TableCell>
              
