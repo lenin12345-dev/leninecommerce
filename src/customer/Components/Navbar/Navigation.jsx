@@ -25,12 +25,11 @@ export default function Navigation() {
   const dispatch = useDispatch();
   const { auth, cart } = useSelector((store) => store);
   const [openAuthModal, setOpenAuthModal] = useState(false);
-  const [openSnackBar, setOpenSnackBar] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const jwt = localStorage.getItem("jwt");
   const location = useLocation();
-  const handleCloseSnakbar = () => setOpenSnackBar(false);
 
 
   const handleUserClick = (event) => {
@@ -61,10 +60,7 @@ export default function Navigation() {
   };
 
   useEffect(() => {
-    if (auth.user) {
-      // setOpenSnackBar(true);
-      handleClose();
-    }
+
     if (
       auth.user?.role !== "ADMIN" &&
       (location.pathname === "/login" || location.pathname === "/register")
@@ -324,19 +320,7 @@ export default function Navigation() {
         open={openAuthModal}
         setOpenAuthModal={setOpenAuthModal}
       />
-      <Snackbar
-        open={openSnackBar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnakbar}
-      >
-        <Alert
-          onClose={handleCloseSnakbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {"Login Successful"}
-        </Alert>
-      </Snackbar>
+
     </div>
   );
 }

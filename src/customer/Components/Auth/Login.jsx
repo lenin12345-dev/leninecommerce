@@ -23,13 +23,8 @@ export default function LoginUserForm({ handleNext }) {
 
   const handleCloseSnakbar = () => setOpenSnackBar(false);
 
-  useEffect(() => {
-    if (jwt && auth.user) {
-      setOpenSnackBar(true);
-    }
-  }, [jwt]);
 
-  console.log(openSnackBar);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -40,7 +35,12 @@ export default function LoginUserForm({ handleNext }) {
     };
 
     dispatch(login(userData));
+
+    
   };
+
+
+  
   return (
     <React.Fragment>
       <Typography
