@@ -71,8 +71,9 @@ export default function ProductDetails() {
   const fetchSuggestedProducts = async () => {
     try {
       const response = await api.get(`api/suggest-products/${productId}`);
-      if (response?.length > 0) {
-        setSuggestedProducts(response);
+
+      if (response?.data?.length > 0) {
+        setSuggestedProducts(response.data);
       }
     } catch (error) {
       console.error(error);
@@ -455,11 +456,11 @@ export default function ProductDetails() {
                   </Card>
                 </Grid>
               ))}
-                    {!suggestedProducts?.length && (
+                    {!suggestedProducts.length && (
                       <NoDataCard
                         noDataFoundText="No Suggested Product Found"
                         styleCardProps={{ style: { height: 300 } }}
-                        textProps={{ variant: 'h7', color: 'text.secondary', fontWeight: 500 }}
+                        textProps={{ variant: 'subtitle1', color: 'text.secondary', fontWeight: 500 }}
                       />
                     )}
             </Grid>
