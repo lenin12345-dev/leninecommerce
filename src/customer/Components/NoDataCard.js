@@ -26,16 +26,17 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-function NoDataCard({ noDataFoundText, icon = <FolderNodata style={{ fontSize: '13em' }} />, styleCardProps = {} }) {
+function NoDataCard({ noDataFoundText, icon = <FolderNodata style={{ fontSize: '13em' }} />, styleCardProps = {},  textProps = {} }) {
     const classes = useStyles();
-    
     return (
         <Grid item xs={12}>
-            <Card className={classes.root} style={{ ...styleCardProps }}>
+            <Card className={classes.root} style={{ ...styleCardProps.style }}>
                 <CardContent className={classes.noDataCardContent}>
                     {icon}
+                    {/* {...textProps} spreads it into JSX as individual props ✅ */}
+                    {/* Useful for passing styles and custom props dynamically */}
                     {typeof noDataFoundText === 'string' ?
-                        <Typography variant="h5">
+                        <Typography variant="h5"  {...textProps}>
                             {noDataFoundText}
                         </Typography>
                         : noDataFoundText

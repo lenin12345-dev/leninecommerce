@@ -11,6 +11,10 @@ import {
   Snackbar,
   Alert,
   TextField,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
 } from "@mui/material";
 import HomeProductCard from "../../Home/HomeProductCard";
 import { useEffect } from "react";
@@ -26,6 +30,9 @@ import { gounsPage1 } from "../../../../Data/Gouns/gouns";
 import RateProductDialog from "./RateProductDialog";
 import BackdropComponent from "../../BackDrop/Backdrop";
 import ProductPageSkeleton from "../../skeleton/ProductPageSkeleton";
+import api from "../../../../config/api";
+import NoDataCard from "../../NoDataCard";
+
 
 const product = {
   sizes: [
@@ -59,6 +66,18 @@ export default function ProductDetails() {
   const [snackbarMeassage, setSnakcbarMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [reviews, setReviews] = useState("");
+  const [suggestedProducts, setSuggestedProducts] = useState([]);
+
+  const fetchSuggestedProducts = async () => {
+    try {
+      const response = await api.get(`api/suggest-products/${productId}`);
+      if (response?.length > 0) {
+        setSuggestedProducts(response);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const {
     category: {
@@ -162,6 +181,10 @@ export default function ProductDetails() {
     dispatch(findProductById(data));
     dispatch(getAllReviews(productId));
   }, [productId, isDialogOpen]);
+
+  useEffect(() => {
+    if (productId) fetchSuggestedProducts();
+  }, [productId]);
 
   return (
     <div className="bg-white lg:px-20">
@@ -399,6 +422,48 @@ export default function ProductDetails() {
 
         {/* rating and review section */}
         <section className="px-4 md:px-8 lg:px-12">
+          <div style={{ margin: "2rem", marginLeft: 0 }}>
+            <h1 className="font-semibold text-lg pb-4">Suggested Products</h1>
+            <Grid container spacing={2}>
+              {suggestedProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={3} key={product._id}>
+                  <Card
+                    sx={{
+                      maxWidth: 220,
+                      mx: "auto",
+                      boxShadow: 2,
+                      borderRadius: 2,
+                    }}
+                  >
+                    {product.imageUrl && (
+                      <CardMedia
+                        component="img"
+                        height="120"
+                        image={product.imageUrl}
+                        alt={product.name}
+                        sx={{ objectFit: "contain", p: 1 }}
+                      />
+                    )}
+                    <CardContent sx={{ p: 1 }}>
+                      <Typography variant="body1" fontWeight={500} noWrap>
+                        {product.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        ${product.discountedPrice}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+                    {!suggestedProducts?.length && (
+                      <NoDataCard
+                        noDataFoundText="No Suggested Product Found"
+                        styleCardProps={{ style: { height: 300 } }}
+                        textProps={{ variant: 'h7', color: 'text.secondary', fontWeight: 500 }}
+                      />
+                    )}
+            </Grid>
+          </div>
           <h1 className="font-semibold text-lg pb-4">
             Recent Review & Ratings
           </h1>
