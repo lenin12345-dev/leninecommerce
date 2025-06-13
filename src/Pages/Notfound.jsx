@@ -1,31 +1,61 @@
-import { useLocation } from "react-router-dom";
+import React from "react";
+import { Box, Typography, Button, Stack, Container } from "@mui/material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function NotFound() {
-  const location = useLocation();
-  
+  return (
+    <Container maxWidth="md" sx={{ textAlign: "center", py: 10,height:"100vh" }}>
+      {/* Icon */}
+      <Box
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 100,
+          height: 100,
+          borderRadius: "50%",
+          bgcolor: "error.light",
+          mb: 3,
+        }}
+      >
+        <ErrorOutlineIcon sx={{ fontSize: 50, color: "error.main" }} />
+      </Box>
 
-    return (
-      <>
-        
-        <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-          <div className="text-center">
-            <p className="text-base font-semibold text-indigo-600">404</p>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Page not found</h1>
-            <p className="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="/"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Go back home
-              </a>
-              <a href="/" className="text-sm font-semibold text-gray-900">
-                Contact support <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </div>
-        </main>
-      </>
-    )
-  }
-  
+ 
+      <Typography variant="h3" component="h1" gutterBottom>
+        404 — Page Not Found
+      </Typography>
+
+   
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+        Sorry, the page you’re looking for doesn’t exist or has been moved.
+      </Typography>
+
+ 
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={2}
+        justifyContent="center"
+      >
+        <Button
+          variant="contained"
+          component={RouterLink}
+          to="/"
+          color="primary"
+          size="large"
+        >
+          Go back home
+        </Button>
+        <Button
+          variant="outlined"
+          component={RouterLink}
+          to="/contact"
+          size="large"
+        >
+          Contact Support
+        </Button>
+      </Stack>
+    </Container>
+  );
+}

@@ -32,6 +32,7 @@ import BackdropComponent from "../../BackDrop/Backdrop";
 import ProductPageSkeleton from "../../skeleton/ProductPageSkeleton";
 import api from "../../../../config/api";
 import NoDataCard from "../../NoDataCard";
+import NotFound from "../../../../Pages/Notfound";
 
 
 const product = {
@@ -177,15 +178,18 @@ export default function ProductDetails() {
     setSnakcbarMessage("Thank you for your review");
   };
 
-  useEffect(() => {
-    const data = { productId: productId, jwt };
-    dispatch(findProductById(data));
-    dispatch(getAllReviews(productId));
-  }, [productId, isDialogOpen]);
+
+
 
   useEffect(() => {
-    if (productId) fetchSuggestedProducts();
+    if (productId) {
+      const data = { productId, jwt };
+      dispatch(findProductById(data));
+      dispatch(getAllReviews(productId));
+      fetchSuggestedProducts();
+    }
   }, [productId]);
+  if (!customersProduct.loading && !customersProduct.product) return <NotFound />;
 
   return (
     <div className="bg-white lg:px-20">
@@ -421,7 +425,7 @@ export default function ProductDetails() {
           </section>
         )}
 
-        {/* rating and review section */}
+      
         <section className="px-4 md:px-8 lg:px-12">
           <div style={{ margin: "2rem", marginLeft: 0 }}>
             <h1 className="font-semibold text-lg pb-4">Suggested Products</h1>
@@ -429,20 +433,22 @@ export default function ProductDetails() {
               {suggestedProducts.map((product) => (
                 <Grid item xs={12} sm={6} md={3} key={product._id}>
                   <Card
+                  onClick={() => navigate(`/product/${product._id}`)}
                     sx={{
                       maxWidth: 220,
                       mx: "auto",
                       boxShadow: 2,
                       borderRadius: 2,
+                      cursor:"pointer"
                     }}
                   >
                     {product.imageUrl && (
                       <CardMedia
                         component="img"
-                        height="120"
-                        image={product.imageUrl}
+                        height="100px"
+                        image={product?.imageUrl}
                         alt={product.name}
-                        sx={{ objectFit: "contain", p: 1 }}
+                        sx={{ objectFit: "cover", p: 1 }}
                       />
                     )}
                     <CardContent sx={{ p: 1 }}>
