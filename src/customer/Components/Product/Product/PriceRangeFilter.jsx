@@ -17,7 +17,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
 const PriceRangeFilter = ({ section}) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [value, setValue] = useState([0, 50000]); // Initial range value
+    const [value, setValue] = useState([0, 50000]); 
   
     const handleSliderChange = (event, newValue) => {
       setValue(newValue);
