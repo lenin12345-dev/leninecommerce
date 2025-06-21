@@ -47,14 +47,14 @@ export default function NotFound() {
         >
           Go back home
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           component={RouterLink}
           to="/contact"
           size="large"
         >
           Contact Support
-        </Button>
+        </Button> */}
       </Stack>
     </Container>
   );
