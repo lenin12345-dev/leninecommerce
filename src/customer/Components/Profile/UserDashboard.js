@@ -26,6 +26,7 @@ export default function UserDashboard() {
   const token = localStorage.getItem('token');
   const { auth } = useSelector((store) => store);
   const user = auth.user;
+    const { userId } = useParams();
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -38,10 +39,10 @@ export default function UserDashboard() {
   });
 
   useEffect(() => {
-    if (token) {
-      dispatch(getUser(token));
+    if (userId) {
+      dispatch(getUser(userId));
     }
-  }, [token]);
+  }, [userId]);
 
   useEffect(() => {
     if (user) {

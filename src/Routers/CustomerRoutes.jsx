@@ -18,7 +18,8 @@ import Checkout from "../customer/Components/Checkout/Checkout";
 import Footer from "../customer/Components/footer/Footer";
 import PaymentSuccess from "../customer/Components/paymentSuccess/PaymentSuccess";
 import RateProduct from "../customer/Components/ReviewProduct/RateProduct";
-import NotFound from '../Pages/Notfound'
+import NotFound from '../Pages/Notfound';
+import UserDashboard from "../customer/Components/Profile/UserDashboard";
 
 const CustomerRoutes = () => {
     const location = useLocation();
@@ -45,6 +46,7 @@ const CustomerRoutes = () => {
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/products" element={<Product />}></Route>
         <Route path="/product/:productId" element={<ProductDetails />}></Route>
+        <Route path="/user/:userId" element={<UserDashboard />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/account/order" element={<Order />}></Route>
         <Route path="/account/order/:orderId" element={<OrderDetails />}></Route>
