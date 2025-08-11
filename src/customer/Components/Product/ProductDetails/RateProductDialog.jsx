@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   Button,
   Dialog,
@@ -45,13 +44,12 @@ const RateProductDialog = ({ open, onClose, productId ,token,auth}) => {
         payload,
         config
       );
-      // Handle success (e.g., close dialog, reset rating, etc.)
-      onClose(); // Close the dialog after submission
+      onClose(); 
       setOpenSnackBar(true);
       setSeverity("success");
       setSnakcbarMessage("Thank you for your rating");
     } catch (error) {
-      // Handle error (e.g., display an error message)
+      console.error(error)
     }
   };
   const handleCloseSnakbar = (event, reason) => {

@@ -6,8 +6,6 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  ReceiptRefundIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
