@@ -1,6 +1,5 @@
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 
-import { useDispatch, useSelector } from "react-redux";
 import './App.css';
 import CustomerRoutes from './Routers/CustomerRoutes';
 import AdminPannel from './Admin/AdminPannel';

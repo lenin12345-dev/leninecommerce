@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
+
 import {
   Grid,
   TextField,
@@ -11,9 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../../../Redux/Customers/Order/Action";
 import AddressCard from "../adreess/AdreessCard";
-import { useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import FormLabel from '@mui/material/FormLabel';
+import FormLabel from "@mui/material/FormLabel";
 
 export default function AddDeliveryAddressForm({ handleNext }) {
   const navigate = useNavigate();
@@ -23,12 +23,9 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   const { loading } = order;
   const [selectedAddress, setSelectedAdress] = useState(null);
 
-  // console.log("auth", auth);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
 
     const address = {
       firstName: data.get("firstName"),
@@ -39,10 +36,27 @@ export default function AddDeliveryAddressForm({ handleNext }) {
       zipCode: data.get("zip"),
       mobile: data.get("phoneNumber"),
     };
+    const expiry = new Date();
+    expiry.setFullYear(expiry.getFullYear() + 1);
+    localStorage.setItem(
+      "savedAddress",
+      JSON.stringify({ address, expiry: expiry.getTime() })
+    );
     dispatch(createOrder({ address, jwt, navigate }));
-    // after perfoming all the opration
     handleNext();
   };
+  useEffect(() => {
+    const saved = localStorage.getItem("savedAddress");
+    if (saved) {
+      const { address, expiry } = JSON.parse(saved);
+      if (new Date().getTime() < expiry) {
+        setSelectedAdress(address);
+      } else {
+        localStorage.removeItem("savedAddress"); // expired
+      }
+    }
+  }, []);
+
   const addresses = auth.user?.addresses || [];
 
   const handleCreateOrder = (item) => {
@@ -90,9 +104,9 @@ export default function AddDeliveryAddressForm({ handleNext }) {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="first-name" required>
-          First name
-        </FormLabel>
+                <FormLabel htmlFor="first-name" required>
+                  First name
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="firstName"
@@ -104,9 +118,9 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="first-name" required>
-          Last Name
-        </FormLabel>
+                <FormLabel htmlFor="first-name" required>
+                  Last Name
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="lastName"
@@ -114,13 +128,12 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   fullWidth
                   autoComplete="given-name"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12}>
-              <FormLabel htmlFor="address" required>
-              Address line 1
-        </FormLabel>
+                <FormLabel htmlFor="address" required>
+                  Address line 1
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="address"
@@ -128,27 +141,22 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   fullWidth
                   autoComplete="shipping address"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12}>
-              <FormLabel htmlFor="adress">
-              Address line 2
-        </FormLabel>
+                <FormLabel htmlFor="adress">Address line 2</FormLabel>
                 <OutlinedInput
-                  
                   id="addressl"
                   name="address"
                   fullWidth
                   autoComplete="shipping address"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="adress" required>
-              City
-        </FormLabel>
+                <FormLabel htmlFor="adress" required>
+                  City
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="city"
@@ -156,26 +164,24 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   fullWidth
                   autoComplete="shipping address-level2"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="adress" required>
-              State
-        </FormLabel>
+                <FormLabel htmlFor="adress" required>
+                  State
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="state"
                   name="state"
                   fullWidth
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="adress" required>
-              State
-        </FormLabel>
+                <FormLabel htmlFor="adress" required>
+                  State
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="zip"
@@ -183,13 +189,12 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   fullWidth
                   autoComplete="shipping postal-code"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormLabel htmlFor="adress" required>
-              Phone Number
-        </FormLabel>
+                <FormLabel htmlFor="adress" required>
+                  Phone Number
+                </FormLabel>
                 <OutlinedInput
                   required
                   id="phoneNumber"
@@ -197,7 +202,6 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                   fullWidth
                   autoComplete="tel"
                   size="small"
-
                 />
               </Grid>
               <Grid item xs={12}>

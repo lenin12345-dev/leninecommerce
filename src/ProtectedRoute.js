@@ -7,15 +7,14 @@ const ProtectedRoute = ({ children }) => {
   const { auth } = useSelector((store) => store);
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  console.log(auth)
   useEffect(() => {
     if (jwt && !auth.user) {
       dispatch(getUser(jwt));
     }
-  }, [jwt, dispatch, auth.user]); // ⚠️ Remove isLoading
+  }, [jwt, dispatch, auth.user]); 
 
   if (auth.isLoading) {
-    return <p>Loading...</p>; // or your Backdrop spinner
+    return <p>Loading...</p>; 
   }
 
   if (!auth.isLoading && !auth.user) {
