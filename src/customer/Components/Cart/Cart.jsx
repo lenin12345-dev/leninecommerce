@@ -20,10 +20,10 @@ const Cart = () => {
   useEffect(() => {
     if (!jwt) {
       navigate("/login");
-    } else if (auth.user) {
+    } else if (auth.user  && !cart.cartItems.length) {
       dispatch(getCart(jwt));
     }
-  }, [auth.user,jwt]);
+  }, [auth.user,jwt,cart.cartItems.length]);
 
 
 
@@ -36,7 +36,7 @@ const Cart = () => {
           <div className="lg:col-span-2 lg:px-5 bg-white">
             <div className="space-y-3">
               {cart.cartItems.map((item) => (
-                <CartItem key={item._id} item={item} showButton={true} />
+                <CartItem key={item._id} item={item} showButton={true} jwt={jwt}/>
               ))}
             </div>
           </div>

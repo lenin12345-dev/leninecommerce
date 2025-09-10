@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useCallback} from "react";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { removeCartItem, updateCartItem,getCart } from "../../../Redux/Customers/Cart/Action";
@@ -6,20 +6,19 @@ import { IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-const CartItem = ({ item,showButton }) => {
+const CartItem = ({ item,showButton,jwt }) => {
+
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
-  console.log(item)
-  const handleRemoveItemFromCart = async() => {
+  const handleRemoveItemFromCart = useCallback(async() => { 
     const data = { cartItemId: item?._id, jwt };
     await dispatch(removeCartItem(data));
     dispatch(getCart(jwt))
-  };
-  const handleUpdateCartItem=async(num)=>{
+  });
+  const handleUpdateCartItem= useCallback(async(num)=>{
     const data={data:{quantity:item.quantity+num}, cartItemId:item?._id, jwt}
     await dispatch(updateCartItem(data))
     dispatch(getCart(jwt));
-  }
+  })
   return (
     <div className="p-5 shadow-lg border rounded-md">
       <div className="flex items-center">
@@ -68,4 +67,4 @@ const CartItem = ({ item,showButton }) => {
   );
 };
 
-export default CartItem;
+export default React.memo(CartItem);;
