@@ -20,10 +20,10 @@ const Cart = () => {
   useEffect(() => {
     if (!jwt) {
       navigate("/login");
-    } else if (auth.user) {
+    } else  {
       dispatch(getCart(jwt));
     }
-  }, [auth.user,jwt]);
+  }, [jwt]);
 
 
 
