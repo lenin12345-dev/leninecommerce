@@ -1,80 +1,57 @@
-import * as React from "react";
-import { useEffect } from "react";
+import React, { useEffect, lazy, Suspense,startTransition } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import AddDeliveryAddressForm from "./AddAddress";
 import { useLocation, useNavigate } from "react-router-dom";
-import OrderSummary from "./OrderSummary";
 import { useDispatch, useSelector } from "react-redux";
 
+const AddDeliveryAddressForm = lazy(() => import("./AddAddress"));
+const OrderSummary = lazy(() => import("./OrderSummary"));
 
-const steps = [
-  "Login",
-  "Delivery Adress",
-  "Order Summary",
-  "Payment",
-];
+const steps = ["Login", "Delivery Adress", "Order Summary", "Payment"];
 
 export default function Checkout() {
-  const [activeStep, setActiveStep] = React.useState(1);
-  const [skipped, setSkipped] = React.useState(new Set());
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const step = queryParams.get('step');
-  const navigate=useNavigate();
-    const {auth}=useSelector(store=>store);
-  
- 
+  const navigate = useNavigate();
+  const step = Number(queryParams.get("step")) || 1;
 
-
-  const handleNext = () => {
-    let newSkipped = skipped;
-   
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-  };
+  const { auth } = useSelector((store) => store);
 
   const handleBack = () => {
-    navigate(`/checkout?step=${step-1}`)
+    if (step > 1) navigate(`/checkout?step=${step - 1}`);
   };
 
-
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-  
-
-  const handlePayment=()=>{
-    console.log("handle payment")
+  const handleNext = () => {
+      if (step < steps.length) {
+    startTransition(() => {
+      navigate(`/checkout?step=${step + 1}`);
+    });
   }
-  useEffect(()=>{
-    if (!auth.user){
-      navigate("/login")
+  };
+
+
+
+
+  useEffect(() => {
+    if (!auth.user) {
+      navigate("/login");
     }
-  
-  },[auth.user])
+  }, [auth.user]);
 
   return (
     <Box className="px-5 py-4 lg:px-32 " sx={{ width: "100%" }}>
-      <Stepper activeStep={step}>
-        {steps.map((label, index) => {
-          const stepProps = {};
-          const labelProps = {};
-         
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
+      <Stepper activeStep={step - 1}>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
       </Stepper>
-      {activeStep === steps.length ? (
+      {step > steps.length ? (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
@@ -96,18 +73,20 @@ export default function Checkout() {
               Back
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
-
-            
           </Box>
           {/* <Typography sx={{ my: 6 }}>Title</Typography> */}
 
           <div className="my-5">
-            {step == 2? <AddDeliveryAddressForm handleNext={handleNext} />:<OrderSummary/>}
+            <Suspense fallback={<div>Loading...</div>}>
+              {step === 2 ? (
+                <AddDeliveryAddressForm handleNext={handleNext} />
+              ) : (
+                <OrderSummary />
+              )}
+            </Suspense>
           </div>
 
           {/* <AddDeliveryAddressForm handleNext={handleNext} /> */}
-
-          
         </React.Fragment>
       )}
     </Box>
