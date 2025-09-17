@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Skeleton from "@mui/material/Skeleton"; 
 
 const AddDeliveryAddressForm = lazy(() => import("./AddAddress"));
 const OrderSummary = lazy(() => import("./OrderSummary"));
@@ -35,12 +36,25 @@ export default function Checkout() {
 
 
 
-
   useEffect(() => {
-    if (!auth.user) {
+    if (!auth.isLoading && !auth.user ) {
       navigate("/login");
     }
-  }, [auth.user]);
+  }, [auth.user,auth.isLoading]);
+      if (auth.isLoading) {
+    return (
+      <Box className="px-5 py-4 lg:px-32" sx={{ width: "100%",height:"100vh" }}>
+        <Skeleton variant="rectangular" height={40} sx={{ mb: 3 }} />
+        <Skeleton variant="text" width="60%" sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" height={200} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" height={200} sx={{ mb: 2 }} />
+        <Skeleton variant="text" width="40%" />
+      </Box>
+    );
+  }
+
+  
+
 
   return (
     <Box className="px-5 py-4 lg:px-32 " sx={{ width: "100%" }}>

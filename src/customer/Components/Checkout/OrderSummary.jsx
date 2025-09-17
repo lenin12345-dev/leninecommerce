@@ -35,7 +35,7 @@ const OrderSummary = () => {
   if (loading || !orderData) {
     return (
       <div className="space-y-5">
-        <Skeleton variant="rectangular" width="100%" height={150} />
+        <Skeleton variant="rectangular" width="100%"  />
         {Array.from(new Array(3)).map((_, index) => (
           <Skeleton key={index} variant="rectangular" width="100%" height={118} />
         ))}
@@ -44,16 +44,16 @@ const OrderSummary = () => {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" style={{ minHeight: "100vh" }}>
       {/* Shipping Address */}
       <div className="p-5 shadow-lg rounded-md border">
-        <AddressCard address={orderData.shippingAddress} />
+        <AddressCard address={orderData?.shippingAddress} />
       </div>
 
       {/* Order Items and Price Details */}
       <div className="lg:grid grid-cols-3 relative justify-between">
         <div className="lg:col-span-2 space-y-3">
-          {orderData.orderItems.map((item) => (
+          {orderData?.orderItems?.map((item) => (
             <CartItem key={item._id} item={item} showButton={false} />
           ))}
         </div>

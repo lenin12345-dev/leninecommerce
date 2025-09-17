@@ -13,7 +13,7 @@ import {
 
 const initialState = {
   user: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -28,7 +28,7 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_FAILURE:
       return { ...state, isLoading: false, error: action.payload };
     case LOGIN_SUCCESS:
-      return { ...state, isLoading: false };
+      return { ...state,user: action.payload || state.user , isLoading: false };
     case GET_USER_REQUEST:
       return { ...state, isLoading: true, error: null };
     case GET_USER_SUCCESS:
