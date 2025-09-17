@@ -24,6 +24,9 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
   const handleClose = () => setOpenSnackBar(false);
   const [errorObj, setErrorObj] = useState({});
   const jwt = localStorage.getItem("jwt");
+  const [loading, setLoading] = useState(false);
+
+  console.log("auth in register", auth);
 
   useEffect(() => {
     if (jwt) {
@@ -74,13 +77,14 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
       email: data.get("email"),
       password: data.get("password"),
     };
-
+    setLoading(true);
     if (!validateForm(userData)) return;
 
     dispatch(register(userData));
     setOpenSnackBar(true);
     setSnackBarMessage("Registering...");
     setSnackBarSeverity("info");
+    setLoading(false);
     if (auth.user) {
       setSnackBarMessage("Registration Successful and Logging in");
       setSnackBarSeverity("success");
@@ -170,9 +174,9 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
                   transform: "scale(1.01)",
                 },
               }}
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? <CircularProgress size={24} /> : "Register"}
+              {loading ? <CircularProgress size={24} /> : "Register"}
             </Button>
           </Grid>
         </Grid>

@@ -30,7 +30,7 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       return { ...state,user: action.payload || state.user , isLoading: false };
     case GET_USER_REQUEST:
-      return { ...state, isLoading: true, error: null };
+      return { ...state, user: action.payload || state.user, isLoading: true, error: null };
     case GET_USER_SUCCESS:
       return { ...state, isLoading: false, user: action.payload };
     case GET_USER_FAILURE:

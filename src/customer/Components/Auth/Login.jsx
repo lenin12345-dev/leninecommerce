@@ -17,30 +17,26 @@ export default function LoginUserForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auth } = useSelector((store) => store);
-  const { isLoading } = auth;
+  const { isLoading, user } = auth;
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const jwt = localStorage.getItem("jwt");
+  const [loading, setLoading] = useState(false);
 
   const handleCloseSnakbar = () => setOpenSnackBar(false);
-
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+    setLoading(true);
     const userData = {
       email: data.get("email"),
       password: data.get("password"),
     };
 
     dispatch(login(userData));
-
-    
+    setLoading(false);
   };
 
-
-  
   return (
     <React.Fragment>
       <Typography
@@ -98,9 +94,9 @@ export default function LoginUserForm({ handleNext }) {
                   transform: "scale(1.01)",
                 },
               }}
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? <CircularProgress size={24} /> : "Login"}
+              {loading ? <CircularProgress size={24} /> : "Login"}
             </Button>
           </Grid>
         </Grid>
@@ -125,7 +121,7 @@ export default function LoginUserForm({ handleNext }) {
         open={openSnackBar}
         autoHideDuration={3000}
         onClose={handleCloseSnakbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }} 
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnakbar}

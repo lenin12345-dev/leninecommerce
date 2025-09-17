@@ -10,7 +10,6 @@ import { Avatar, Button, Menu, MenuItem, Snackbar, Alert } from "@mui/material";
 import { navigation } from "../../../config/navigationMenu";
 import AuthModal from "../Auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
-import { deepPurple } from "@mui/material/colors";
 import { getUser, logout } from "../../../Redux/Auth/Action";
 import { getCart } from "../../../Redux/Customers/Cart/Action";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -265,7 +264,7 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        {auth.user?.firstname[0]?.toUpperCase()}
+                        {auth.user?.firstname?.[0]?.toUpperCase()}
                       </Avatar>
                       <Menu
                         id="basic-menu"

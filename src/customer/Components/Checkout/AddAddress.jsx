@@ -63,6 +63,8 @@ export default function AddDeliveryAddressForm({ handleNext }) {
     dispatch(createOrder({ address: item, jwt, navigate }));
     handleNext();
   };
+console.log("selectedAddress", selectedAddress);
+console.log("addresses", addresses);
 
   return (
     <Grid container spacing={4}>
