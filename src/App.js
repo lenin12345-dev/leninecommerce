@@ -1,16 +1,27 @@
-import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
-
-import './App.css';
-import CustomerRoutes from './Routers/CustomerRoutes';
-import AdminPannel from './Admin/AdminPannel';
-import ProtectedRoute from './ProtectedRoute'; 
-import NotFound from './Pages/Notfound';
+import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import "./App.css";
+import CustomerRoutes from "./Routers/CustomerRoutes";
+import AdminPannel from "./Admin/AdminPannel";
+import ProtectedRoute from "./ProtectedRoute";
+import Navigation from "../src/customer/Components/Navbar/Navigation";
+import { getUser } from "./Redux/Auth/Action";
+import { getCart } from "./Redux/Customers/Cart/Action";
+import { useDispatch } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
 
-
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt));
+      dispatch(getCart(jwt));
+    }
+  }, [jwt, dispatch]);
   return (
-    <div className="">
+    <div>
+      <Navigation />
       <Routes>
         <Route path="/*" element={<CustomerRoutes />} />
 
@@ -22,11 +33,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
 }
-
 export default App;

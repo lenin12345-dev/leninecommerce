@@ -6,7 +6,8 @@ import { IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-const CartItem = ({ item,showButton,jwt }) => {
+const CartItem = ({ item,showButton }) => {
+  const jwt = localStorage.getItem("jwt");
 
   const dispatch = useDispatch();
   const handleRemoveItemFromCart = useCallback(async() => { 

@@ -9,7 +9,6 @@ import NoDataCard from "../NoDataCard";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const jwt = localStorage.getItem("jwt");
   const { cart, auth } = useSelector((store) => store);
 
   
@@ -17,26 +16,20 @@ const Cart = () => {
 // When you access localStorage.getItem("jwt"), it retrieves the data immediately without any delays.
 //auth.user from Redux: Usually requires rehydrating the Redux store, possibly involving an API call to get user information from the server, which adds asynchronous delay.
 
-  useEffect(() => {
-    if (!jwt) {
-      navigate("/login");
-    } else  {
-      dispatch(getCart(jwt));
-    }
-  }, [jwt]);
 
+  console.log("cart", cart);
 
 
   return (
     <Box
-      className="min-h-[calc(100vh-64px)] flex flex-col pt-5"
+      className="min-h-[calc(100vh)] flex flex-col pt-5"
     >
       {cart.cartItems.length > 0 ? (
         <div className="lg:grid grid-cols-3 lg:px-16 relative flex-grow">
           <div className="lg:col-span-2 lg:px-5 bg-white">
             <div className="space-y-3">
               {cart.cartItems.map((item) => (
-                <CartItem key={item._id} item={item} showButton={true} jwt={jwt}/>
+                <CartItem key={item._id} item={item} showButton={true} />
               ))}
             </div>
           </div>
@@ -48,7 +41,7 @@ const Cart = () => {
               <div className="space-y-3 font-semibold">
                 <div className="flex justify-between pt-3 text-black">
                   <span>Price ({cart.cart?.totalItem} item)</span>
-                  <span>${cart.cart.totalPrice}</span>
+                  <span>${cart.cart?.totalPrice}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Discount</span>
