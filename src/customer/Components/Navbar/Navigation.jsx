@@ -18,7 +18,6 @@ export default function Navigation() {
     dispatch(logout());
 
   };
-
   return (
     <div>
       <MobileMenu open={open} setOpen={setOpen} auth={auth} onLogout={handleLogout} />
