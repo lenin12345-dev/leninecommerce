@@ -17,7 +17,6 @@ const Cart = () => {
 //auth.user from Redux: Usually requires rehydrating the Redux store, possibly involving an API call to get user information from the server, which adds asynchronous delay.
 
 
-  console.log("cart", cart);
 
 
   return (

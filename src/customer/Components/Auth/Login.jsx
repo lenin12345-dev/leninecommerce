@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../Redux/Auth/Action";
 import { useEffect, useState } from "react";
 
-export default function LoginUserForm({ handleNext }) {
+export default function LoginUserForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auth } = useSelector((store) => store);
