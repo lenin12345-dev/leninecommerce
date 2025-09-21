@@ -44,7 +44,7 @@ const OrderSummary = () => {
   }
 
   return (
-    <div className="space-y-5" style={{ minHeight: "100vh" }}>
+    <div className="space-y-5" height="100vh"> 
       {/* Shipping Address */}
       <div className="p-5 shadow-lg rounded-md border">
         <AddressCard address={orderData?.shippingAddress} />
@@ -58,7 +58,7 @@ const OrderSummary = () => {
           ))}
         </div>
 
-        <div className="sticky top-0 h-[100vh] mt-5 lg:mt-0 ml-5">
+        <div className="sticky top-0 mt-5 lg:mt-0 ml-5">
           <div className="border p-5 bg-white shadow-lg rounded-md">
             <p className="font-bold opacity-60 pb-4">PRICE DETAILS</p>
             <hr />

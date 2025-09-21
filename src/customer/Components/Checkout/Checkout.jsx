@@ -34,7 +34,8 @@ export default function Checkout() {
   }
   };
 
-
+ console.log(auth);
+ 
 
   useEffect(() => {
     if (!auth.isLoading && !auth.user ) {
@@ -57,7 +58,7 @@ export default function Checkout() {
 
 
   return (
-    <Box className="px-5 py-4 lg:px-32 " sx={{ width: "100%" }}>
+    <Box className="px-5 py-4 lg:px-32 " sx={{ minHeight: { xs: "auto", md: "100vh" }, width: "100%" }}>
       <Stepper activeStep={step - 1}>
         {steps.map((label) => (
           <Step key={label}>

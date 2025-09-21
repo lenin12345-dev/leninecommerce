@@ -2,22 +2,17 @@ import React, { useEffect } from "react";
 import CartItem from "./CartItem";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { getCart } from "../../../Redux/Customers/Cart/Action";
+import { useSelector } from "react-redux";
 import NoDataCard from "../NoDataCard";
 
 const Cart = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cart, auth } = useSelector((store) => store);
+  const { cart } = useSelector((store) => store);
 
   
 // Instant Access: localStorage is a synchronous API. 
 // When you access localStorage.getItem("jwt"), it retrieves the data immediately without any delays.
 //auth.user from Redux: Usually requires rehydrating the Redux store, possibly involving an API call to get user information from the server, which adds asynchronous delay.
-
-
-
 
   return (
     <Box
@@ -32,7 +27,7 @@ const Cart = () => {
               ))}
             </div>
           </div>
-          <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
+          <div className="px-5 sticky top-0  mt-5 lg:mt-0">
             <div className="border p-5 bg-white shadow-lg rounded-md">
               <p className="font-bold opacity-60 pb-4">PRICE DETAILS</p>
               <hr />
