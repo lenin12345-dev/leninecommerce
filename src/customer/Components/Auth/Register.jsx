@@ -3,68 +3,64 @@ import {
   Grid,
   TextField,
   Button,
-  Snackbar,
-  Alert,
   CircularProgress,
   Typography,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, register } from "../../../Redux/Auth/Action";
+import { register } from "../../../Redux/Auth/Action";
 import { validEmail } from "../../../util/helper";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
-export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
-  const navigate = useNavigate();
+export default function RegisterUserForm({
+  setOpenAuthModal,
+  setSnackBarMessage,
+  setSnackBarSeverity,
+  setOpenSnackBar,
+}) {
   const dispatch = useDispatch();
-  const [openSnackBar, setOpenSnackBar] = useState(false);
-  const [snackBarMessage, setSnackBarMessage] = useState("");
-  const [snackBarSeverity, setSnackBarSeverity] = useState("success");
+  const navigate = useNavigate();
   const { auth } = useSelector((store) => store);
-  const { isLoading } = auth;
-  const handleClose = () => setOpenSnackBar(false);
-  const [errorObj, setErrorObj] = useState({});
-  const jwt = localStorage.getItem("jwt");
+  const { user, error } = auth;
   const [loading, setLoading] = useState(false);
-
-  console.log("auth in register", auth);
+  const [errorObj, setErrorObj] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (jwt) {
-      dispatch(getUser(jwt));
-    }
-  }, [jwt]);
-  useEffect(() => {
-    if (auth.user) {
-      setSnackBarMessage("Registration Successful and Logging in");
+    if (user) {
+      setSnackBarMessage("Registration Successful and Logged in");
       setSnackBarSeverity("success");
-    } else if (auth.error) {
-      setSnackBarMessage(auth.error);
+      setOpenSnackBar(true);
+      setLoading(false);
+      setOpenAuthModal(false);
+    } else if (error) {
+      setSnackBarMessage(error);
       setSnackBarSeverity("error");
+      setOpenSnackBar(true);
+      setLoading(false);
     }
-  }, [auth]);
+  }, [
+    user,
+    error,
+    setOpenSnackBar,
+    setSnackBarMessage,
+    setSnackBarSeverity,
+    setOpenAuthModal,
+  ]);
 
   const validateForm = (userData) => {
     let errorList = {};
-
-    if (!userData.firstName) {
-      errorList.firstName = "Please enter first name";
-    }
-    if (!userData.lastName) {
-      errorList.lastName = "Please enter last name";
-    }
-    if (!userData.email) {
-      errorList.email = "Please enter an email";
-    }
+    if (!userData.firstName) errorList.firstName = "Please enter first name";
+    if (!userData.lastName) errorList.lastName = "Please enter last name";
+    if (!userData.email) errorList.email = "Please enter an email";
     if (userData.email && !validEmail(userData.email)) {
       errorList.email = `${userData.email} is not a valid email!`;
     }
-    if (Object.keys(errorList).length === 0) {
-      setErrorObj({});
-      return true;
-    } else {
-      setErrorObj(errorList);
-      return false;
-    }
+
+    setErrorObj(errorList);
+    return Object.keys(errorList).length === 0;
   };
 
   const handleSubmit = (event) => {
@@ -77,19 +73,11 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
       email: data.get("email"),
       password: data.get("password"),
     };
-    setLoading(true);
+
     if (!validateForm(userData)) return;
 
+    setLoading(true);
     dispatch(register(userData));
-    setOpenSnackBar(true);
-    setSnackBarMessage("Registering...");
-    setSnackBarSeverity("info");
-    setLoading(false);
-    if (auth.user) {
-      setSnackBarMessage("Registration Successful and Logging in");
-      setSnackBarSeverity("success");
-      setOpenAuthModal(false);
-    }
   };
 
   return (
@@ -151,7 +139,19 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
               name="password"
               label="Password"
               fullWidth
-              type="password"
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -181,7 +181,6 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
           </Grid>
         </Grid>
       </form>
-
       <div className="flex justify-center flex-col items-center mt-3">
         <div className="py-3 flex items-center justify-center">
           <p className="m-0 p-0">Already have an account?</p>
@@ -198,20 +197,6 @@ export default function RegisterUserForm({ handleNext, setOpenAuthModal }) {
           </Button>
         </div>
       </div>
-
-      <Snackbar
-        open={openSnackBar}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
-          onClose={handleClose}
-          severity={snackBarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackBarMessage}
-        </Alert>
-      </Snackbar>
     </div>
   );
 }

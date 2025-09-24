@@ -14,6 +14,7 @@ import {
 import api, { API_BASE_URL } from "../../config/api";
 import { getCart } from "../Customers/Cart/Action";
 
+
 // Register action creators
 const registerRequest = () => ({ type: REGISTER_REQUEST });
 const registerSuccess = (user) => ({ type: REGISTER_SUCCESS, payload: user });
@@ -26,6 +27,7 @@ export const register = (userData) => async (dispatch) => {
     const user = response.data;
     if (user.accessToken) localStorage.setItem("jwt", user.accessToken);
     dispatch(registerSuccess(user));
+    dispatch(getUser(user.accessToken));
   } catch (error) {
     dispatch(registerFailure(error.message));
   }

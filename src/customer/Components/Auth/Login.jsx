@@ -5,36 +5,61 @@ import {
   Button,
   CircularProgress,
   Typography,
-  Snackbar,
-  Alert,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../Redux/Auth/Action";
 import { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-export default function LoginUserForm() {
+export default function LoginUserForm({
+  setSnackBarMessage,
+  setSnackBarSeverity,
+  setOpenSnackBar,
+  setOpenAuthModal,
+}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auth } = useSelector((store) => store);
-  const { isLoading, user } = auth;
-  const [openSnackBar, setOpenSnackBar] = useState(false);
-  const jwt = localStorage.getItem("jwt");
+  const { user, error } = auth;
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleCloseSnakbar = () => setOpenSnackBar(false);
+  useEffect(() => {
+    if (user) {
+      setSnackBarMessage("Login Successful");
+      setSnackBarSeverity("success");
+      setOpenSnackBar(true);
+      setLoading(false);
+      setOpenAuthModal(false);
+    } else if (error) {
+      setSnackBarMessage(error || "Login Failed");
+      setSnackBarSeverity("error");
+      setOpenSnackBar(true);
+      setLoading(false);
+    }
+  }, [
+    user,
+    error,
+    setSnackBarMessage,
+    setSnackBarSeverity,
+    setOpenSnackBar,
+    setOpenAuthModal,
+  ]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setLoading(true);
+
     const userData = {
       email: data.get("email"),
       password: data.get("password"),
     };
 
     dispatch(login(userData));
-    setLoading(false);
   };
 
   return (
@@ -59,7 +84,7 @@ export default function LoginUserForm() {
               name="email"
               label="Email"
               fullWidth
-              autoComplete="given-name"
+              autoComplete="email"
             />
           </Grid>
           <Grid item xs={12}>
@@ -69,8 +94,20 @@ export default function LoginUserForm() {
               name="password"
               label="Password"
               fullWidth
-              autoComplete="given-name"
-              type="password"
+              autoComplete="current-password"
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
 
@@ -117,20 +154,6 @@ export default function LoginUserForm() {
           </Button>
         </div>
       </div>
-      <Snackbar
-        open={openSnackBar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnakbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnakbar}
-          severity={auth.error ? "error" : "success"}
-          sx={{ width: "100%" }}
-        >
-          {auth.error ? "Login Failed" : "Login Successful"}
-        </Alert>
-      </Snackbar>
     </React.Fragment>
   );
 }
