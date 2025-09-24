@@ -73,7 +73,8 @@ const SlidingImagesSection = () => {
         position: "relative",
         flexDirection: { xs: "column", md: "row" },
         alignItems: { xs: "center", md: "flex-center" },
-        justifyContent:"space-around"
+        justifyContent:"space-around",
+        my: 4
       }}
     >
       <SlidingImage
