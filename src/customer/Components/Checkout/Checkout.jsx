@@ -34,9 +34,6 @@ export default function Checkout() {
   }
   };
 
- console.log(auth);
- 
-
   useEffect(() => {
     if (!auth.isLoading && !auth.user ) {
       navigate("/login");

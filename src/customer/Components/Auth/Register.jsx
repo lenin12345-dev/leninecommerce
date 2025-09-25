@@ -27,6 +27,7 @@ export default function RegisterUserForm({
   const [loading, setLoading] = useState(false);
   const [errorObj, setErrorObj] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  console.log("error",error)
 
   useEffect(() => {
     if (user) {
@@ -35,7 +36,7 @@ export default function RegisterUserForm({
       setOpenSnackBar(true);
       setLoading(false);
       setOpenAuthModal(false);
-    } else if (error) {
+    } else if  (error && error.source !== "getUser") {
       setSnackBarMessage(error);
       setSnackBarSeverity("error");
       setOpenSnackBar(true);

@@ -72,7 +72,7 @@ export const getUser = (token) => {
       dispatch({ type: GET_USER_SUCCESS, payload: user });
     } catch (error) {
       const errorMessage = error.message;
-      dispatch({ type: GET_USER_FAILURE, payload: errorMessage });
+      dispatch({ type: GET_USER_FAILURE,payload: { message: errorMessage, source: "getUser" }});
     }
   };
 };

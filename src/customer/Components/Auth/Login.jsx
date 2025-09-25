@@ -34,7 +34,7 @@ export default function LoginUserForm({
       setOpenSnackBar(true);
       setLoading(false);
       setOpenAuthModal(false);
-    } else if (error) {
+    } else if (error && error.source !== "getUser") {
       setSnackBarMessage(error || "Login Failed");
       setSnackBarSeverity("error");
       setOpenSnackBar(true);

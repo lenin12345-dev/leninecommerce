@@ -13,12 +13,11 @@ const Cart = () => {
 // Instant Access: localStorage is a synchronous API. 
 // When you access localStorage.getItem("jwt"), it retrieves the data immediately without any delays.
 //auth.user from Redux: Usually requires rehydrating the Redux store, possibly involving an API call to get user information from the server, which adds asynchronous delay.
-
   return (
     <Box
       className="min-h-[calc(100vh)] flex flex-col pt-5"
     >
-      {cart.cartItems.length > 0 ? (
+      {cart?.cartItems?.length > 0 ? (
         <div className="lg:grid grid-cols-3 lg:px-16 relative flex-grow">
           <div className="lg:col-span-2 lg:px-5 bg-white">
             <div className="space-y-3">

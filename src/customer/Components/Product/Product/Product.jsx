@@ -753,7 +753,7 @@ export default function Product() {
                 <div className="lg:col-span-4 w-full self-start ">
                   <div className="flex flex-wrap justify-center bg-white border py-5 rounded-md ">
                     {customersProduct?.products?.content?.map((item) => (
-                      <ProductCard product={item} />
+                      <ProductCard key={item._id} product={item} />
                     ))}
                     {!customersProduct?.products?.content?.length && (
                       <NoDataCard

@@ -29,6 +29,7 @@ export default function AuthModal({ handleClose, open, setOpenAuthModal }) {
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [snackBarSeverity, setSnackBarSeverity] = useState("success");
 
+
   useEffect(() => {
     if (auth.user) {
       handleClose();
