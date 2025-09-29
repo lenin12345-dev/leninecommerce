@@ -25,10 +25,7 @@ import {
   getAllReviews,
   createReview,
 } from "../../../../Redux/Customers/Review/Action";
-import { lengha_page1 } from "../../../../Data/Women/LenghaCholi";
-import { gounsPage1 } from "../../../../Data/Gouns/gouns";
 import RateProductDialog from "./RateProductDialog";
-import BackdropComponent from "../../BackDrop/Backdrop";
 import ProductPageSkeleton from "../../skeleton/ProductPageSkeleton";
 import api from "../../../../config/api";
 import NoDataCard from "../../NoDataCard";
@@ -69,17 +66,7 @@ export default function ProductDetails() {
   const [reviews, setReviews] = useState("");
   const [suggestedProducts, setSuggestedProducts] = useState([]);
 
-  const fetchSuggestedProducts = async () => {
-    try {
-      const response = await api.get(`api/suggest-products/${productId}`);
 
-      if (response?.data?.length > 0) {
-        setSuggestedProducts(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const {
     category: {
@@ -186,9 +173,27 @@ export default function ProductDetails() {
       const data = { productId, jwt };
       dispatch(findProductById(data));
       dispatch(getAllReviews(productId));
-      fetchSuggestedProducts();
     }
   }, [productId]);
+  useEffect(() => {
+  let isMounted = true;
+
+  const fetchSuggestedProducts = async () => {
+    try {
+      const { data } = await api.get(`api/suggest-products/${productId}`);
+      if (isMounted && data?.length) {
+        setSuggestedProducts(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchSuggestedProducts();
+
+  return () => { isMounted = false; };
+}, [productId]);
+
   if (!customersProduct.loading && !customersProduct.product) return <NotFound />;
 
   return (
