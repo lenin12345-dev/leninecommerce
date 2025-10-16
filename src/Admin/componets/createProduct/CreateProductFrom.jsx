@@ -66,10 +66,7 @@ const CreateProductForm = () => {
     categoriesMap[cat._id] = cat;
   });
 
-  const categoriesWithFullName = categories.map((cat) => ({
-    ...cat,
-    fullName: getFullCategoryName(cat, categoriesMap),
-  }));
+
 
   const handleSizeChange = (e, index) => {
     let { name, value } = e.target;
@@ -83,7 +80,6 @@ const CreateProductForm = () => {
     }));
   };
 
-  console.log(productData);
 
   const handleSubmit = (e) => {
     e.preventDefault();

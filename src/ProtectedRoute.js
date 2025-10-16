@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
           flexDirection: "column",
           gap: 2,
           width: "80%",
-          maxWidth: 500,
+          maxWidth: 1200,
           margin: "2rem auto",
         }}
       >
