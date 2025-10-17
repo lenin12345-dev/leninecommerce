@@ -19,7 +19,7 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth, order } = useSelector((store) => store);
+  const { order } = useSelector((store) => store);
   const { loading } = order;
   const [selectedAddress, setSelectedAdress] = useState(null);
 
@@ -47,8 +47,10 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   };
   useEffect(() => {
     const saved = localStorage.getItem("savedAddress");
+
     if (saved) {
       const { address, expiry } = JSON.parse(saved);
+   
       if (new Date().getTime() < expiry) {
         setSelectedAdress(address);
       } else {
@@ -57,49 +59,37 @@ export default function AddDeliveryAddressForm({ handleNext }) {
     }
   }, []);
 
-  const addresses = auth.user?.addresses || [];
-
-  const handleCreateOrder = (item) => {
-    dispatch(createOrder({ address: item, jwt, navigate }));
+  const handleCreateOrder = () => {
+    dispatch(createOrder({ address: selectedAddress, jwt, navigate }));
     handleNext();
   };
-
 
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} lg={5}>
-        <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-scroll">
-          {addresses.length > 0 ? (
-            addresses.map((item) => (
-              <div
-                onClick={() => setSelectedAddress(item)}
-                className="p-5 py-7 border-b cursor-pointer"
-                key={item.id}
+        <Box className="border rounded-md shadow-md h-[30.5rem] overflow-y-auto flex flex-col items-center justify-center">
+          {selectedAddress ? (
+            <div className="w-full p-5">
+              <AddressCard address={selectedAddress} />
+              <Button
+                sx={{ mt: 2 }}
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick={handleCreateOrder}
+                fullWidth
               >
-                <AddressCard address={item} />
-                {selectedAddress?.id === item.id && (
-                  <Button
-                    sx={{ mt: 2 }}
-                    size="large"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleCreateOrder(item)}
-                    disabled={loading}
-                  >
-                    {loading ? <CircularProgress size={24} /> : "Deliver Here"}
-                  </Button>
-                )}
-              </div>
-            ))
+                {"Deliver Here"}
+              </Button>
+            </div>
           ) : (
-            <Box className="flex items-center justify-center h-full">
-              <Typography style={{ fontSize: 25 }} fontWeight="bold">
-                No saved address.
-              </Typography>
-            </Box>
+            <Typography fontSize={20} fontWeight="bold">
+              No saved address found.
+            </Typography>
           )}
         </Box>
       </Grid>
+
       <Grid item xs={12} lg={7}>
         <Box className="border rounded-md shadow-md p-5">
           <form onSubmit={handleSubmit}>
@@ -119,7 +109,7 @@ export default function AddDeliveryAddressForm({ handleNext }) {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormLabel htmlFor="first-name" required>
+                <FormLabel htmlFor="last-name" required>
                   Last Name
                 </FormLabel>
                 <OutlinedInput
