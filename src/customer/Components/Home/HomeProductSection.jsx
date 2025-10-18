@@ -5,11 +5,20 @@ import { Button } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useState } from "react";
 import "react-alice-carousel/lib/alice-carousel.css";
-const HomeProductSection = ({ section, data }) => {
+const HomeProductSection = ({ section, data = [],loading,error }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const slidePrev = () => setActiveIndex(activeIndex - 1);
-  const slideNext = () => setActiveIndex(activeIndex + 1);
+  const getVisibleItems = () => {
+    if (window.innerWidth >= 1024) return 5;
+    if (window.innerWidth >= 568) return 3;
+    return 2;
+  };
+
+  const maxIndex = Math.max(0, data.length - getVisibleItems());
+
+  const slidePrev = () => setActiveIndex((prev) => Math.max(prev - 1, 0));
+  const slideNext = () =>
+    setActiveIndex((prev) => Math.min(prev + 1, maxIndex));
   const syncActiveIndex = ({ item }) => setActiveIndex(item);
 
   const responsive = {
@@ -26,14 +35,31 @@ const HomeProductSection = ({ section, data }) => {
       itemsFit: "contain",
     },
   };
-  const items = data?.slice(0, 10).map((item) => (
+  const items = data.slice(0, 10).map((item) => (
     <div key={item._id}>
       {" "}
       <HomeProductCard product={item} />
     </div>
   ));
-
-
+    if (loading) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="bg-gray-200 animate-pulse h-64 rounded-xl"
+          ></div>
+        ))}
+      </div>
+    );
+  }
+    if (error) {
+      return (
+        <div className="flex justify-center items-center h-[50vh] text-red-500">
+          Failed to load products: {error}
+        </div>
+      );
+    }
 
   return (
     <div className="relative px-4 sm:px-6 lg:px-8">
@@ -75,7 +101,7 @@ const HomeProductSection = ({ section, data }) => {
                 onClick={slideNext}
                 variant="contained"
                 className="z-50"
-                disabled={activeIndex === items.length - 5}
+                disabled={activeIndex === maxIndex}
                 sx={{
                   position: "absolute",
                   top: "8rem",

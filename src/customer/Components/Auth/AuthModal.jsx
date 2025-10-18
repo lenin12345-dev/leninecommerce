@@ -61,7 +61,6 @@ export default function AuthModal({ handleClose, open, setOpenAuthModal }) {
         </Box>
       </Modal>
 
-      {/* Snackbar centralized here */}
       <Snackbar
         open={openSnackBar}
         autoHideDuration={4000}

@@ -7,21 +7,26 @@ const HomeProductCard = ({ product }) => {
   return (
     <div
       onClick={() => navigate(`/product/${product?._id}`)}
-      className="cursor-pointer flex flex-col mb-1 bg-white rounded-lg shadow-lg overflow-hidden mx-4 sm:mx-6 md:mx-8 lg:mx-10 h-[14rem] sm:h-[16rem] md:h-[18rem] lg:h-[20rem] transition-transform transform hover:scale-105"
+      className="cursor-pointer flex flex-col bg-white rounded-xl shadow-md overflow-hidden mx-2 sm:mx-3 md:mx-4 transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+      style={{ minHeight: "18rem" }} // Ensures card doesn’t shrink
     >
-      <div className="relative w-full mb-1">
+      {/* Image Container */}
+      <div className="flex justify-center items-center bg-gray-50 w-full h-48 sm:h-52 md:h-56">
         <img
-          className="object-contain w-full h-[10rem] sm:h-[12rem] md:h-[14rem]"
+          className="object-contain h-full w-auto"
           src={product?.image || product?.imageUrl}
           alt={product?.title}
+          loading="lazy"
         />
       </div>
-      <div className="sm:p-2 md:p-2 text-center flex flex-col justify-between ">
-        <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-medium text-gray-900">
-          {product?.brand}
+
+      {/* Content Section */}
+      <div className="p-3 flex flex-col justify-between flex-grow text-center">
+        <h3 className="text-sm sm:text-base font-semibold text-gray-800 truncate">
+          {product?.brand || "Unknown Brand"}
         </h3>
-        <p className="mt-1 text-xs sm:text-xs md:text-sm lg:text-base text-gray-500">
-          {product?.title}
+        <p className="mt-1 text-xs sm:text-sm text-gray-500 line-clamp-2">
+          {product?.title || "Untitled Product"}
         </p>
       </div>
     </div>

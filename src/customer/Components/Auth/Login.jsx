@@ -65,7 +65,7 @@ export default function LoginUserForm({
   return (
     <React.Fragment>
       <Typography
-        variant="h4"
+        variant="h5"
         sx={{
           textAlign: "center",
           fontWeight: "bold",
@@ -83,6 +83,7 @@ export default function LoginUserForm({
               id="email"
               name="email"
               label="Email"
+              size="small"
               fullWidth
               autoComplete="email"
             />
@@ -93,6 +94,7 @@ export default function LoginUserForm({
               id="password"
               name="password"
               label="Password"
+              size="small"
               fullWidth
               autoComplete="current-password"
               type={showPassword ? "text" : "password"}
@@ -116,9 +118,9 @@ export default function LoginUserForm({
               className="w-full"
               type="submit"
               variant="contained"
-              size="large"
+              size="medium"
               sx={{
-                padding: ".8rem 0",
+                padding: ".3rem 0",
                 backgroundColor: "#f5a623",
                 color: "#fff",
                 fontWeight: "bold",
@@ -126,6 +128,7 @@ export default function LoginUserForm({
                 borderRadius: "8px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                 transition: "background-color 0.3s ease, transform 0.3s ease",
+                textTransform: "none",
                 "&:hover": {
                   backgroundColor: "black",
                   transform: "scale(1.01)",

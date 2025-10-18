@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -27,7 +27,6 @@ export default function RegisterUserForm({
   const [loading, setLoading] = useState(false);
   const [errorObj, setErrorObj] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  console.log("error",error)
 
   useEffect(() => {
     if (user) {
@@ -36,7 +35,7 @@ export default function RegisterUserForm({
       setOpenSnackBar(true);
       setLoading(false);
       setOpenAuthModal(false);
-    } else if  (error && error.source !== "getUser") {
+    } else if (error && error.source !== "getUser") {
       setSnackBarMessage(error);
       setSnackBarSeverity("error");
       setOpenSnackBar(true);
@@ -84,7 +83,7 @@ export default function RegisterUserForm({
   return (
     <div style={{ paddingX: "0.7rem", maxWidth: "600px", margin: "auto" }}>
       <Typography
-        variant="h4"
+        variant="h5"
         sx={{
           textAlign: "center",
           fontWeight: "bold",
@@ -104,6 +103,7 @@ export default function RegisterUserForm({
               name="firstName"
               label="First Name"
               fullWidth
+              size="small"
               autoComplete="given-name"
               error={!!errorObj.firstName}
               helperText={errorObj.firstName}
@@ -115,6 +115,7 @@ export default function RegisterUserForm({
               id="lastName"
               name="lastName"
               label="Last Name"
+              size="small"
               fullWidth
               autoComplete="family-name"
               error={!!errorObj.lastName}
@@ -127,6 +128,7 @@ export default function RegisterUserForm({
               id="email"
               name="email"
               label="Email"
+              size="small"
               fullWidth
               autoComplete="email"
               error={!!errorObj.email}
@@ -139,6 +141,7 @@ export default function RegisterUserForm({
               id="password"
               name="password"
               label="Password"
+              size="small"
               fullWidth
               type={showPassword ? "text" : "password"}
               InputProps={{
@@ -162,12 +165,13 @@ export default function RegisterUserForm({
               variant="contained"
               size="large"
               sx={{
-                padding: ".8rem 0",
+                padding: ".3rem 0",
                 backgroundColor: "#f5a623",
                 color: "#fff",
                 fontWeight: "bold",
                 fontSize: "16px",
                 borderRadius: "8px",
+                textTransform: "none",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                 transition: "background-color 0.3s ease, transform 0.3s ease",
                 "&:hover": {
