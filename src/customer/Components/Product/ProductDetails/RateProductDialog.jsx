@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import api from "../../../.././config/api";
 
-const RateProductDialog = ({ open, onClose, productId ,token,auth}) => {
+const RateProductDialog = React.memo(({ open, onClose, productId ,token,auth}) => {
   const [rating, setRating] = useState(0);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackbarMeassage, setSnakcbarMessage] = useState("");
@@ -105,6 +105,6 @@ const RateProductDialog = ({ open, onClose, productId ,token,auth}) => {
     </div>
     
   );
-};
+});
 
 export default RateProductDialog;

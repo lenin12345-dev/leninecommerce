@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductReviewCard from "./ProductReviewCard";
@@ -16,7 +16,6 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import HomeProductCard from "../../Home/HomeProductCard";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { findProductById } from "../../../../Redux/Customers/Product/Action";
@@ -31,8 +30,7 @@ import api from "../../../../config/api";
 import NoDataCard from "../../NoDataCard";
 import NotFound from "../../../../Pages/Notfound";
 
-
-const product = {
+const productSize = {
   sizes: [
     { name: "S", inStock: true },
     { name: "M", inStock: true },
@@ -49,12 +47,11 @@ function classNames(...classes) {
 // ));
 
 export default function ProductDetails() {
-  const [selectedSize, setSelectedSize] = useState(product?.sizes[0]);
-  const [activeImage, setActiveImage] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(productSize?.sizes[0]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { customersProduct, review, auth } = useSelector((store) => store);
-  const { loading } = customersProduct;
+  const { product,loading,isFetched } = customersProduct;
   const { productId } = useParams();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [showCart, setShowCart] = useState(false);
@@ -64,9 +61,9 @@ export default function ProductDetails() {
   const [snackbarMeassage, setSnakcbarMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [reviews, setReviews] = useState("");
+  const [error, setError] = useState(null);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
-
-
+  const jwt = localStorage.getItem("jwt");
 
   const {
     category: {
@@ -76,46 +73,29 @@ export default function ProductDetails() {
         parentCategory: { name: topLevelName } = {},
       } = {},
     } = {},
-  } = customersProduct.product || {};
+  } = product || {};
 
-  const breadCrumbs = [];
-
-  if (topLevelName || secondLevelName || thirdLevelName) {
-    if (topLevelName) breadCrumbs.push({ id: 1, name: topLevelName, url: "/" });
+  const breadCrumbs = useMemo(() => {
+    const crumbs = [];
+    if (topLevelName) crumbs.push({ id: 1, name: topLevelName, url: "/" });
     if (secondLevelName)
-      breadCrumbs.push({ id: 2, name: secondLevelName, url: "/" });
-    if (thirdLevelName)
-      breadCrumbs.push({ id: 3, name: thirdLevelName, url: "/" });
-  }
+      crumbs.push({ id: 2, name: secondLevelName, url: "/" });
+    if (thirdLevelName) crumbs.push({ id: 3, name: thirdLevelName, url: "/" });
+    return crumbs;
+  }, [topLevelName, secondLevelName, thirdLevelName]);
 
-  const details = (secondLevelName) => {
-    switch (secondLevelName) {
-      case "Clothing":
-        return `Our clothing collection offers a perfect blend of style, comfort, and durability. Crafted from premium-quality fabrics, each piece is designed to ensure lasting comfort, whether you’re dressing up for a formal occasion or opting for a casual day out. Available in a variety of sizes and colors, our range caters to every taste and preference. With modern designs and easy-care materials, these garments offer both versatility and convenience, making them an essential addition to your wardrobe.`;
-
-      case "Accessories":
-        return `Complete your look with our sophisticated selection of accessories, designed to add that perfect finishing touch. Each item in our collection, from sleek watches to elegant jewelry and functional bags, is made from high-quality materials, ensuring long-lasting style and durability. Our versatile designs complement any outfit, making them suitable for daily wear or special occasions. Whether you're treating yourself or buying a gift, these lightweight and stylish accessories will never go out of style.`;
-
-      case "Footwear":
-        return `Step into comfort and style with our premium footwear range, featuring designs that cater to both casual and formal needs. Each pair is crafted with an ergonomic design to provide ultimate comfort throughout the day. With durable materials and non-slip soles, our shoes offer both safety and longevity, ensuring they’ll be your go-to choice for years to come. Available in a wide range of sizes and styles, our footwear ensures that you’ll find the perfect fit for any occasion.`;
-
-      case "Laptops":
-        return `Our laptops strike the perfect balance between power and portability, offering the performance you need in a sleek and lightweight design. Equipped with the latest processors, these laptops ensure smooth multitasking, whether you're working on a project, streaming videos, or gaming. The high-definition displays provide sharp, vibrant visuals, making them ideal for work or entertainment. With long battery life, these laptops keep you powered throughout the day, providing the ultimate combination of efficiency and convenience.`;
-
-      case "Computers & Tablets":
-        return `Whether you're seeking the power of a desktop computer or the flexibility of a tablet, our range of computers and tablets offers the best of both worlds. These devices are designed to provide high-performance computing for work, play, and everything in between. With crisp displays and fast processors, you'll experience smooth multitasking and vibrant visuals. Lightweight and portable, our devices are perfect for users who need both productivity and portability in one powerful package.`;
-
-      default:
-        return "Product details will be available soon.";
-    }
+  const detailTexts = {
+    Clothing: "Our clothing collection offers a perfect blend...",
+    Accessories: "Complete your look with our sophisticated selection...",
+    Footwear: "Step into comfort and style...",
+    Laptops: "Our laptops strike the perfect balance...",
+    "Computers & Tablets": "Whether you're seeking the power of a desktop...",
   };
-  const Loader = () => (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="w-16 h-16 border-4 border-t-4 border-gray-900 border-solid rounded-full animate-spin"></div>
-    </div>
-  );
 
-  const handleOpenDialog = () => {};
+  const details =
+    detailTexts[secondLevelName] || "Product details will be available soon.";
+
+
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -126,13 +106,6 @@ export default function ProductDetails() {
       return;
     }
     setOpenSnackBar(false);
-  };
-
-  const jwt = localStorage.getItem("jwt");
-
-
-  const handleSetActiveImage = (image) => {
-    setActiveImage(image);
   };
 
   const handleSubmit = async () => {
@@ -157,6 +130,13 @@ export default function ProductDetails() {
       //  return navigate('/login');
       return;
     }
+    if (!reviews.trim()) {
+      setError("Please write a review before submitting");
+      return
+    } else {
+      setError("");
+      // proceed with API call or dispatch
+    }
     const data = { productId, review: reviews };
     dispatch(createReview({ data, jwt }));
     setOpenSnackBar(true);
@@ -165,36 +145,38 @@ export default function ProductDetails() {
     setSnakcbarMessage("Thank you for your review");
   };
 
-
-
-
   useEffect(() => {
     if (productId) {
       const data = { productId, jwt };
       dispatch(findProductById(data));
       dispatch(getAllReviews(productId));
     }
-  }, [productId]);
+  }, [productId.jwt, dispatch]);
   useEffect(() => {
-  let isMounted = true;
+    let isMounted = true;
 
-  const fetchSuggestedProducts = async () => {
-    try {
-      const { data } = await api.get(`api/suggest-products/${productId}`);
-      if (isMounted && data?.length) {
-        setSuggestedProducts(data);
+    const fetchSuggestedProducts = async () => {
+      try {
+        const { data } = await api.get(`api/suggest-products/${productId}`);
+        if (isMounted && data?.length) {
+          setSuggestedProducts(data);
+        }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    };
 
-  fetchSuggestedProducts();
+    fetchSuggestedProducts();
 
-  return () => { isMounted = false; };
-}, [productId]);
+    return () => {
+      isMounted = false;
+    };
+  }, [productId]);
 
-  if (!customersProduct.loading && !customersProduct.product) return <NotFound />;
+  if (!loading && isFetched && product==null){
+    return <NotFound />;
+
+  }
 
   return (
     <div className="bg-white lg:px-20">
@@ -204,7 +186,7 @@ export default function ProductDetails() {
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {customersProduct?.product &&
+            {product &&
               breadCrumbs.map((breadcrumb, index) => (
                 <li key={breadcrumb.id}>
                   <div className="flex items-center">
@@ -243,25 +225,11 @@ export default function ProductDetails() {
             <div className="flex flex-col items-center ">
               <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem] sm:max-w-[20rem] sm:max-h-[25rem]">
                 <img
-                  src={activeImage?.src || customersProduct.product?.imageUrl}
+                  src={product?.imageUrl}
                   alt=""
                   className="h-full w-full object-cover object-center"
                 />
               </div>
-              {/* <div className="flex flex-wrap space-x-5 justify-center">
-              {product.images.map((image) => (
-                <div
-                  onClick={() => handleSetActiveImage(image)}
-                  className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg max-w-[5rem] max-h-[5rem] mt-4"
-                >
-                  <img
-                    src={image.src}
-                    alt={product.images[1].alt}
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
-              ))}
-            </div> */}
             </div>
 
             {/* Product info */}
@@ -269,10 +237,10 @@ export default function ProductDetails() {
               {/* Product Brand and Title */}
               <div className="lg:col-span-2">
                 <h1 className="text-lg lg:text-xl font-bold tracking-tight text-gray-900">
-                  {customersProduct.product?.brand}
+                  {product?.brand}
                 </h1>
                 <h1 className="text-md lg:text-lg tracking-tight text-gray-600 pt-1">
-                  {customersProduct.product?.title}
+                  {product?.title}
                 </h1>
               </div>
 
@@ -280,30 +248,30 @@ export default function ProductDetails() {
               <div className="mt-4 lg:row-span-3 lg:mt-0">
                 <div className="flex space-x-5 items-center text-lg lg:text-xl tracking-tight text-gray-900 mt-6">
                   <p className="font-semibold text-black">
-                    ${customersProduct.product?.discountedPrice}
+                    ${product?.discountedPrice}
                   </p>
                   <p className="text-gray-400 line-through">
-                    ${customersProduct.product?.price}
+                    ${product?.price}
                   </p>
                   <p className="text-green-600 font-semibold">
-                    {customersProduct.product?.discountPersent}% Off
+                    {product?.discountPersent}% Off
                   </p>
                 </div>
 
                 {/* Reviews Section */}
                 <div className="mt-6 flex items-center space-x-3">
-                  {customersProduct.product && (
+                  {product && (
                     <Rating
                       name="read-only"
-                      value={customersProduct.product?.averageRating}
+                      value={product?.averageRating}
                       precision={0.5}
                       readOnly
                     />
                   )}
                   <p className="text-sm text-gray-500">
-                    {customersProduct.product?.numRatings == 1
+                    {product?.numRatings == 1
                       ? "1 Rating"
-                      : `${customersProduct.product?.numRatings} Ratings`}
+                      : `${product?.numRatings} Ratings`}
                   </p>
                   <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
                     {review?.reviews?.length > 1
@@ -327,7 +295,7 @@ export default function ProductDetails() {
                       Choose a size
                     </RadioGroup.Label>
                     <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-10">
-                      {product.sizes.map((size) => (
+                      {productSize.sizes.map((size) => (
                         <RadioGroup.Option
                           key={size.name}
                           value={size}
@@ -412,7 +380,7 @@ export default function ProductDetails() {
                   <h3 className="sr-only">Description</h3>
                   <div className="space-y-6">
                     <p className="text-base text-gray-900">
-                      {customersProduct.product?.description}
+                      {product?.description}
                     </p>
                   </div>
                 </div>
@@ -421,16 +389,13 @@ export default function ProductDetails() {
                   <h2 className="text-md font-medium text-black-900">
                     Details
                   </h2>
-                  <div className="mt-2 space-y-4">
-                    {details(secondLevelName)}
-                  </div>
+                  <div className="mt-2 space-y-4">{details}</div>
                 </div>
               </div>
             </div>
           </section>
         )}
 
-      
         <section className="px-4 md:px-8 lg:px-12">
           <div style={{ margin: "2rem", marginLeft: 0 }}>
             <h1 className="font-semibold text-lg pb-4">Suggested Products</h1>
@@ -438,19 +403,20 @@ export default function ProductDetails() {
               {suggestedProducts.map((product) => (
                 <Grid item xs={12} sm={6} md={3} key={product._id}>
                   <Card
-                  onClick={() => navigate(`/product/${product._id}`)}
+                    onClick={() => navigate(`/product/${product._id}`)}
                     sx={{
                       maxWidth: 220,
                       mx: "auto",
                       boxShadow: 2,
                       borderRadius: 2,
-                      cursor:"pointer"
+                      cursor: "pointer",
                     }}
                   >
                     {product.imageUrl && (
                       <CardMedia
                         component="img"
                         height="100px"
+                        loading="lazy"
                         image={product?.imageUrl}
                         alt={product.name}
                         sx={{ objectFit: "cover", p: 1 }}
@@ -467,20 +433,24 @@ export default function ProductDetails() {
                   </Card>
                 </Grid>
               ))}
-                    {!suggestedProducts.length && (
-                      <NoDataCard
-                        noDataFoundText="No Suggested Product Found"
-                        styleCardProps={{ style: { height: 300 } }}
-                        textProps={{ variant: 'subtitle1', color: 'text.secondary', fontWeight: 500 }}
-                      />
-                    )}
+              {!suggestedProducts.length && (
+                <NoDataCard
+                  noDataFoundText="No Suggested Product Found"
+                  styleCardProps={{ style: { height: 300 } }}
+                  textProps={{
+                    variant: "subtitle1",
+                    color: "text.secondary",
+                    fontWeight: 500,
+                  }}
+                />
+              )}
             </Grid>
           </div>
           <h1 className="font-semibold text-lg pb-4">
             Recent Review & Ratings
           </h1>
 
-          <div className="border p-4 md:p-5">
+          <div className="p-4 md:p-5">
             <Grid container spacing={3}>
               <Grid item xs={12} md={7}>
                 <div className="space-y-5">
@@ -551,6 +521,8 @@ export default function ProductDetails() {
                     fullWidth
                     value={reviews}
                     onChange={(e) => setReviews(e.target.value)}
+                    error={!!error}
+                    helperText={error}
                   />
                   <Button
                     variant="contained"
@@ -573,15 +545,6 @@ export default function ProductDetails() {
           </div>
         </section>
 
-        {/* similer product */}
-        {/* <section className=" pt-10">
-          <h1 className="py-5 text-xl font-bold">Similer Products</h1>
-          <div className="flex flex-wrap space-y-5">
-            {gounsPage1.map((item) => (
-              <HomeProductCard product={item} />
-            ))}
-          </div>
-        </section> */}
         <Snackbar
           open={openSnackBar}
           autoHideDuration={3000}
@@ -596,7 +559,6 @@ export default function ProductDetails() {
             {snackbarMeassage}
           </Alert>
         </Snackbar>
-        <section>{/* <BackdropComponent open={loading} /> */}</section>
       </div>
     </div>
   );

@@ -25,8 +25,6 @@ import {
   findProducts,
   findProductsByCategory,
 } from "../../../../Redux/Customers/Product/Action";
-import { deepPurple } from "@mui/material/colors";
-import { Backdrop, CircularProgress } from "@mui/material";
 import BackdropComponent from "../../BackDrop/Backdrop";
 import NoDataCard from "../../NoDataCard";
 import Button from "@mui/material/Button";
@@ -49,6 +47,7 @@ export default function Product() {
   const location = useLocation();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); 
   const { customersProduct } = useSelector((store) => store);
+  const {loading,isFetched}=customersProduct;
 
   const [isLoaderOpen, setIsLoaderOpen] = useState(false);
   const [name, setName] = useState("");
@@ -427,7 +426,7 @@ export default function Product() {
         </Transition.Root>
 
         <main className="mx-auto px-4 lg:px-14 pb-2 pt-3 ">
-          <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between pb-2">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-4 sm:mb-0">
               Product
             </h1>
@@ -755,7 +754,7 @@ export default function Product() {
                     {customersProduct?.products?.content?.map((item) => (
                       <ProductCard key={item._id} product={item} />
                     ))}
-                    {!customersProduct?.products?.content?.length && (
+                    {!loading && isFetched && !customersProduct?.products?.content?.length && (
                       <NoDataCard
                         noDataFoundText="No Product Found"
                         styleCardProps={{ style: { height: 600 } }}

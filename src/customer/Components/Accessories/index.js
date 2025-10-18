@@ -1,138 +1,95 @@
 import React from "react";
-import { makeStyles } from "@mui/styles";
-import { Button } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
-  accessoriesContainer: {
-    width: "100%",
-    position: "relative", 
-    overflow: "hidden",
-    margin: 0,
-    padding: 0,
-  },
-  img: {
-    width: "100%",
-    height: "auto",
-    objectFit: "cover",
-  },
-  overlayTextContainer: {
-    position: "absolute",
-    top: "50%", 
-    left: "5%", 
-    transform: "translateY(-50%)",
-    padding: "2rem",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", 
-    color: "#fff",
-    maxWidth: "50%",
-    borderRadius: "8px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    [theme.breakpoints.down("lg")]: {
-      maxWidth: "60%",
-      padding: "1.5rem",
-      left: "3%",
-    },
-    [theme.breakpoints.down("md")]: {
-      maxWidth: "40%",
-      padding: "1rem",
-      left: "2%",
-    },
-    [theme.breakpoints.down("sm")]: {
-      maxWidth: "47%",
-      padding: "0.8rem",
-      left: "1%",
-      top: "50%",
-    },
-    [theme.breakpoints.down("xs")]: {
-      maxWidth: "47%",
-      padding: "0.5rem",
-      top: "50%",
-      left: "0 ",
-      textAlign: "center",
-    },
-  },
-  overlayText: {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    lineHeight: "1.2",
-    textAlign: "left",
-    [theme.breakpoints.down("lg")]: {
-      fontSize: "1.8rem",
-    },
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1.1rem",
-    },
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "0.8rem",
-    },
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "0.8rem",
-    },
-  },
-  buttonStyle: {
-    marginTop: "1rem",
-    backgroundColor: "#f5a623", 
-    color: "#fff", 
-    fontWeight: "bold", 
-    padding: "8px 16px", 
-    fontSize: "16px", 
-    borderRadius: "8px",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", 
-    transition: "background-color 0.3s ease, transform 0.3s ease", 
-    "&:hover": {
-      backgroundColor: "black", 
-      transform: "scale(1.05)", 
-    },
-    [theme.breakpoints.down("md")]: {
-      marginTop: "10px",
-      padding: "7px 14px",
-      fontSize: "14px", 
-    },
-    [theme.breakpoints.down("sm")]: {
-      marginTop: "8px",
-      padding: "4px 9px", 
-      fontSize: "12px", 
-    },
-    [theme.breakpoints.down("xs")]: {
-      width: "100%", 
-      padding: "4px 9px", 
-      fontSize: "10px", 
-    },
-  }
-  
-}));
-
 const Accessories = () => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/products');
+    navigate("/products");
   };
 
   return (
-    <div className={classes.accessoriesContainer}>
-      <img
-        src={'https://img.freepik.com/premium-photo/vr-goggles-with-holographic-shopping-bags-concept-as-horizontal-shot-vr-goggles-white-surfac_980716-654526.jpg?w=1380'}
+    <Box
+      sx={{
+        width: "100%",
+        position: "relative",
+        overflow: "hidden",
+        m: 0,
+        p: 0,
+      }}
+    >
+      <Box
+        component="img"
+        src="https://img.freepik.com/premium-photo/vr-goggles-with-holographic-shopping-bags-concept-as-horizontal-shot-vr-goggles-white-surfac_980716-654526.jpg?w=1380"
         alt="Accessories"
-        className={classes.img}
+        sx={{
+          width: "100%",
+          height: "auto",
+          objectFit: "cover",
+          display: "block",
+        }}
       />
-      <div className={classes.overlayTextContainer}>
-        <div className={classes.overlayText}>
+
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: { xs: "1%", sm: "2%", md: "5%" },
+          transform: "translateY(-50%)",
+          p: { xs: "0.8rem", sm: "1rem", md: "1.5rem", lg: "2rem" },
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          color: "#fff",
+          borderRadius: "8px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          maxWidth: { xs: "47%", sm: "47%", md: "40%", lg: "50%" },
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: "bold",
+            lineHeight: 1.2,
+            fontSize: {
+              xs: "0.8rem",
+              sm: "0.8rem",
+              md: "1.1rem",
+              lg: "1.4rem",
+            },
+            textAlign: "left",
+          }}
+        >
           Discover Our New Accessories Collection! <br />
           Stay ahead with the latest trends and styles.
-        </div>
-        <button
+        </Typography>
+
+        <Button
           onClick={handleButtonClick}
-          className={classes.buttonStyle}
           variant="contained"
+          sx={{
+            mt: { xs: "8px", md: "10px", lg: "1rem" },
+            backgroundColor: "#f5a623",
+            color: "#fff",
+            fontWeight: "bold",
+            px: { xs: 1.5, sm: 2, md: 3 },
+            py: { xs: 0.5, sm: 0.7, md: 1 },
+            fontSize: { xs: "10px", sm: "12px", md: "14px" },
+            borderRadius: "8px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            transition: "background-color 0.3s ease, transform 0.3s ease",
+            "&:hover": {
+              backgroundColor: "black",
+              transform: "scale(1.05)",
+            },
+            width: { xs: "100%", sm: "auto" },
+          }}
         >
           Shop Now
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,3 +1,4 @@
+import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +9,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-const ProductReviewCard = ({ item }) => {
+const ProductReviewCard = React.memo(({ item }) => {
   const { auth } = useSelector((store) => store);
   const dispatch = useDispatch();
 
@@ -49,6 +50,6 @@ const ProductReviewCard = ({ item }) => {
       </Grid>
     </div>
   );
-};
+});
 
 export default ProductReviewCard;

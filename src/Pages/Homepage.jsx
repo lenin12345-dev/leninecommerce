@@ -41,9 +41,9 @@ const Homepage = () => {
         <HomeProductSection data={menData} loading={loading} error={error} section={"Men's Collection"} />
         {/* <Categories /> */}
         <SlidingImagesSection />
-        <HomeProductSection data={womenData} section={"Women's Collection"} />
+        <HomeProductSection data={womenData} loading={loading} error={error} section={"Women's Collection"} />
         <Accessories />
-        <HomeProductSection data={accessories} section={"Accessories"} />
+        <HomeProductSection data={accessories} loading={loading} error={error} section={"Accessories"} />
       </div>
     </>
   );

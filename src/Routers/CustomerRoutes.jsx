@@ -1,10 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import ProductDetails from "../customer/Components/Product/ProductDetails/ProductDetails";
 import Product from "../customer/Components/Product/Product/Product";
-import Contact from "../Pages/Contact";
-import TearmsCondition from "../Pages/TearmsCondition";
-import PrivacyPolicy from "../Pages/PrivacyPolicy";
-import About from "../Pages/About";
 import Homepage from "../Pages/Homepage";
 import Cart from "../customer/Components/Cart/Cart";
 import { ThemeProvider } from "@mui/material/styles";
@@ -21,18 +17,14 @@ import ProtectedRoute from "../ProtectedRoute";
 
 const CustomerRoutes = () => {
  return (
-    <div>
+    <>
       <ThemeProvider theme={customerTheme}>
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Homepage />} />
           <Route path="/register" element={<Homepage />} />
           <Route path="/" element={<Homepage />} />
-          <Route path="/home" element={<Homepage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-condition" element={<TearmsCondition />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/home" element={<Homepage />} />    
           <Route path="/products" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetails />} />
 
@@ -97,7 +89,7 @@ const CustomerRoutes = () => {
         </Routes>
         <Footer />
       </ThemeProvider>
-    </div>
+    </>
   );
 };
 

@@ -22,6 +22,9 @@ import {
 } from "./ActionType";
 import api, { API_BASE_URL } from "../../../config/api";
 
+const productCache = {};
+
+
 export const findProducts = (reqData = {}) => async (dispatch) => {
   const {
     colors,
@@ -34,29 +37,41 @@ export const findProducts = (reqData = {}) => async (dispatch) => {
     sort,
     pageNumber,
     pageSize,
-    search
+    search,
   } = reqData;
+
+  const queryParams = [];
+
+  if (colors?.length) queryParams.push(`color=${colors}`);
+  if (sizes?.length) queryParams.push(`size=${sizes}`);
+  if (minPrice) queryParams.push(`minPrice=${minPrice}`);
+  if (maxPrice) queryParams.push(`maxPrice=${maxPrice}`);
+  if (minDiscount) queryParams.push(`minDiscount=${minDiscount}`);
+  if (category) queryParams.push(`category=${category}`);
+  if (stock !== null && stock !== undefined) queryParams.push(`stock=${stock}`);
+  if (sort) queryParams.push(`sort=${sort}`);
+  if (pageNumber) queryParams.push(`pageNumber=${pageNumber}`);
+  if (pageSize) queryParams.push(`pageSize=${pageSize}`);
+  if (search) queryParams.push(`search=${search}`);
+
+  const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
+
+  // Check cache BEFORE making API call
+  if (productCache[queryString]) {
+    return dispatch({
+      type: FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
+      payload: productCache[queryString],
+    });
+  }
 
   try {
     dispatch({ type: FIND_PRODUCTS_BY_CATEGORY_REQUEST });
-    const queryParams = [];
 
-    if (colors?.length) queryParams.push(`color=${colors}`);
-    if (sizes?.length ) queryParams.push(`size=${sizes}`);
-    if (minPrice) queryParams.push(`minPrice=${minPrice}`);
-    if (maxPrice) queryParams.push(`maxPrice=${maxPrice}`);
-    if (minDiscount) queryParams.push(`minDiscount=${minDiscount}`);
-    if (category) queryParams.push(`category=${category}`);
-    if (stock !== null) queryParams.push(`stock=${stock}`);
-    if (sort) queryParams.push(`sort=${sort}`);
-    if (pageNumber) queryParams.push(`pageNumber=${pageNumber}`);
-    if (pageSize) queryParams.push(`pageSize=${pageSize}`);
-    if (search) queryParams.push(`search=${search}`);
-    const queryString = queryParams.length ? `?${queryParams.join("&")}` : '';
-  
     const { data } = await api.get(`/api/products${queryString}`);
 
-  
+    // Store result in cache
+    productCache[queryString] = data;
+
     dispatch({
       type: FIND_PRODUCTS_BY_CATEGORY_SUCCESS,
       payload: data,
@@ -65,12 +80,11 @@ export const findProducts = (reqData = {}) => async (dispatch) => {
     dispatch({
       type: FIND_PRODUCTS_BY_CATEGORY_FAILURE,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+        error.response?.data?.message || error.message,
     });
   }
 };
+
 
 export const findProductById = (reqData) => async (dispatch) => {
   try {
@@ -126,8 +140,6 @@ export const createProduct = (product) => async (dispatch) => {
       type: CREATE_PRODUCT_SUCCESS,
       payload: data,
     });
-
-
   } catch (error) {
     dispatch({
       type: CREATE_PRODUCT_FAILURE,
@@ -147,7 +159,7 @@ export const updateProduct = (product) => async (dispatch) => {
       `${API_BASE_URL}/api/admin/products/${product.productId}`,
       product
     );
-console.log("update product ",data)
+    console.log("update product ", data);
     dispatch({
       type: UPDATE_PRODUCT_SUCCESS,
       payload: data,
@@ -164,22 +176,17 @@ console.log("update product ",data)
 };
 
 export const deleteProduct = (productId) => async (dispatch) => {
-
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    let {data}=await api.delete(`/api/admin/products/${productId}`);
-
-
+    let { data } = await api.delete(`/api/admin/products/${productId}`);
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
       payload: productId,
     });
-
-
   } catch (error) {
-    console.log("catch error ",error)
+    console.log("catch error ", error);
     dispatch({
       type: DELETE_PRODUCT_FAILURE,
       payload:
