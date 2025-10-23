@@ -19,14 +19,14 @@ export default function AddDeliveryAddressForm({ handleNext }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { order } = useSelector((store) => store);
+  const { order, auth } = useSelector((store) => store);
   const { loading } = order;
   const [selectedAddress, setSelectedAdress] = useState(null);
+  const storeName = "savedAddress" + auth.user._id;
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     const address = {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
@@ -39,22 +39,22 @@ export default function AddDeliveryAddressForm({ handleNext }) {
     const expiry = new Date();
     expiry.setFullYear(expiry.getFullYear() + 1);
     localStorage.setItem(
-      "savedAddress",
+      storeName,
       JSON.stringify({ address, expiry: expiry.getTime() })
     );
     dispatch(createOrder({ address, jwt, navigate }));
     handleNext();
   };
   useEffect(() => {
-    const saved = localStorage.getItem("savedAddress");
+    const saved = localStorage.getItem(storeName);
 
     if (saved) {
       const { address, expiry } = JSON.parse(saved);
-   
+
       if (new Date().getTime() < expiry) {
         setSelectedAdress(address);
       } else {
-        localStorage.removeItem("savedAddress"); // expired
+        localStorage.removeItem(storeName); 
       }
     }
   }, []);

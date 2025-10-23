@@ -7,7 +7,6 @@ import StarIcon from "@mui/icons-material/Star";
 
 const OrderCard = ({ item, order }) => {
   const navigate = useNavigate();
-  console.log("order item", item);
   return (
     <Box className="p-5 shadow-lg hover:shadow-2xl border ">
       <Grid spacing={2} container sx={{ justifyContent: "space-between" }}>

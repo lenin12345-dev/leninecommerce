@@ -60,6 +60,7 @@ export default function LoginUserForm({
     };
 
     dispatch(login(userData));
+    navigate("/")
   };
 
   return (

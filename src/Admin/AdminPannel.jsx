@@ -55,13 +55,6 @@ export default function AdminPannel() {
 
   };
 
-  const jwt = localStorage.getItem("jwt");
-
-  useEffect(() => {
-    if (jwt) {
-      dispatch(getUser(jwt));
-    }
-  }, [jwt]);
 
   const drawer = (
     <Box
