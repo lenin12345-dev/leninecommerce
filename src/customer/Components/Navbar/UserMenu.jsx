@@ -8,6 +8,11 @@ export default function UserMenu({ auth, onLogout, openAuthModal }) {
 
   const open = Boolean(anchorEl);
 
+  const handleClick = () => {
+    setAnchorEl(null);
+    navigate("/account/order");
+  };
+
   if (!auth.user) {
     return (
       <Button
@@ -33,9 +38,7 @@ export default function UserMenu({ auth, onLogout, openAuthModal }) {
         {auth.user?.firstname?.[0]?.toUpperCase()}
       </Avatar>
       <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
-        <MenuItem onClick={() => navigate("/account/order")}>
-          My Orders
-        </MenuItem>
+        <MenuItem onClick={handleClick}>My Orders</MenuItem>
         <MenuItem onClick={onLogout}>Logout</MenuItem>
       </Menu>
     </>
