@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const DEPLOYED = 'https://pear-poised-hen.cyclic.app/';
-const LOCALHOST = 'https://leninupdatedbackend.onrender.com';
+const LOCALHOST = 'http://localhost:8000';
 
 export const API_BASE_URL = LOCALHOST;
 

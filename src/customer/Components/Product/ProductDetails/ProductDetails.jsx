@@ -151,7 +151,7 @@ export default function ProductDetails() {
       dispatch(findProductById(data));
       dispatch(getAllReviews(productId));
     }
-  }, [productId.jwt, dispatch]);
+  }, [productId,jwt, dispatch]);
   useEffect(() => {
     let isMounted = true;
 
