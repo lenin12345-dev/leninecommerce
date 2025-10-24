@@ -59,7 +59,6 @@ export default function Navigation() {
       {/* Auth Modal */}
       <AuthModal
         open={openAuthModal}
-        setOpenAuthModal={setOpenAuthModal}
         handleClose={() => setOpenAuthModal(false)}
       />
     </div>

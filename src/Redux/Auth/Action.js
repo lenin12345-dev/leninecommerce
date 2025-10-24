@@ -14,7 +14,6 @@ import {
 import api, { API_BASE_URL } from "../../config/api";
 import { getCart } from "../Customers/Cart/Action";
 
-
 // Register action creators
 const registerRequest = () => ({ type: REGISTER_REQUEST });
 const registerSuccess = (user) => ({ type: REGISTER_SUCCESS, payload: user });
@@ -29,7 +28,11 @@ export const register = (userData) => async (dispatch) => {
     dispatch(registerSuccess(user));
     dispatch(getUser(user.accessToken));
   } catch (error) {
-    dispatch(registerFailure(error.message));
+    console.error("Registration Error:", error);
+    const errorMsg =
+      error.response?.data?.message || "Registration failed. Try again.";
+
+    dispatch(registerFailure(errorMsg));
   }
 };
 
@@ -54,7 +57,11 @@ export const login = (userData) => async (dispatch) => {
     dispatch(loginSuccess(user));
   } catch (error) {
     const { response } = error;
-    dispatch(loginFailure(response?.data?.message || response?.data?.error || "Login failed"));
+    dispatch(
+      loginFailure(
+        response?.data?.message || response?.data?.error || "Login failed"
+      )
+    );
   }
 };
 
@@ -72,7 +79,10 @@ export const getUser = (token) => {
       dispatch({ type: GET_USER_SUCCESS, payload: user });
     } catch (error) {
       const errorMessage = error.message;
-      dispatch({ type: GET_USER_FAILURE,payload: { message: errorMessage, source: "getUser" }});
+      dispatch({
+        type: GET_USER_FAILURE,
+        payload: { message: errorMessage, source: "getUser" },
+      });
     }
   };
 };

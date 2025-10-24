@@ -18,7 +18,8 @@ export default function LoginUserForm({
   setSnackBarMessage,
   setSnackBarSeverity,
   setOpenSnackBar,
-  setOpenAuthModal,
+  handleClose,
+  switchToRegister
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export default function LoginUserForm({
       setSnackBarSeverity("success");
       setOpenSnackBar(true);
       setLoading(false);
-      setOpenAuthModal(false);
+      handleClose();
     } else if (error && error.source !== "getUser") {
       setSnackBarMessage(error || "Login Failed");
       setSnackBarSeverity("error");
@@ -46,7 +47,6 @@ export default function LoginUserForm({
     setSnackBarMessage,
     setSnackBarSeverity,
     setOpenSnackBar,
-    setOpenAuthModal,
   ]);
 
   const handleSubmit = (event) => {
@@ -146,7 +146,7 @@ export default function LoginUserForm({
         <div className="py-3 flex items-center justify-center">
           <p className="m-0 p-0">Don't have an account?</p>
           <Button
-            onClick={() => navigate("/register")}
+            onClick={switchToRegister}
             style={{
               color: "#f5a623",
               fontWeight: "bold",

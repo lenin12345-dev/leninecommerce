@@ -12,16 +12,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../../Redux/Auth/Action";
 import { validEmail } from "../../../util/helper";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 
 export default function RegisterUserForm({
-  setOpenAuthModal,
   setSnackBarMessage,
   setSnackBarSeverity,
   setOpenSnackBar,
+  handleClose,
+  switchToLogin
 }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { auth } = useSelector((store) => store);
   const { user, error } = auth;
   const [loading, setLoading] = useState(false);
@@ -34,12 +33,16 @@ export default function RegisterUserForm({
       setSnackBarSeverity("success");
       setOpenSnackBar(true);
       setLoading(false);
-      setOpenAuthModal(false);
+      handleClose();
     } else if (error && error.source !== "getUser") {
       setSnackBarMessage(error);
       setSnackBarSeverity("error");
       setOpenSnackBar(true);
       setLoading(false);
+    }
+    return () => {
+      setErrorObj({});
+
     }
   }, [
     user,
@@ -47,7 +50,6 @@ export default function RegisterUserForm({
     setOpenSnackBar,
     setSnackBarMessage,
     setSnackBarSeverity,
-    setOpenAuthModal,
   ]);
 
   const validateForm = (userData) => {
@@ -190,7 +192,7 @@ export default function RegisterUserForm({
         <div className="py-3 flex items-center justify-center">
           <p className="m-0 p-0">Already have an account?</p>
           <Button
-            onClick={() => navigate("/login")}
+            onClick={switchToLogin}
             size="medium"
             style={{
               color: "#f5a623",

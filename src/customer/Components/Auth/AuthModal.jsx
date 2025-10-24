@@ -19,7 +19,7 @@ const style = {
   borderRadius: "8px",
 };
 
-export default function AuthModal({ handleClose, open, setOpenAuthModal }) {
+export default function AuthModal({ open, handleClose }) {
   const location = useLocation();
   const { auth } = useSelector((store) => store);
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function AuthModal({ handleClose, open, setOpenAuthModal }) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [snackBarSeverity, setSnackBarSeverity] = useState("success");
-
+  const [authType, setAuthType] = useState("login");
 
   useEffect(() => {
     if (auth.user) {
@@ -43,19 +43,21 @@ export default function AuthModal({ handleClose, open, setOpenAuthModal }) {
     <>
       <Modal open={open} onClose={handleClose}>
         <Box className="rounded-md" sx={style}>
-          {location.pathname === "/login" ? (
+           {authType === "login" ? (
             <LoginUserForm
               setSnackBarMessage={setSnackBarMessage}
               setSnackBarSeverity={setSnackBarSeverity}
               setOpenSnackBar={setOpenSnackBar}
-              setOpenAuthModal={setOpenAuthModal}
+              handleClose={handleClose}
+              switchToRegister={() => setAuthType("register")}
             />
           ) : (
             <RegisterUserForm
               setSnackBarMessage={setSnackBarMessage}
               setSnackBarSeverity={setSnackBarSeverity}
               setOpenSnackBar={setOpenSnackBar}
-              setOpenAuthModal={setOpenAuthModal}
+              handleClose={handleClose}
+              switchToLogin={() => setAuthType("login")}
             />
           )}
         </Box>
