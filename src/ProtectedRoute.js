@@ -19,23 +19,28 @@ const ProtectedRoute = ({ children }) => {
     }
   }, [jwt, dispatch, auth.user]);
 
-  
-  if (auth.isLoading) {
+  if (!jwt) {
+    return <Navigate to="/login" replace />;
+  }
+  //  Show loader only when JWT exists AND user is still loading
+  if (auth.isLoading && jwt) {
     return (
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           gap: 2,
-          width: "80%",
-          maxWidth: 1200,
-          margin: "2rem auto",
+          height: "100vh", 
+          width: "100vw",
+          backgroundColor: "#f9f9f9", 
         }}
       >
-        <Skeleton variant="rectangular" height={60} />
-        <Skeleton variant="text" height={40} />
-        <Skeleton variant="rectangular" height={200} />
-        <Skeleton variant="text" width="60%" />
+        <Skeleton variant="rectangular" width="80%" height={80} />
+        <Skeleton variant="text" width="60%" height={40} />
+        <Skeleton variant="rectangular" width="80%" height={300} />
+        <Skeleton variant="text" width="50%" height={40} />
       </Box>
     );
   }

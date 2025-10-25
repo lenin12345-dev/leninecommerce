@@ -91,7 +91,7 @@ const CreateProductForm = () => {
       <Typography
         variant="h3"
         sx={{ textAlign: "center" }}
-        className="py-10 text-center "
+        className="py-4 text-center "
       >
         Add New Product
       </Typography>
