@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import "./App.css";
 import CustomerRoutes from "./Routers/CustomerRoutes";
@@ -12,16 +12,17 @@ import { useDispatch } from "react-redux";
 function App() {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-
+  const location = useLocation();
   useEffect(() => {
     if (jwt) {
       dispatch(getUser(jwt));
       dispatch(getCart(jwt));
     }
   }, [jwt, dispatch]);
+  const showNavbar = !location.pathname.startsWith("/admin");
   return (
-    <div>
-      <Navigation />
+    <>
+        {showNavbar && <Navigation />} 
       <Routes>
         <Route path="/*" element={<CustomerRoutes />} />
 
@@ -34,7 +35,7 @@ function App() {
           }
         />
       </Routes>
-    </div>
+    </>
   );
 }
 export default App;

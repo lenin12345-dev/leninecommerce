@@ -65,7 +65,6 @@ export default function AdminPannel() {
         justifyContent: "space-between",
       }}
     >
-      {isLargeScreen && <Toolbar />}
       <List>
         {menu.map((item, index) => (
           <ListItem key={item.name} disablePadding onClick={()=>navigate(item.path)}>
@@ -118,7 +117,7 @@ export default function AdminPannel() {
     <ThemeProvider theme={customTheme}>
       <Box sx={{ display: `${isLargeScreen ? "flex" : "block"}` }}>
         <CssBaseline />
-        <AdminNavbar handleSideBarViewInMobile={handleSideBarViewInMobile} />
+        {/* <AdminNavbar handleSideBarViewInMobile={handleSideBarViewInMobile} /> */}
 
         <Drawer
           variant={drawerVariant}
@@ -147,7 +146,6 @@ export default function AdminPannel() {
           {drawer}
         </Drawer>
         <Box className="adminContainer" component="main" sx={{ flexGrow: 1 }}>
-          <Toolbar />
           <Routes>
             <Route path="/" element={ <Dashboard />}></Route>
             <Route path="/product/create" element={<CreateProductForm/>}></Route>
