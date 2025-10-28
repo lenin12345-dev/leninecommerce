@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const LOCALHOST = 'https://leninupdatedbackend.onrender.com';
-
 export const API_BASE_URL = LOCALHOST;
 
 const api = axios.create({
@@ -9,16 +8,16 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Dynamically attach access token
+// Attach JWT from localStorage dynamically
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('jwt'); // use 'jwt' key
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 });
 
-// Response interceptor to handle token refresh
+// Response interceptor for token refresh
 api.interceptors.response.use(
   res => res,
   async error => {
@@ -31,13 +30,16 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { data } = await api.get("/auth/refresh");
-        localStorage.setItem('jwt', data.accessToken);
-        api.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
-        return api(originalRequest);
+        const { data } = await api.get('/auth/refresh'); // refresh using cookie
+        if (data?.accessToken) {
+          localStorage.setItem('jwt', data.accessToken); // update JWT in localStorage
+          api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+          return api(originalRequest);
+        }
       } catch (refreshError) {
-        return Promise.reject(refreshError);
+        console.error('Refresh token failed', refreshError);
+        // Optionally handle logout here
       }
     }
 
