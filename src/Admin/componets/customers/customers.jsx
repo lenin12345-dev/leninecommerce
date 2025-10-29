@@ -57,7 +57,7 @@ const Customers = () => {
             </TableHead>
             <TableBody>
               {loading
-                ? Array.from(new Array(5)).map((_, i) => (
+                ? Array.from(new Array(10)).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell>
                         <Skeleton variant="circular" width={40} height={40} />
