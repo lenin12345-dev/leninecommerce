@@ -11,7 +11,7 @@ const CustomersTable = () => {
   const fetchCurrentUsers = async () => {
     try {
       const { data } = await api.get("/api/users/recent");
-      setNewUsers(data || []);
+      setNewUsers(data?.users || []);
     } catch (error) {
       console.error(error);
     } finally {
