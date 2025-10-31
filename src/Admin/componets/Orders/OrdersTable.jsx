@@ -21,6 +21,7 @@ import {
   TableRow,
   Typography,
   Grid,
+  Skeleton,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -42,18 +43,19 @@ const OrdersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ status: "", sort: "" });
 
-  // 🧠 Fetch Orders
   useEffect(() => {
     dispatch(getOrders({ jwt }));
   }, [
     dispatch,
     jwt,
+    currentPage,
+    filters.status,
+    filters.sort,
     adminsOrder.delivered,
     adminsOrder.shipped,
     adminsOrder.confirmed,
   ]);
 
-  // 🧠 Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -94,7 +96,6 @@ const OrdersTable = () => {
     [dispatch]
   );
 
-  // 🧩 Reusable Chip color logic
   const getStatusColor = (status) => {
     switch (status) {
       case "DELIVERED":
@@ -107,6 +108,19 @@ const OrdersTable = () => {
         return "default";
     }
   };
+  const filteredOrders = adminsOrder?.orders
+    ?.filter((order) => {
+      if (!filters.status) return true;
+      return order.orderStatus === filters.status;
+    })
+    .sort((a, b) => {
+      if (filters.sort === "Newest") {
+        return new Date(b.orderDate) - new Date(a.orderDate);
+      } else if (filters.sort === "Older") {
+        return new Date(a.orderDate) - new Date(b.orderDate);
+      }
+      return 0;
+    });
 
   return (
     <Box>
@@ -116,20 +130,39 @@ const OrdersTable = () => {
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
+              <InputLabel
+                sx={{ textTransform: "uppercase", fontSize: "0.85rem" }}
+              >
+                Status
+              </InputLabel>
               <Select
                 name="status"
                 value={filters.status}
                 label="Status"
                 onChange={handleChange}
+                sx={{
+                  textTransform: "uppercase",
+                  fontSize: "0.85rem",
+                }}
               >
-                {["PLACED", "CONFIRMED", "DELIVERED", "CANCELLED"].map(
-                  (status) => (
-                    <MenuItem key={status} value={status}>
-                      {status}
-                    </MenuItem>
-                  )
-                )}
+                {[
+                  "PENDING",
+                  "PLACED",
+                  "DELIVERED",
+                  "CANCELLED",
+                  "RETURNED",
+                ].map((status) => (
+                  <MenuItem
+                    key={status}
+                    value={status}
+                    sx={{
+                      textTransform: "uppercase",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {status}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -170,8 +203,33 @@ const OrdersTable = () => {
             </TableHead>
 
             <TableBody>
-              {adminsOrder?.orders?.length ? (
-                adminsOrder.orders.map((order, index) => (
+              {adminsOrder.loading ? (
+                // Show skeletons while loading
+                Array.from(new Array(10)).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="circular" width={40} height={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : filteredOrders?.length ? (
+                // Show filtered orders when not loading
+                filteredOrders.map((order, index) => (
                   <TableRow key={order._id} hover>
                     <TableCell>
                       <AvatarGroup max={4}>
@@ -266,6 +324,7 @@ const OrdersTable = () => {
                   </TableRow>
                 ))
               ) : (
+                // Show "No orders found" if not loading and no orders
                 <TableRow>
                   <TableCell colSpan={7} align="center" sx={{ height: 200 }}>
                     <Typography color="text.secondary" fontWeight={500}>
@@ -280,12 +339,12 @@ const OrdersTable = () => {
       </Card>
 
       {/* 🔹 Pagination */}
-      {!!adminsOrder?.orders?.length && (
+      {!!filteredOrders?.length && (
         <Card className="mt-2 flex justify-center items-center">
           <Pagination
             className="py-5"
             size="large"
-            count={adminsOrder?.totalPages}
+            count={filteredOrders?.totalPages}
             page={currentPage}
             color="primary"
             onChange={handlePaginationChange}
