@@ -17,6 +17,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Skeleton,
 } from "@mui/material";
 
 import React from "react";
@@ -24,7 +25,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProduct, findProducts } from "../../../Redux/Customers/Product/Action";
+import {
+  deleteProduct,
+  findProducts,
+} from "../../../Redux/Customers/Product/Action";
 
 const ProductsTable = () => {
   const location = useLocation();
@@ -37,16 +41,15 @@ const ProductsTable = () => {
     sort: "",
   });
 
-  // query 
+  // query
   const searchParams = new URLSearchParams(location.search);
   const availability = searchParams.get("availability");
   const category = searchParams.get("category");
   const sort = searchParams.get("sort");
   const page = searchParams.get("page");
 
-
   const handlePaginationChange = (event, value) => {
-    searchParams.set("page", value-1);
+    searchParams.set("page", value - 1);
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
@@ -54,32 +57,31 @@ const ProductsTable = () => {
   useEffect(() => {
     // setFilterValue({ availability, category, sort });
     const data = {
-      category:category || "",
+      category: category || "",
       colors: [],
       sizes: [],
       minPrice: 0,
       maxPrice: 100000,
       minDiscount: 0,
       sort: sort || "price_low",
-      pageNumber:page || 1,
+      pageNumber: page || 1,
       pageSize: 10,
       stock: availability,
     };
     dispatch(findProducts(data));
-  }, [availability, category, sort,page,customersProduct.deleteProduct]);
+  }, [availability, category, sort, page, customersProduct.deleteProduct]);
 
   const handleFilterChange = (e, sectionId) => {
-    console.log(e.target.value, sectionId);
     setFilterValue((values) => ({ ...values, [sectionId]: e.target.value }));
     searchParams.set(sectionId, e.target.value);
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
 
-  const handleDeleteProduct=(productId)=>{
-    console.log("delete product ",productId)
-    dispatch(deleteProduct(productId))
-  }
+  const handleDeleteProduct = (productId) => {
+    console.log("delete product ", productId);
+    dispatch(deleteProduct(productId));
+  };
 
   return (
     <Box width={"100%"}>
@@ -169,54 +171,99 @@ const ProductsTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customersProduct?.products?.content?.map((item) => (
-                <TableRow
-                  hover
-                  key={item.name}
-                  sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
-                  
-                >
-                  <TableCell>
-                    {" "}
-                    <Avatar alt={item.titel} src={item.imageUrl} />{" "}
-                  </TableCell>
-
-                  <TableCell
-                    sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
+              {customersProduct?.loading ? (
+                // 🔹 Show skeletons while loading
+                Array.from(new Array(10)).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="circular" width={40} height={40} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="80%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="60%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="40%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="40%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton width="60%" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : customersProduct?.products?.content?.length > 0 ? (
+                // 🔹 Render products
+                customersProduct.products.content.slice(0, 10).map((item) => (
+                  <TableRow
+                    hover
+                    key={item._id || item.title}
+                    sx={{
+                      "&:last-of-type td, &:last-of-type th": { border: 0 },
+                    }}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          fontSize: "0.875rem !important",
-                        }}
+                    <TableCell>
+                      <Avatar alt={item.title} src={item.imageUrl} />
+                    </TableCell>
+
+                    <TableCell
+                      sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
+                    >
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Typography
+                          sx={{
+                            fontWeight: 500,
+                            fontSize: "0.875rem !important",
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                        <Typography variant="caption">{item.brand}</Typography>
+                      </Box>
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {item.category?.name}
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {item.discountedPrice}
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {item.quantity}
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: "center" }}>
+                      <Button
+                        variant="text"
+                        color="error"
+                        onClick={() => handleDeleteProduct(item._id)}
                       >
-                        {item.title}
-                      </Typography>
-                      <Typography variant="caption">{item.brand}</Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{item.category.name}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{item.discountedPrice}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{item.quantity}</TableCell>
-              
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Button variant="text" onClick={()=>handleDeleteProduct(item._id)}>Delete</Button>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                // 🔹 No data fallback
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ height: 200 }}>
+                    <Typography color="text.secondary" fontWeight={500}>
+                      No products found
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Card>
       <Card className="mt-2 border">
-        {/* <Pagination
-          className="py-5 border w-auto"
-          size="large"
-          count={10}
-          color="primary"
-          onChange={handlePaginationChange}
-        /> */}
+
 
         <div className="mx-auto px-4 py-5 flex justify-center shadow-lg rounded-md">
           <Pagination
