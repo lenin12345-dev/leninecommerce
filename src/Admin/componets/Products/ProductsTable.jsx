@@ -19,11 +19,8 @@ import {
   Typography,
   Skeleton,
 } from "@mui/material";
-
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteProduct,
@@ -35,211 +32,179 @@ const ProductsTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { customersProduct } = useSelector((store) => store);
+  const { products, loading } = customersProduct;
+// Avoids recreating the search params object on every render
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+
   const [filterValue, setFilterValue] = useState({
-    availability: "",
-    category: "",
-    sort: "",
+    availability: searchParams.get("availability") || "",
+    category: searchParams.get("category") || "",
+    sort: searchParams.get("sort") || "",
   });
 
-  // query
-  const searchParams = new URLSearchParams(location.search);
-  const availability = searchParams.get("availability");
-  const category = searchParams.get("category");
-  const sort = searchParams.get("sort");
-  const page = searchParams.get("page");
+  const page = Number(searchParams.get("page")) || 1;
 
-  const handlePaginationChange = (event, value) => {
-    searchParams.set("page", value - 1);
+  const handlePaginationChange = (_, value) => {
+    searchParams.set("page", value);
+    // Because you navigated, React Router re-renders your component with a new location object.
+    navigate({ search: `?${searchParams.toString()}` });
+  };
+
+  const handleFilterChange = (e, key) => {
+    const value = e.target.value;
+
+    setFilterValue((prev) => ({ ...prev, [key]: value }));
+
+    // If "All" or empty, remove param for cleaner URL
+    if (value === "" || value === "All") {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
+
+    // Always reset to page 1 on filter change
+    searchParams.delete("page");
+
     const query = searchParams.toString();
-    navigate({ search: `?${query}` });
+    navigate({ search: query ? `?${query}` : "" });
+  };
+
+  const handleResetFilters = () => {
+    setFilterValue({ availability: "", category: "", sort: "" });
+    navigate(""); // clear all query params
   };
 
   useEffect(() => {
-    // setFilterValue({ availability, category, sort });
     const data = {
-      category: category || "",
+      category: filterValue.category,
       colors: [],
       sizes: [],
       minPrice: 0,
       maxPrice: 100000,
       minDiscount: 0,
-      sort: sort || "price_low",
-      pageNumber: page || 1,
+      sort: filterValue.sort || "price_low",
+      pageNumber: page,
       pageSize: 10,
-      stock: availability,
+      stock: filterValue.availability || "",
     };
     dispatch(findProducts(data));
-  }, [availability, category, sort, page, customersProduct.deleteProduct]);
+  }, [filterValue, page, dispatch]);
 
-  const handleFilterChange = (e, sectionId) => {
-    setFilterValue((values) => ({ ...values, [sectionId]: e.target.value }));
-    searchParams.set(sectionId, e.target.value);
-    const query = searchParams.toString();
-    navigate({ search: `?${query}` });
-  };
-
-  const handleDeleteProduct = (productId) => {
-    console.log("delete product ", productId);
-    dispatch(deleteProduct(productId));
-  };
+  const handleDeleteProduct = (id) => dispatch(deleteProduct(id));
 
   return (
-    <Box width={"100%"}>
+    <Box width="100%">
       <Card className="p-3">
-        <CardHeader
-          title="Sort"
-          sx={{
-            pt: 0,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
-          }}
-        />
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+              <InputLabel>Category</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={filterValue.category}
                 label="Category"
                 onChange={(e) => handleFilterChange(e, "category")}
               >
-                <MenuItem value={"pant"}>Men's Pants</MenuItem>
-                <MenuItem value={"mens_kurta"}>Men's Kurta</MenuItem>
-                <MenuItem value={"saree"}>Saree</MenuItem>
-                <MenuItem value={"lengha_choli"}>Lengha Choli</MenuItem>
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="T-Shirts">T-Shirts</MenuItem>
+                <MenuItem value="Pants">Pants</MenuItem>
+                <MenuItem value="Jackets">Jackets</MenuItem>
+                <MenuItem value="Sneakers">Sneakers</MenuItem>
+                <MenuItem value="Heels">Heels</MenuItem>
+                <MenuItem value="Boots">Boots</MenuItem>
+                <MenuItem value="Formal Shoes">Formal Shoes</MenuItem>
+                <MenuItem value="Watches">Watches</MenuItem>
+                <MenuItem value="Tops">Tops</MenuItem>
+                <MenuItem value="Dresses">Dresses</MenuItem>
+                <MenuItem value="Handbags">Handbags</MenuItem>
+                <MenuItem value="Saree">Saree</MenuItem>
+                <MenuItem value="Smartphones">Smartphones</MenuItem>
+                <MenuItem value="Laptops">Laptops</MenuItem>
+                <MenuItem value="Tablets">Tablets</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+
+          <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Availability
-              </InputLabel>
+              <InputLabel>Availability</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={filterValue.availability}
                 label="Availability"
                 onChange={(e) => handleFilterChange(e, "availability")}
               >
-                <MenuItem value={"All"}>All</MenuItem>
-                <MenuItem value={"in_stock"}>Instock</MenuItem>
-                <MenuItem value={"out_of_stock"}>Out Of Stock</MenuItem>
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="in_stock">In Stock</MenuItem>
+                <MenuItem value="out_of_stock">Out of Stock</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
+
+          <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Sort By Price
-              </InputLabel>
+              <InputLabel>Sort By Price</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={filterValue.sort}
                 label="Sort By Price"
                 onChange={(e) => handleFilterChange(e, "sort")}
               >
-                <MenuItem value={"price_high"}>Heigh - Low</MenuItem>
-                <MenuItem value={"price_low"}>Low - Heigh</MenuItem>
+                <MenuItem value="price_low">Low → High</MenuItem>
+                <MenuItem value="price_high">High → Low</MenuItem>
               </Select>
             </FormControl>
           </Grid>
+
+          <Grid item xs={1}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={handleResetFilters}
+              sx={{ height: "100%" }}
+            >
+              Reset Filters
+            </Button>
+          </Grid>
         </Grid>
       </Card>
+
       <Card className="mt-2">
-        <CardHeader
-          title="All Products"
-          sx={{
-            pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
-          }}
-        />
-        <TableContainer>
-          <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
+        <CardHeader title="All Products" />
+        <TableContainer sx={{ maxHeight: 600, minHeight: 600, overflowY: "auto" }}>
+          <Table sx={{ minWidth: 800 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Image</TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Category</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Price</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Quantity</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
+                <TableCell align="center">Category</TableCell>
+                <TableCell align="center">Price</TableCell>
+                <TableCell align="center">Quantity</TableCell>
+                <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
-              {customersProduct?.loading ? (
-                // 🔹 Show skeletons while loading
-                Array.from(new Array(10)).map((_, i) => (
+              {loading ? (
+                Array.from({ length: 10 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton variant="circular" width={40} height={40} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton width="80%" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton width="60%" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton width="40%" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton width="40%" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton width="60%" />
-                    </TableCell>
+                    {Array.from({ length: 6 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton width="80%" />
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))
-              ) : customersProduct?.products?.content?.length > 0 ? (
-                // 🔹 Render products
-                customersProduct.products.content.slice(0, 10).map((item) => (
-                  <TableRow
-                    hover
-                    key={item._id || item.title}
-                    sx={{
-                      "&:last-of-type td, &:last-of-type th": { border: 0 },
-                    }}
-                  >
+              ) : products?.content?.length > 0 ? (
+                products.content.map((item) => (
+                  <TableRow key={item._id}>
                     <TableCell>
-                      <Avatar alt={item.title} src={item.imageUrl} />
+                      <Avatar src={item.imageUrl} alt={item.title} />
                     </TableCell>
-
-                    <TableCell
-                      sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                    >
-                      <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography
-                          sx={{
-                            fontWeight: 500,
-                            fontSize: "0.875rem !important",
-                          }}
-                        >
-                          {item.title}
-                        </Typography>
-                        <Typography variant="caption">{item.brand}</Typography>
-                      </Box>
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: "center" }}>
-                      {item.category?.name}
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: "center" }}>
-                      {item.discountedPrice}
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: "center" }}>
-                      {item.quantity}
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell>{item.title}</TableCell>
+                    <TableCell align="center">{item.category?.name}</TableCell>
+                    <TableCell align="center">${item.discountedPrice}</TableCell>
+                    <TableCell align="center">{item.quantity}</TableCell>
+                    <TableCell align="center">
                       <Button
-                        variant="text"
                         color="error"
                         onClick={() => handleDeleteProduct(item._id)}
                       >
@@ -249,10 +214,9 @@ const ProductsTable = () => {
                   </TableRow>
                 ))
               ) : (
-                // 🔹 No data fallback
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ height: 200 }}>
-                    <Typography color="text.secondary" fontWeight={500}>
+                  <TableCell colSpan={6} align="center">
+                    <Typography color="text.secondary">
                       No products found
                     </Typography>
                   </TableCell>
@@ -262,18 +226,16 @@ const ProductsTable = () => {
           </Table>
         </TableContainer>
       </Card>
+
       <Card className="mt-2 border">
-
-
-        <div className="mx-auto px-4 py-5 flex justify-center shadow-lg rounded-md">
+        <Box display="flex" justifyContent="center" py={3}>
           <Pagination
-            count={customersProduct.products?.totalPages}
+            count={products?.totalPages}
             color="primary"
-            className=""
+            page={page}
             onChange={handlePaginationChange}
-            // value={page}
           />
-        </div>
+        </Box>
       </Card>
     </Box>
   );

@@ -126,7 +126,6 @@ const OrdersTable = () => {
     <Box>
       {/* 🔹 Filters */}
       <Card className="p-3">
-        <CardHeader title="Sort" />
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <FormControl fullWidth>
