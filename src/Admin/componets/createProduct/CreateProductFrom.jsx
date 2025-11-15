@@ -1,20 +1,9 @@
-import { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
-import {
-  Grid,
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-
-import { Fragment } from "react";
-import "./CreateProductForm.css";
+import { useState, useEffect, Fragment } from "react";
+import { Typography, Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { createProduct } from "../../../Redux/Customers/Product/Action";
-import api, { API_BASE_URL } from "../../../config/api";
+import api from "../../../config/api";
+import "./CreateProductForm.css";
 
 const initialSizes = [
   { name: "S", quantity: 0 },
@@ -23,6 +12,9 @@ const initialSizes = [
 ];
 
 const CreateProductForm = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+
   const [productData, setProductData] = useState({
     imageUrl: "",
     brand: "",
@@ -34,72 +26,74 @@ const CreateProductForm = () => {
     sizes: initialSizes,
     quantity: "",
     description: "",
+    category: "",
   });
-  const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
-  const [categories, setCategories] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProductData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const [categories, setCategories] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Helper functions
+  const updateField = (field, value) => {
+    setProductData((prev) => ({ ...prev, [field]: value }));
   };
+
+  const updateSizeField = (index, field, value) => {
+    const newSizes = [...productData.sizes];
+    newSizes[index][field] = value;
+    setProductData((prev) => ({ ...prev, sizes: newSizes }));
+  };
+
+  const handleChange = (e) => updateField(e.target.name, e.target.value);
+
+  const handleSizeChange = (e, index) => {
+    const field = e.target.name === "size_quantity" ? "quantity" : e.target.name;
+    updateSizeField(index, field, e.target.value);
+  };
+
   useEffect(() => {
-    // Fetch categories from your backend API
-    api.get(`/api/categories`).then(({ data }) => {
-      setCategories(data);
-    });
+    const fetchCategories = async () => {
+      try {
+        const { data } = await api.get("/api/categories");
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+    fetchCategories();
   }, []);
-  function getFullCategoryName(cat, categoriesMap) {
-    if (!cat.parentCategory) return cat.name;
-    return (
-      getFullCategoryName(categoriesMap[cat.parentCategory], categoriesMap) +
-      " > " +
-      cat.name
-    );
-  }
 
   const categoriesMap = {};
   categories.forEach((cat) => {
     categoriesMap[cat._id] = cat;
   });
 
-
-
-  const handleSizeChange = (e, index) => {
-    let { name, value } = e.target;
-    name === "size_quantity" ? (name = "quantity") : (name = e.target.name);
-
-    const sizes = [...productData.sizes];
-    sizes[index][name] = value;
-    setProductData((prevState) => ({
-      ...prevState,
-      sizes: sizes,
-    }));
+  const getFullCategoryName = (cat) => {
+    if (!cat.parentCategory) return cat.name;
+    return getFullCategoryName(categoriesMap[cat.parentCategory]) + " > " + cat.name;
   };
 
-
-  const handleSubmit = (e) => {
+  // Submit handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createProduct({ data: productData, jwt }));
+    setSubmitting(true);
+    try {
+      await dispatch(createProduct({ data: productData, jwt }));
+    } catch (err) {
+      console.error("Failed to create product:", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Fragment>
-      <Typography
-        variant="h3"
-        sx={{ textAlign: "center" }}
-        className="py-4 text-center "
-      >
+      <Typography variant="h3" sx={{ textAlign: "center" }} className="py-4">
         Add New Product
       </Typography>
-      <form
-        onSubmit={handleSubmit}
-        className="createProductContainer min-h-screen"
-      >
+
+      <form onSubmit={handleSubmit} className="createProductContainer min-h-screen">
         <Grid container spacing={2}>
+          {/* Image URL */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -109,33 +103,18 @@ const CreateProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
+
+          {/* Brand and Title */}
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Brand"
-              name="brand"
-              value={productData.brand}
-              onChange={handleChange}
-            />
+            <TextField fullWidth label="Brand" name="brand" value={productData.brand} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Title" name="title" value={productData.title} onChange={handleChange} />
           </Grid>
 
+          {/* Color and Quantity */}
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Title"
-              name="title"
-              value={productData.title}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Color"
-              name="color"
-              value={productData.color}
-              onChange={handleChange}
-            />
+            <TextField fullWidth label="Color" name="color" value={productData.color} onChange={handleChange} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -147,15 +126,10 @@ const CreateProductForm = () => {
               type="number"
             />
           </Grid>
+
+          {/* Price Fields */}
           <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              label="Price"
-              name="price"
-              value={productData.price}
-              onChange={handleChange}
-              type="number"
-            />
+            <TextField fullWidth label="Price" name="price" value={productData.price} onChange={handleChange} type="number" />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -167,7 +141,6 @@ const CreateProductForm = () => {
               type="number"
             />
           </Grid>
-
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -178,18 +151,21 @@ const CreateProductForm = () => {
               type="number"
             />
           </Grid>
+
+          {/* Description */}
           <Grid item xs={12}>
             <TextField
               fullWidth
-              id="outlined-multiline-static"
               label="Description"
               multiline
-              name="description"
               rows={3}
-              onChange={handleChange}
+              name="description"
               value={productData.description}
+              onChange={handleChange}
             />
           </Grid>
+
+          {/* Sizes */}
           {productData.sizes.map((size, index) => (
             <Grid key={index} container item spacing={3}>
               <Grid item xs={12} sm={6}>
@@ -197,7 +173,7 @@ const CreateProductForm = () => {
                   label="Size Name"
                   name="name"
                   value={size.name}
-                  onChange={(event) => handleSizeChange(event, index)}
+                  onChange={(e) => handleSizeChange(e, index)}
                   required
                   fullWidth
                 />
@@ -207,50 +183,49 @@ const CreateProductForm = () => {
                   label="Quantity"
                   name="size_quantity"
                   type="number"
-                  onChange={(event) => handleSizeChange(event, index)}
+                  value={size.quantity}
+                  onChange={(e) => handleSizeChange(e, index)}
                   required
                   fullWidth
                 />
-              </Grid>{" "}
+              </Grid>
             </Grid>
           ))}
-          <Grid container item spacing={3}>
-            <Grid item xs={12} sm={6}>
+
+          {/* Category */}
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Category</InputLabel>
               <Select
-                labelId="category-label"
                 name="category"
                 value={productData.category}
-                label="Category"
                 onChange={handleChange}
-                style={{ width: "100%" }}
-                displayEmpty // 
+                displayEmpty
               >
-      
                 <MenuItem value="">
                   <em>Select Category</em>
                 </MenuItem>
-
-              
                 {categories.map((cat) => (
                   <MenuItem key={cat._id} value={cat._id}>
-                    {"— ".repeat(cat.level - 1) + cat.name}
+                    {getFullCategoryName(cat)}
                   </MenuItem>
                 ))}
               </Select>
-            </Grid>
+            </FormControl>
           </Grid>
 
+          {/* Submit Button */}
           <Grid item xs={12}>
             <Button
               variant="contained"
-              sx={{ p: 1.8 }}
-              className="py-20"
               size="large"
               type="submit"
+              fullWidth
+              sx={{ p: 1.8 }}
+              disabled={submitting}
             >
-              Add New Product
+              {submitting ? "Submitting..." : "Add New Product"}
             </Button>
-         
           </Grid>
         </Grid>
       </form>

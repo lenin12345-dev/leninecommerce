@@ -43,7 +43,6 @@ const UpdateProductForm = () => {
     description: "",
   });
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
   const { productId } = useParams();
   const { customersProduct } = useSelector((store) => store);
 

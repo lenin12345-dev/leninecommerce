@@ -17,63 +17,87 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Skeleton,
+  Skeleton
 } from "@mui/material";
+
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteProduct,
-  findProducts,
-} from "../../../Redux/Customers/Product/Action";
+import { deleteProduct, findProducts } from "../../../Redux/Customers/Product/Action";
 
 const ProductsTable = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { customersProduct } = useSelector((store) => store);
   const { products, loading } = customersProduct;
-// Avoids recreating the search params object on every render
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
+  // Parse URL parameters
+  const searchParams = new URLSearchParams(location.search);
+
+  const pageFromUrl = Number(searchParams.get("page")) || 1;
+
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
+
+  const [localTotalPages, setLocalTotalPages] = useState(1);
+
+  // Sync currentPage when URL changes
+  useEffect(() => {
+    setCurrentPage(pageFromUrl);
+  }, [pageFromUrl]);
+
+  useEffect(() => {
+    if (products?.totalPages) {
+      setLocalTotalPages(products.totalPages);
+    }
+  }, [products?.totalPages]);
+
+  // Filter state
   const [filterValue, setFilterValue] = useState({
     availability: searchParams.get("availability") || "",
     category: searchParams.get("category") || "",
-    sort: searchParams.get("sort") || "",
+    sort: searchParams.get("sort") || ""
   });
 
-  const page = Number(searchParams.get("page")) || 1;
-
+  // Handle pagination
   const handlePaginationChange = (_, value) => {
-    searchParams.set("page", value);
-    // Because you navigated, React Router re-renders your component with a new location object.
-    navigate({ search: `?${searchParams.toString()}` });
+    setCurrentPage(value);
+
+    const newParams = new URLSearchParams(location.search);
+    newParams.set("page", value);
+
+    navigate({
+      search: `?${newParams.toString()}`
+    });
   };
 
+  // Handle filters
   const handleFilterChange = (e, key) => {
     const value = e.target.value;
 
     setFilterValue((prev) => ({ ...prev, [key]: value }));
 
-    // If "All" or empty, remove param for cleaner URL
-    if (value === "" || value === "All") {
-      searchParams.delete(key);
-    } else {
-      searchParams.set(key, value);
-    }
+    const newParams = new URLSearchParams(location.search);
 
-    // Always reset to page 1 on filter change
-    searchParams.delete("page");
+    if (value === "" || value === "All") newParams.delete(key);
+    else newParams.set(key, value);
 
-    const query = searchParams.toString();
-    navigate({ search: query ? `?${query}` : "" });
+    // Reset page on filter change
+    newParams.delete("page");
+
+    navigate({
+      search: newParams.toString() ? `?${newParams.toString()}` : ""
+    });
   };
 
+  // Reset filters
   const handleResetFilters = () => {
     setFilterValue({ availability: "", category: "", sort: "" });
-    navigate(""); // clear all query params
+    navigate("");
   };
 
+  // Fetch products
   useEffect(() => {
     const data = {
       category: filterValue.category,
@@ -83,19 +107,23 @@ const ProductsTable = () => {
       maxPrice: 100000,
       minDiscount: 0,
       sort: filterValue.sort || "price_low",
-      pageNumber: page,
+      pageNumber: currentPage,
       pageSize: 10,
-      stock: filterValue.availability || "",
+      stock: filterValue.availability || ""
     };
+
     dispatch(findProducts(data));
-  }, [filterValue, page, dispatch]);
+  }, [filterValue, currentPage, dispatch]);
 
   const handleDeleteProduct = (id) => dispatch(deleteProduct(id));
 
   return (
     <Box width="100%">
+      {/* FILTERS */}
       <Card className="p-3">
         <Grid container spacing={2} alignItems="center">
+          
+          {/* Category */}
           <Grid item xs={3}>
             <FormControl fullWidth>
               <InputLabel>Category</InputLabel>
@@ -124,6 +152,7 @@ const ProductsTable = () => {
             </FormControl>
           </Grid>
 
+          {/* Availability */}
           <Grid item xs={3}>
             <FormControl fullWidth>
               <InputLabel>Availability</InputLabel>
@@ -139,6 +168,7 @@ const ProductsTable = () => {
             </FormControl>
           </Grid>
 
+          {/* Sort */}
           <Grid item xs={3}>
             <FormControl fullWidth>
               <InputLabel>Sort By Price</InputLabel>
@@ -153,6 +183,7 @@ const ProductsTable = () => {
             </FormControl>
           </Grid>
 
+          {/* Reset */}
           <Grid item xs={1}>
             <Button
               fullWidth
@@ -164,13 +195,16 @@ const ProductsTable = () => {
               Reset Filters
             </Button>
           </Grid>
+
         </Grid>
       </Card>
 
+      {/* TABLE */}
       <Card className="mt-2">
         <CardHeader title="All Products" />
         <TableContainer sx={{ maxHeight: 600, minHeight: 600, overflowY: "auto" }}>
           <Table sx={{ minWidth: 800 }}>
+
             <TableHead>
               <TableRow>
                 <TableCell>Image</TableCell>
@@ -204,10 +238,7 @@ const ProductsTable = () => {
                     <TableCell align="center">${item.discountedPrice}</TableCell>
                     <TableCell align="center">{item.quantity}</TableCell>
                     <TableCell align="center">
-                      <Button
-                        color="error"
-                        onClick={() => handleDeleteProduct(item._id)}
-                      >
+                      <Button color="error" onClick={() => handleDeleteProduct(item._id)}>
                         Delete
                       </Button>
                     </TableCell>
@@ -216,27 +247,28 @@ const ProductsTable = () => {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    <Typography color="text.secondary">
-                      No products found
-                    </Typography>
+                    <Typography color="text.secondary">No products found</Typography>
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
+
           </Table>
         </TableContainer>
       </Card>
 
+      {/* PAGINATION */}
       <Card className="mt-2 border">
         <Box display="flex" justifyContent="center" py={3}>
           <Pagination
-            count={products?.totalPages}
+            count={localTotalPages}
             color="primary"
-            page={page}
+            page={currentPage}
             onChange={handlePaginationChange}
           />
         </Box>
       </Card>
+
     </Box>
   );
 };
