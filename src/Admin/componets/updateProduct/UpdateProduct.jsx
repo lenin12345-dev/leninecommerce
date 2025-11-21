@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import {
+  Typography,
   Grid,
   TextField,
   Button,
@@ -9,15 +9,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-
-import { Fragment } from "react";
-// import "./CreateProductForm.css";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  findProductById,
-  updateProduct,
-} from "../../../Redux/Customers/Product/Action";
-import { useEffect } from "react";
+import { findProductById, updateProduct } from "../../../Redux/Customers/Product/Action";
 import { useParams } from "react-router-dom";
 
 const initialSizes = [
@@ -26,25 +19,50 @@ const initialSizes = [
   { name: "L", quantity: 0 },
 ];
 
+const initialProductData = {
+  imageUrl: "",
+  brand: "",
+  title: "",
+  color: "",
+  discountedPrice: "",
+  price: "",
+  discountPersent: "",
+  size: initialSizes,
+  quantity: "",
+  topLavelCategory: "",
+  secondLavelCategory: "",
+  thirdLavelCategory: "",
+  description: "",
+};
+
 const UpdateProductForm = () => {
-  const [productData, setProductData] = useState({
-    imageUrl: "",
-    brand: "",
-    title: "",
-    color: "",
-    discountedPrice: "",
-    price: "",
-    discountPersent: "",
-    size: initialSizes,
-    quantity: "",
-    topLavelCategory: "",
-    secondLavelCategory: "",
-    thirdLavelCategory: "",
-    description: "",
-  });
+  const [productData, setProductData] = useState(initialProductData);
+
   const dispatch = useDispatch();
   const { productId } = useParams();
+
   const { customersProduct } = useSelector((store) => store);
+  const product = customersProduct?.product;
+
+  // Fetch product on mount / productId change
+  useEffect(() => {
+    if (productId) {
+      // adjust this based on your action creator signature
+      dispatch(findProductById(productId));
+    }
+  }, [dispatch, productId]);
+
+  // Populate local form state when product is loaded
+  useEffect(() => {
+    if (product) {
+      setProductData((prev) => ({
+        ...prev,
+        ...product,
+        // fallbacks to avoid undefined
+        size: product.size || prev.size || initialSizes,
+      }));
+    }
+  }, [product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,10 +74,17 @@ const UpdateProductForm = () => {
 
   const handleSizeChange = (e, index) => {
     let { name, value } = e.target;
-    name === "size_quantity" ? (name = "quantity") : (name = e.target.name);
+
+    if (name === "size_quantity") {
+      name = "quantity";
+    }
 
     const sizes = [...productData.size];
-    sizes[index][name] = value;
+    sizes[index] = {
+      ...sizes[index],
+      [name]: value,
+    };
+
     setProductData((prevState) => ({
       ...prevState,
       size: sizes,
@@ -68,37 +93,32 @@ const UpdateProductForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateProduct());
-    console.log(productData);
+
+    // If API expects numbers, you can normalize here:
+    const payload = {
+      ...productData,
+      price: Number(productData.price) || 0,
+      discountedPrice: Number(productData.discountedPrice) || 0,
+      discountPersent: Number(productData.discountPersent) || 0,
+      quantity: Number(productData.quantity) || 0,
+    };
+
+    // Make sure updateProduct accepts (productId, data) or similar
+    dispatch(updateProduct(productId, payload));
+
+    console.log("Updated product payload:", payload);
   };
 
-  useEffect(() => {
-    dispatch(findProductById({productId}));
-  }, [productId]);
-
-  useEffect(()=>{
-    if(customersProduct.product){
-        for(let key in productData){
-    setProductData((prev)=>({...prev,[key]:customersProduct.product[key]}))
-    console.log(customersProduct.product[key],"--------",key)
-}
-    }
-
-  },[customersProduct.product])
-
   return (
-    <Fragment className="createProductContainer ">
+    <React.Fragment>
       <Typography
         variant="h3"
-        sx={{ textAlign: "center" }}
-        className="py-10 text-center "
+        sx={{ textAlign: "center", py: 4 }}
       >
-        Add New Product
+        Update Product
       </Typography>
-      <form
-        onSubmit={handleSubmit}
-        className="createProductContainer min-h-screen"
-      >
+
+      <form onSubmit={handleSubmit} className="createProductContainer min-h-screen">
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -109,6 +129,7 @@ const UpdateProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -128,6 +149,7 @@ const UpdateProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -137,6 +159,7 @@ const UpdateProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -147,6 +170,7 @@ const UpdateProductForm = () => {
               type="number"
             />
           </Grid>
+
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -157,6 +181,7 @@ const UpdateProductForm = () => {
               type="number"
             />
           </Grid>
+
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -178,6 +203,7 @@ const UpdateProductForm = () => {
               type="number"
             />
           </Grid>
+
           <Grid item xs={6} sm={4}>
             <FormControl fullWidth>
               <InputLabel>Top Level Category</InputLabel>
@@ -194,6 +220,7 @@ const UpdateProductForm = () => {
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={6} sm={4}>
             <FormControl fullWidth>
               <InputLabel>Second Level Category</InputLabel>
@@ -207,12 +234,11 @@ const UpdateProductForm = () => {
                 <MenuItem value="Accessories">Accessories</MenuItem>
                 <MenuItem value="Footwear">Footwear</MenuItem>
                 <MenuItem value="Mobile">Mobile Phones</MenuItem>
-                <MenuItem value="Computers">Computers & Tablets
-                </MenuItem>
-
+                <MenuItem value="Computers">Computers & Tablets</MenuItem>
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={6} sm={4}>
             <FormControl fullWidth>
               <InputLabel>Third Level Category</InputLabel>
@@ -222,19 +248,14 @@ const UpdateProductForm = () => {
                 onChange={handleChange}
                 label="Third Level Category"
               >
-             
                 <MenuItem value="T-Shirts">T-Shirts</MenuItem>
                 <MenuItem value="Pants">Pants</MenuItem>
                 <MenuItem value="Jackets">Jackets</MenuItem>
-
                 <MenuItem value="Sneakers">Sneakers</MenuItem>
-
                 <MenuItem value="Heels">Heels</MenuItem>
                 <MenuItem value="Boots">Boots</MenuItem>
                 <MenuItem value="Formal Shoes">Formal Shoes</MenuItem>
                 <MenuItem value="Watches">Watches</MenuItem>
-
-
                 <MenuItem value="Tops">Tops</MenuItem>
                 <MenuItem value="Dresses">Dresses</MenuItem>
                 <MenuItem value="Handbags">Handbags</MenuItem>
@@ -242,10 +263,10 @@ const UpdateProductForm = () => {
                 <MenuItem value="Smartphones">Smartphones</MenuItem>
                 <MenuItem value="Laptops">Laptops</MenuItem>
                 <MenuItem value="Tablets">Tablets</MenuItem>
-
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -258,8 +279,10 @@ const UpdateProductForm = () => {
               value={productData.description}
             />
           </Grid>
-          {/* {productData.size.map((size, index) => (
-            <Grid container item spacing={3}>
+
+          {/* Uncomment if you want size editing in the form */}
+          {/* {productData.size?.map((size, index) => (
+            <Grid container item spacing={3} key={index}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Size Name"
@@ -275,36 +298,28 @@ const UpdateProductForm = () => {
                   label="Quantity"
                   name="size_quantity"
                   type="number"
+                  value={size.quantity}
                   onChange={(event) => handleSizeChange(event, index)}
                   required
                   fullWidth
                 />
-              </Grid>{" "}
+              </Grid>
             </Grid>
           ))} */}
+
           <Grid item xs={12}>
             <Button
               variant="contained"
               sx={{ p: 1.8 }}
-              className="py-20"
               size="large"
               type="submit"
             >
               Update Product
             </Button>
-            {/* <Button
-              variant="contained"
-              sx={{ p: 1.8 }}
-              className="py-20 ml-10"
-              size="large"
-              onClick={()=>handleAddProducts(dressPage1)}
-            >
-              Add Products By Loop
-            </Button> */}
           </Grid>
         </Grid>
       </form>
-    </Fragment>
+    </React.Fragment>
   );
 };
 
